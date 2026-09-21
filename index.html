@@ -761,15 +761,15 @@ window._authReady=restoreSupabaseSession();
     <div class="header-tools">
       <div id="headerDate" class="header-date"></div>
       <details class="app-release">
-        <summary title="Open version history">V2026.09.18.3</summary>
+        <summary title="Open version history">V2026.09.21.1</summary>
         <div class="release-panel">
-          <div class="release-heading">New version V2026.09.18.3</div>
+          <div class="release-heading">New version V2026.09.21.1</div>
           <div class="release-date">What&rsquo;s new:</div>
           <ul class="release-list">
-            <li>Fixed the invisible text in the What&rsquo;s new popup.</li>
-            <li>The Questionnaire editor now prioritizes Brand, Promoter and Store.</li>
-            <li>Date, Turnover, Pieces Sold, Interactions, rates and Custom A/B are grouped at the top.</li>
-            <li>Client and all remaining questionnaire information stay available in a separate lower section.</li>
+            <li>Compliance is now calculated only through yesterday.</li>
+            <li>Today and future shifts no longer count as missing or reduce compliance.</li>
+            <li>Today and future rows are clearly marked as Not due yet.</li>
+            <li>The same cutoff now applies to Reporting Check, Closing Check and report validation.</li>
           </ul>
         </div>
       </details>
@@ -3891,15 +3891,28 @@ async function saveField(id,col,val){
 let p3All=[], p3View='pending', p3EmailBodies={}, p3OpsContacts=[], p3ValidatorSelections={};
 let p3LoadPromise=null, p3CompliancePromise=null, p3OpsPromise=null;
 
+const complianceToday=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Paris',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+function complianceYesterday(){
+  const [year,month,day]=complianceToday().split('-').map(Number);
+  const date=new Date(Date.UTC(year,month-1,day));
+  date.setUTCDate(date.getUTCDate()-1);
+  return date.toISOString().slice(0,10);
+}
+const complianceIsDue=value=>String(value||'').slice(0,10)<complianceToday();
+
 async function applyReportingCompliance(records,{autoConfirm=false,asOfDate=''}={}){
   const targets=records.filter(record=>record.startdate&&record.enddate);
   if(!targets.length)return;
   const from=targets.map(record=>record.startdate).sort()[0];
   const latestEnd=targets.map(record=>record.enddate).sort().reverse()[0];
-  const now=new Date();
-  const today=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
-  const cutoff=asOfDate||today;
+  const yesterday=complianceYesterday();
+  const requestedCutoff=asOfDate||yesterday;
+  const cutoff=requestedCutoff<yesterday?requestedCutoff:yesterday;
   const to=cutoff<latestEnd?cutoff:latestEnd;
+  if(from>to){
+    targets.forEach(record=>{record.reporting_compliance_total=0;record.reporting_compliance_reported=0;record.reporting_compliance_absent=0;record.reporting_compliance_backup=0;record.reporting_compliance_pct=0;});
+    return;
+  }
   try{
     const [scheduleRows,questionnaireRows]=await Promise.all([
       sbGetAll(`GI_ScheduleV2?select=day,promoter_id,promoter_fullname,store_code,pos,brand,client,role,campaign_name,campaign_sapcode,timeslot_status&day=gte.${from}&day=lte.${to}&promoter_status=neq.Pending&brand=not.ilike.*JTI*&client=neq.${encodeURIComponent('GLOBE TRAVEL RETAIL')}&pos=neq.${encodeURIComponent('TOURNEE TERRAIN')}&campaign_name=not.ilike.*FIELD SUPERVISOR*&or=(timeslot_status.is.null,timeslot_status.neq.Annulé)&order=day.desc`),
@@ -6281,7 +6294,7 @@ function rc_exportExcel(){
     return (a.promoter||'').localeCompare(b.promoter||'');
   });
 
-  const statusLabel = { complete:'Reported', partial:'Partial', missing:'Missing', absent:'Absent', absent_backup:'Absent + Backup', pending:'En attente' };
+  const statusLabel = { complete:'Reported', partial:'Partial', missing:'Missing', absent:'Absent', absent_backup:'Absent + Backup', pending:'En attente', not_due:'Not due yet' };
 
   const sheetData = rows.map(r => ({
     'Date': r.day,
@@ -6655,7 +6668,8 @@ async function rc_loadLegacy(){
       const turnover = qEntries.reduce((sum,e)=> sum + (Number(e['Turnover of the day'])||0), 0);
 
       let status;
-      if(hasQ)              status = 'complete';
+      if(!complianceIsDue(r.day)) status = 'not_due';
+      else if(hasQ)         status = 'complete';
       else if(hasS)         status = 'partial';
       else                  status = 'missing';
 
@@ -6708,9 +6722,8 @@ async function rc_load(){
   const fromInput=document.getElementById('rc_from');
   const from = fromInput.value&&fromInput.value<RC_MIN_DATE?RC_MIN_DATE:fromInput.value;
   const requestedTo=document.getElementById('rc_to').value;
-  const now=new Date();
-  const today=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
-  const to=requestedTo&&requestedTo<today?requestedTo:today;
+  const today=complianceToday();
+  const to=requestedTo;
   if(fromInput.value!==from)fromInput.value=from;
   if(!from || !requestedTo){toast('Please set a date range','error');return;}
   if(from>requestedTo){toast('The From date must be before the To date','error');return;}
@@ -6737,7 +6750,7 @@ async function rc_load(){
 
   if(from>to){
     rc_data=[];
-    rc_emptyState={title:'No shifts due yet',detail:`This period starts on ${from}. Compliance and missing shifts are calculated through today (${today}).`,hint:'Future shifts will appear automatically on their scheduled date.',tone:'amber'};
+    rc_emptyState={title:'No shifts due yet',detail:`This period starts on ${from}. Compliance and missing shifts are calculated through yesterday (${complianceYesterday()}).`,hint:'Today and future shifts remain visible but do not affect compliance.',tone:'amber'};
     rc_populateFilters(true);rc_render();return;
   }
 
@@ -6889,7 +6902,8 @@ async function rc_load(){
 
       const timeslot=String(schedule.timeslot_status||'').toLowerCase();
       let status;
-      if(timeslot.includes('absent avec'))status='absent_backup';
+      if(!complianceIsDue(schedule.day))status='not_due';
+      else if(timeslot.includes('absent avec'))status='absent_backup';
       else if(timeslot.includes('absent'))status='absent';
       else if(timeslot.includes('attente'))status='pending';
       else if(hasQ)status='complete';
@@ -7081,19 +7095,20 @@ function rc_toggleFilter(key,event){
 function rc_renderLegacy(){
   const contextRows=rc_getFilteredRows(false);
   let rows=rcApplyKpiFilter([...contextRows]);
+  const dueRows=contextRows.filter(row=>complianceIsDue(row.day));
 
   rows.sort((a,b) => {
     if(a.day !== b.day) return b.day.localeCompare(a.day);
     return (a.promoter||'').localeCompare(b.promoter||'');
   });
 
-  const total     = contextRows.length;
-  const complete  = contextRows.filter(r=>r.status==='complete').length;
-  const partial   = contextRows.filter(r=>r.status==='partial').length;
-  const missing   = contextRows.filter(r=>r.status==='missing').length;
+  const total     = dueRows.length;
+  const complete  = dueRows.filter(r=>r.status==='complete').length;
+  const partial   = dueRows.filter(r=>r.status==='partial').length;
+  const missing   = dueRows.filter(r=>r.status==='missing').length;
   const pct       = total ? Math.round(complete/total*100) : 0;
-  const totalPieces   = contextRows.reduce((n,r)=>n+(r.pieces||0),0);
-  const totalTurnover = contextRows.reduce((n,r)=>n+(r.turnover||0),0);
+  const totalPieces   = dueRows.reduce((n,r)=>n+(r.pieces||0),0);
+  const totalTurnover = dueRows.reduce((n,r)=>n+(r.turnover||0),0);
 
   document.getElementById('rc_stats').innerHTML = [
     { key:'all',        val:total,    label:'Shifts',      col:'var(--blue)',  bg:'#fff',               title:'Show all shifts' },
@@ -7121,13 +7136,16 @@ function rc_renderLegacy(){
   const dates = Object.keys(byDate).sort((a,b)=>b.localeCompare(a));
 
   const badge = s => {
+    if(s==='not_due') return `<span style="background:var(--blue-light);color:var(--blue);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;">Not due yet</span>`;
     if(s==='complete') return `<span style="background:var(--green-light);color:var(--green);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;">\u2705 Reported</span>`;
     if(s==='partial')  return `<span style="background:var(--amber-light);color:var(--amber);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;">\u26a0\ufe0f Partial</span>`;
     return `<span style="background:var(--red-light);color:var(--red);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;">\u274c Missing</span>`;
   };
-  const check = ok => ok
-    ? `<span style="color:var(--green);font-weight:800;font-size:14px;">\u2713</span>`
-    : `<span style="color:var(--red);font-size:14px;">\u2717</span>`;
+  const check = (ok,notDue=false) => notDue
+    ? `<span style="color:var(--g400);font-size:14px;">—</span>`
+    : ok
+      ? `<span style="color:var(--green);font-weight:800;font-size:14px;">\u2713</span>`
+      : `<span style="color:var(--red);font-size:14px;">\u2717</span>`;
 
   const mismatchTag = (sched, reported) => {
     if(!reported.length) return '<span style="color:var(--g300);">\u2014</span>';
@@ -7168,8 +7186,8 @@ function rc_renderLegacy(){
         <td style="padding:8px 12px;font-weight:600;">${esc(r.promoter)}</td>
         <td style="padding:8px 12px;font-weight:600;max-width:320px;white-space:normal;line-height:1.3;" title="${esc(r.schedStore||'')}">${esc(r.schedStore||'\u2014')}</td>
         <td style="padding:8px 12px;color:var(--g600);">${esc(r.schedBrand||'\u2014')}</td>
-        <td style="padding:8px 12px;text-align:center;">${check(r.hasQ)}</td>
-        <td style="padding:8px 12px;text-align:center;">${check(r.hasS)}</td>
+        <td style="padding:8px 12px;text-align:center;">${check(r.hasQ,r.status==='not_due')}</td>
+        <td style="padding:8px 12px;text-align:center;">${check(r.hasS,r.status==='not_due')}</td>
         <td style="padding:8px 12px;font-family:monospace;width:90px;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${mismatchTag([r.schedStoreCode,r.schedStore], r.reportedStores)}</td>
         <td style="padding:8px 12px;">${mismatchTag(r.schedBrand, r.reportedBrands)}</td>
         <td style="padding:8px 12px;text-align:right;font-family:monospace;">${r.pieces!=null ? r.pieces.toLocaleString() : '\u2014'}</td>
@@ -7187,18 +7205,19 @@ function rc_render(){
   const rows=rcApplyKpiFilter([...contextRows]).sort((a,b)=>
     b.day.localeCompare(a.day)||(a.promoter||'').localeCompare(b.promoter||'')
   );
+  const dueRows=contextRows.filter(row=>complianceIsDue(row.day));
 
-  const total=contextRows.length;
-  const complete=contextRows.filter(row=>row.status==='complete').length;
-  const partial=contextRows.filter(row=>row.status==='partial').length;
-  const missing=contextRows.filter(row=>row.status==='missing').length;
-  const absent=contextRows.filter(row=>row.status==='absent').length;
-  const absentBackup=contextRows.filter(row=>row.status==='absent_backup').length;
-  const pending=contextRows.filter(row=>row.status==='pending').length;
+  const total=dueRows.length;
+  const complete=dueRows.filter(row=>row.status==='complete').length;
+  const partial=dueRows.filter(row=>row.status==='partial').length;
+  const missing=dueRows.filter(row=>row.status==='missing').length;
+  const absent=dueRows.filter(row=>row.status==='absent').length;
+  const absentBackup=dueRows.filter(row=>row.status==='absent_backup').length;
+  const pending=dueRows.filter(row=>row.status==='pending').length;
   const complianceBase=total-absent-absentBackup-pending;
   const pct=complianceBase?Math.round(complete/complianceBase*100):0;
-  const totalPieces=contextRows.reduce((sum,row)=>sum+(row.pieces||0),0);
-  const totalTurnover=contextRows.reduce((sum,row)=>sum+(row.turnover||0),0);
+  const totalPieces=dueRows.reduce((sum,row)=>sum+(row.pieces||0),0);
+  const totalTurnover=dueRows.reduce((sum,row)=>sum+(row.turnover||0),0);
   const from=rc_effectiveFrom||document.getElementById('rc_from')?.value||'';
   const to=rc_effectiveTo||document.getElementById('rc_to')?.value||'';
   document.getElementById('rc_subline_text').textContent='';
@@ -7229,6 +7248,7 @@ function rc_render(){
   }
 
   const statusBadge=status=>{
+    if(status==='not_due')return '<span style="display:inline-flex;white-space:nowrap;background:var(--blue-light);color:var(--blue);padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;">Not due yet</span>';
     if(status==='complete')return '<span style="display:inline-flex;white-space:nowrap;background:var(--green-light);color:var(--green);padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;">✅ Reported</span>';
     if(status==='partial')return '<span style="display:inline-flex;white-space:nowrap;background:var(--amber-light);color:var(--amber);padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;">⚠️ Partial</span>';
     if(status==='absent_backup')return '<span style="display:inline-flex;white-space:nowrap;background:#fff7ed;color:#ea580c;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;">🔄 Absent + Backup</span>';
@@ -7236,7 +7256,9 @@ function rc_render(){
     if(status==='pending')return '<span style="display:inline-flex;white-space:nowrap;background:var(--g100);color:var(--g500);padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;">⏳ En attente</span>';
     return '<span style="display:inline-flex;white-space:nowrap;background:var(--red-light);color:var(--red);padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;">❌ Missing</span>';
   };
-  const check=ok=>ok
+  const check=(ok,notDue=false)=>notDue
+    ?'<span style="color:var(--g400);font-size:14px;">—</span>'
+    :ok
     ?'<span style="color:var(--green);font-weight:800;font-size:14px;">✓</span>'
     :'<span style="color:var(--red);font-size:14px;">✗</span>';
   const mismatchTag=(scheduled,reported)=>{
@@ -7299,8 +7321,8 @@ function rc_render(){
         ${row.campaignName?`<div style="font-size:9.5px;color:var(--g400);margin-top:3px;">${esc(row.campaignName)}</div>`:''}
         ${displaySap?`<div style="font-family:monospace;font-size:9px;font-weight:700;color:var(--blue);margin-top:3px;">SAP: ${esc(displaySap)}</div>`:''}
       </td>
-      <td style="padding:9px 4px;text-align:center;vertical-align:middle;">${check(row.hasQ)}</td>
-      <td style="padding:9px 4px;text-align:center;vertical-align:middle;">${check(row.hasS)}</td>
+      <td style="padding:9px 4px;text-align:center;vertical-align:middle;">${check(row.hasQ,row.status==='not_due')}</td>
+      <td style="padding:9px 4px;text-align:center;vertical-align:middle;">${check(row.hasS,row.status==='not_due')}</td>
       <td style="padding:9px 6px;font-family:monospace;font-size:10px;line-height:1.2;vertical-align:middle;overflow-wrap:anywhere;">${mismatchTag(row.schedStoreCode,row.reportedStores)}</td>
       <td style="padding:9px 6px;font-size:10px;line-height:1.2;vertical-align:middle;overflow-wrap:anywhere;">${mismatchTag(row.schedBrand,row.reportedBrands)}</td>
       <td style="padding:9px 5px;text-align:right;font-family:monospace;font-size:10.5px;vertical-align:middle;">${row.pieces!=null?row.pieces.toLocaleString():'—'}</td>
