@@ -220,6 +220,11 @@ textarea.fi{height:72px;padding:8px 10px;resize:vertical;line-height:1.5;}
 /* ─ New Record workspace ─ */
 #efLanding{max-width:1500px;margin:0 auto;}
 .ef-landing-head{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:14px;}
+.ef-landing-actions{display:flex;align-items:flex-end;gap:9px;flex-wrap:wrap;justify-content:flex-end;}
+.ef-filter-field{display:flex;flex-direction:column;gap:4px;min-width:155px;}
+.ef-filter-field label{font-size:9px;font-weight:750;text-transform:uppercase;letter-spacing:.055em;color:var(--g500);}
+.ef-filter-select{height:38px;padding:0 30px 0 10px;border:1px solid var(--g300);border-radius:7px;background:#fff;font-family:inherit;font-size:11.5px;font-weight:600;color:var(--g700);outline:none;cursor:pointer;}
+.ef-filter-select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(16,96,232,.1);}
 .ef-landing-title{font-size:18px;font-weight:800;color:var(--g900);}
 .ef-landing-sub{font-size:11.5px;color:var(--g500);margin-top:4px;}
 .ef-new-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:38px;padding:0 16px;background:var(--blue);color:#fff;border:0;border-radius:7px;font-family:inherit;font-size:12px;font-weight:750;cursor:pointer;box-shadow:0 2px 7px rgba(16,96,232,.22);white-space:nowrap;}
@@ -236,6 +241,7 @@ textarea.fi{height:72px;padding:8px 10px;resize:vertical;line-height:1.5;}
 .ef-section-head strong{font-size:11px;text-transform:uppercase;letter-spacing:.055em;color:var(--g700);}.ef-section-count{padding:2px 7px;border-radius:12px;background:#fff;border:1px solid var(--g200);font:700 10px/1.3 monospace;color:var(--g500);}.ef-section-caret{margin-left:auto;color:var(--g400);font-size:12px;}
 .ef-table-wrap{overflow:auto;max-height:310px;}.ef-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:11px;}.ef-table th{position:sticky;top:0;z-index:2;padding:7px 9px;background:#fff;border-bottom:1px solid var(--g200);text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:.045em;color:var(--g500);}.ef-table td{padding:8px 9px;border-bottom:1px solid var(--g100);vertical-align:middle;}.ef-table tr:last-child td{border-bottom:0;}.ef-table tbody tr{cursor:pointer;}.ef-table tbody tr:hover{background:#f8fbff;}.ef-table tbody tr.ef-provisional-row{background:#fffdf5;}.ef-table tbody tr.ef-provisional-row:hover{background:#fff7db;}
 .ef-record-name{font-size:11.5px;font-weight:750;color:var(--g900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.ef-record-meta{font-size:9.5px;color:var(--g500);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.ef-code{font:700 10px/1.35 monospace;color:var(--blue);}.ef-status{display:inline-flex;align-items:center;padding:3px 7px;border-radius:12px;font-size:9.5px;font-weight:750;white-space:nowrap;}.ef-status.active{background:var(--blue-light);color:var(--blue);}.ef-status.review{background:var(--amber-light);color:var(--amber);}.ef-status.sent{background:var(--green-light);color:var(--green);}.ef-status.provisional{background:#fff1c7;color:#9a5a00;border:1px solid #f1cf72;}.ef-status.cancelled{background:var(--red-light);color:var(--red);}.ef-empty{padding:25px;text-align:center;color:var(--g400);font-size:12px;}
+.ef-table tbody tr.ef-sent-row{background:#f0fdf4;}.ef-table tbody tr.ef-sent-row:hover{background:#dcfce7;}.ef-table .ef-sent-divider{cursor:default;}.ef-table .ef-sent-divider:hover{background:transparent;}.ef-table .ef-sent-divider td{padding:7px 9px;background:var(--g50);border-top:1px solid var(--g200);border-bottom:1px solid var(--g200);font-size:9px;font-weight:750;text-transform:uppercase;letter-spacing:.055em;color:var(--green);}.ef-status.planned{background:var(--blue-light);color:var(--blue);}.ef-status.ended{background:var(--g100);color:var(--g600);}
 
 #formWrap .fb{padding:12px 16px;}
 .entry-form-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 14px;align-items:start;max-width:1500px;margin:0 auto;}
@@ -248,7 +254,7 @@ textarea.fi{height:72px;padding:8px 10px;resize:vertical;line-height:1.5;}
 
 .retailer-modal{width:580px;}.retailer-picker{border:1px solid var(--g200);border-radius:7px;overflow:hidden;background:#fff;}.retailer-picker-search{width:100%;height:34px;padding:0 10px;border:0;border-bottom:1px solid var(--g200);background:var(--g50);font-family:inherit;font-size:12px;outline:none;}.retailer-picker-list{max-height:190px;overflow-y:auto;padding:5px;}.retailer-choice{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:5px;cursor:pointer;}.retailer-choice:hover{background:var(--g50);}.retailer-choice.selected{background:var(--blue-light);}.retailer-choice input{accent-color:var(--blue);}.retailer-choice-main{font-size:12px;font-weight:650;color:var(--g900);}.retailer-choice-id{font:700 9.5px/1.2 monospace;color:var(--g400);margin-top:2px;}.retailer-create-row{display:flex;gap:7px;margin-top:8px;}.retailer-create-row .mfi{flex:1;}.retailer-create-btn{height:34px;padding:0 11px;border:1.5px solid var(--blue);border-radius:var(--r);background:var(--blue-light);color:var(--blue);font-family:inherit;font-size:10.5px;font-weight:750;cursor:pointer;white-space:nowrap;}
 @media(max-width:1200px){.entry-form-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.ef-metrics{grid-template-columns:repeat(2,minmax(145px,1fr));}.v-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
-@media(max-width:760px){.entry-form-grid{grid-template-columns:1fr}.entry-form-grid .entry-span-2,.entry-form-grid .fg.full{grid-column:1}.ef-metrics{grid-template-columns:1fr 1fr}.v-grid{grid-template-columns:1fr}.vf.full,.vf.span-2{grid-column:1}.ef-landing-head{align-items:flex-start;}.sidebar{display:none;}}
+@media(max-width:760px){.entry-form-grid{grid-template-columns:1fr}.entry-form-grid .entry-span-2,.entry-form-grid .fg.full{grid-column:1}.ef-metrics{grid-template-columns:1fr 1fr}.v-grid{grid-template-columns:1fr}.vf.full,.vf.span-2{grid-column:1}.ef-landing-head{align-items:flex-start;flex-direction:column;}.ef-landing-actions{width:100%;justify-content:flex-start;}.sidebar{display:none;}}
 
 /* ══════════════ PAGE 2 ══════════════ */
 .p2{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--g50);}
@@ -762,15 +768,16 @@ window._authReady=restoreSupabaseSession();
     <div class="header-tools">
       <div id="headerDate" class="header-date"></div>
       <details class="app-release">
-        <summary title="Open version history">V2026.09.21.1</summary>
+        <summary title="Open version history">V2026.09.22.1</summary>
         <div class="release-panel">
-          <div class="release-heading">New version V2026.09.21.1</div>
+          <div class="release-heading">New version V2026.09.22.1</div>
           <div class="release-date">What&rsquo;s new:</div>
           <ul class="release-list">
-            <li>Compliance is now calculated only through yesterday.</li>
-            <li>Today and future shifts no longer count as missing or reduce compliance.</li>
-            <li>Today and future rows are clearly marked as Not due yet.</li>
-            <li>The same cutoff now applies to Reporting Check, Closing Check and report validation.</li>
+            <li>New Record is now New Record &amp; Records, with a status filter and table-based sections.</li>
+            <li>Active Now and Coming Soon show BI Insights, BI Special and BA Insights only.</li>
+            <li>Report Sent rows are grouped at the bottom of Active Now, and Past Records moved to the page bottom.</li>
+            <li>Added schedule missions disappear from suggestions and return when unlinked.</li>
+            <li>Retailer choices are ordered from the smallest to the largest retailer ID.</li>
           </ul>
         </div>
       </details>
@@ -781,7 +788,7 @@ window._authReady=restoreSupabaseSession();
   </div>
   <div class="header-nav">
     <button class="tab-btn active" id="tab0btn" onclick="switchTab(0)">Dashboard</button>
-    <button class="tab-btn"        id="tab1btn" onclick="switchTab(1)">New Record</button>
+    <button class="tab-btn"        id="tab1btn" onclick="switchTab(1)">New Record &amp; Records</button>
     <button class="tab-btn"        id="tab2btn" onclick="switchTab(2)">Status Update</button>
     <button class="tab-btn"        id="tab3btn" onclick="switchTab(3)">Under Review</button>
     <button class="tab-btn"        id="tab9btn" onclick="switchTab(9)">Closing Check</button>
@@ -899,29 +906,34 @@ window._authReady=restoreSupabaseSession();
 
 <!-- PAGE 1 – ENTRY FORM -->
 <div class="page" id="page1">
-  <div class="sidebar">
-    <div class="sb-top" style="padding:8px 10px 6px;">
-      <select id="sb-company-filter" style="display:none"><option value="">All companies</option></select>
-      <input type="text" id="searchInput" style="display:none">
-      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g400);">Past Records</div>
-      <div style="font-size:22px;font-weight:800;color:var(--g500);line-height:1.1;" id="sbPastCount">—</div>
-    </div>
-    <div class="list" id="recordList"><div class="list-msg">Loading…</div></div>
-  </div>
-
   <div class="fp">
     <!-- Entry Form Landing Panel -->
     <div class="empty-st" id="emptyState" style="flex:1;overflow-y:auto;background:var(--g50);">
       <div id="efLanding" style="padding:18px 24px;width:100%">
         <div class="ef-landing-head">
           <div>
-            <div class="ef-landing-title">Campaign records</div>
+            <div class="ef-landing-title">New Record &amp; Records</div>
             <div class="ef-landing-sub">Open an active or upcoming campaign, or create a new reporting record.</div>
           </div>
-          <button class="ef-new-btn" onclick="newRecord()">
-            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-            New Report Entry
-          </button>
+          <div class="ef-landing-actions">
+            <div class="ef-filter-field">
+              <label for="ef-status-filter">Status</label>
+              <select id="ef-status-filter" class="ef-filter-select" onchange="renderEFLanding()">
+                <option value="all">All statuses</option>
+                <option value="active">In progress</option>
+                <option value="planned">Planned</option>
+                <option value="review">Under review</option>
+                <option value="sent">Report sent</option>
+                <option value="provisional">Provisional</option>
+                <option value="cancelled">Cancelled</option>
+                <option value="ended">Ended</option>
+              </select>
+            </div>
+            <button class="ef-new-btn" onclick="newRecord()">
+              <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+              New Report Entry
+            </button>
+          </div>
         </div>
         <div id="efStats" class="ef-metrics"></div>
         <section class="ef-section">
@@ -933,6 +945,7 @@ window._authReady=restoreSupabaseSession();
           <div id="efActiveTable"></div>
         </section>
         <div id="efActiveCards"></div>
+        <div id="efPastRecords"></div>
       </div>
     </div>
 
@@ -1963,7 +1976,7 @@ function brandOption(brand){
 }
 function retailersForContact(contactId){
   const linkedIds=new Set(allContactRetailers.filter(link=>String(link.contact_id)===String(contactId)).map(link=>String(link.retailer_id)));
-  return allRetailers.filter(retailer=>linkedIds.has(String(retailer.id))).sort((a,b)=>String(a.retailer||'').localeCompare(String(b.retailer||'')));
+  return allRetailers.filter(retailer=>linkedIds.has(String(retailer.id))).sort((a,b)=>Number(a.id)-Number(b.id)||String(a.id).localeCompare(String(b.id)));
 }
 function clientOption(client){
   return{id:client.id,label:client.client,sub:`Client ID ${client.id}`,meta:client};
@@ -2189,7 +2202,7 @@ async function init(){
       startupGet('Report types',()=>sbGet('report_types?select=id,type&visible=eq.true&order=type')),
       startupGet('Sectors',()=>sbGet('Sector?select=id,Name,companyid&order=Name')),
       startupGet('Operations contacts',()=>sbGet('Contacts_Operations?select=id,firstname,lastname,email,jobtitle,company&order=lastname,firstname')),
-      startupGet('Retailers',()=>sbGet('retailers?select=id,retailer&order=retailer')),
+      startupGet('Retailers',()=>sbGet('retailers?select=id,retailer&order=id.asc')),
       startupGet('Contact retailer links',()=>sbGet('contact_retailers?select=contact_id,retailer_id&order=contact_id,retailer_id')),
       startupGet('Insights Tracking records',()=>sbGetAll('InsightsTracking?select=*&order=startdate.desc.nullslast,createdat.desc'),{required:true}),
     ]);
@@ -2237,11 +2250,6 @@ const todayISO=TODAY.getFullYear()+'-'+String(TODAY.getMonth()+1).padStart(2,'0'
 const isInRange=r=>{if(!r.startdate||!r.enddate)return false;return r.startdate<=todayISO&&r.enddate>=todayISO;};
 
 function renderList(){
-  const el=document.getElementById('recordList');
-  // Sidebar = records where startdate is before today (started campaigns, excludes future)
-  const past=filtRec.filter(r=>r.startdate&&r.startdate<todayISO);
-  if(!past.length){el.innerHTML='<div class="list-msg">No past records.</div>';renderEFLanding();return;}
-  el.innerHTML=past.map(r=>liHTML(r,false)).join('');
   renderEFLanding();
 }
 function liHTML(r,cur){
@@ -2294,7 +2302,7 @@ function updateReviewCompanyFilter(page){
 }
 
 function filterList(){
-  const q=document.getElementById('searchInput').value.toLowerCase();
+  const q=(document.getElementById('searchInput')?.value||'').toLowerCase();
   const cid=getCompanyFilter('sb-company-filter');
   filtRec=applyGlobalFilter(allRec).filter(r=>{
     if(!matchesCompany(r,cid)) return false;
@@ -2468,7 +2476,7 @@ async function loadMissionSuggestions(){
     const selectedTitle=document.getElementById('f-title')?.value||'';
     const startDate=document.getElementById('f-startdate')?.value||'';
     const endDate=document.getElementById('f-enddate')?.value||'';
-    const suggestions=[...grouped.values()].map(item=>{
+    const rankedSuggestions=[...grouped.values()].map(item=>{
       const days=[...item.days].sort();
       item.firstDay=days[0]||'';
       item.lastDay=days[days.length-1]||'';
@@ -2483,17 +2491,22 @@ async function loadMissionSuggestions(){
       if(selectedTitle&&missionSuggestionMatches([selectedTitle],[item.campaignName]))score+=10;
       item.score=score;
       return item;
-    }).sort((a,b)=>b.score-a.score||Number(b.active)-Number(a.active)||(a.firstDay||'9999').localeCompare(b.firstDay||'9999')).slice(0,6);
-    if(!suggestions.length){
+    }).sort((a,b)=>b.score-a.score||Number(b.active)-Number(a.active)||(a.firstDay||'9999').localeCompare(b.firstDay||'9999'));
+    if(!rankedSuggestions.length){
       root.innerHTML=`<div class="mission-suggestion-empty">No Mission ID was found in the schedule for SAP <b>${esc(sap)}</b>. You can still enter one manually.</div>`;
       return;
     }
+    const suggestions=rankedSuggestions.filter(item=>!formMissionIds.includes(item.missionId)).slice(0,6);
+    if(!suggestions.length){
+      root.style.display='none';
+      root.innerHTML='';
+      return;
+    }
     root.innerHTML=`<div class="mission-suggestions-head">Suggested from schedule <span>Click to add</span></div><div class="mission-suggestion-list">${suggestions.map((item,index)=>{
-      const selected=formMissionIds.includes(item.missionId);
       const dateRange=item.firstDay?(item.firstDay===item.lastDay?item.firstDay:`${item.firstDay} → ${item.lastDay}`):'Dates unavailable';
       const store=[...item.stores][0]||'Store unavailable';
       const status=item.active?'Active schedule':'Inactive schedule';
-      return `<button type="button" class="mission-suggestion${index===0?' recommended':''}${selected?' selected':''}" onclick="addSuggestedMissionId(${item.missionId})"><span><span class="mission-suggestion-main">Mission ${esc(item.missionId)}${index===0?' · Recommended':''}</span><span class="mission-suggestion-meta">${esc(item.campaignName||'Campaign')} · ${esc(dateRange)}<br>${esc(store)} · ${item.shifts} shift${item.shifts===1?'':'s'} · ${esc(status)}</span></span><span class="mission-suggestion-add">${selected?'✓ Added':'+ Add'}</span></button>`;
+      return `<button type="button" class="mission-suggestion${index===0?' recommended':''}" onclick="addSuggestedMissionId(${item.missionId})"><span><span class="mission-suggestion-main">Mission ${esc(item.missionId)}${index===0?' · Recommended':''}</span><span class="mission-suggestion-meta">${esc(item.campaignName||'Campaign')} · ${esc(dateRange)}<br>${esc(store)} · ${item.shifts} shift${item.shifts===1?'':'s'} · ${esc(status)}</span></span><span class="mission-suggestion-add">+ Add</span></button>`;
     }).join('')}</div>`;
   }catch(error){
     if(requestId!==missionSuggestionRequest)return;
@@ -3086,15 +3099,25 @@ function buildEFTable(recs, label, bgColor, borderColor){
   </div>`;
 }
 
+const EF_VISIBLE_REPORT_TYPES=new Set(['bi insights','bi special','ba insights']);
+function efAllowedReportTypes(record){
+  return shortReportTypes(record).filter(type=>EF_VISIBLE_REPORT_TYPES.has(String(type||'').trim().toLowerCase()));
+}
 function efRecordStatus(record,scope='active'){
-  if(!missionIdsForRecord(record).length)return{label:'Provisional',cls:'provisional'};
   if(record.cancelled_date)return{label:'Cancelled',cls:'cancelled'};
   if(record.first_report_date)return{label:'Report sent',cls:'sent'};
   if(record.under_review_date)return{label:'Under review',cls:'review'};
-  return scope==='upcoming'?{label:'Planned',cls:'active'}:{label:'Active',cls:'active'};
+  if(!missionIdsForRecord(record).length)return{label:'Provisional',cls:'provisional'};
+  if(scope==='upcoming')return{label:'Planned',cls:'planned'};
+  if(scope==='past')return{label:'Ended',cls:'ended'};
+  return{label:'In progress',cls:'active'};
+}
+function efMatchesStatus(record,scope,statusFilter){
+  return statusFilter==='all'||efRecordStatus(record,scope).cls===statusFilter;
 }
 function buildEFRecordTable(records,scope='active'){
   if(!records.length)return`<div class="ef-empty">${scope==='upcoming'?'No upcoming campaigns.':'No active campaigns today.'}</div>`;
+  let sentDividerAdded=false;
   const rows=records.map(record=>{
     const status=efRecordStatus(record,scope);
     const provisional=status.cls==='provisional';
@@ -3103,13 +3126,18 @@ function buildEFRecordTable(records,scope='active'){
     const sectors=shortSectors(record).join(', ')||'—';
     const stores=shortStores(record).join(', ')||record.store||'—';
     const missions=missionIdsForRecord(record).join(', ')||'Missing Mission ID';
-    return `<tr class="${provisional?'ef-provisional-row':''}" onclick="loadRec(${Number(record.id)})">
+    const reportTypes=scope==='past'?shortReportTypes(record):efAllowedReportTypes(record);
+    const sentDivider=scope==='active'&&status.cls==='sent'&&!sentDividerAdded
+      ?(sentDividerAdded=true,'<tr class="ef-sent-divider"><td colspan="6">Report sent — placed at the bottom</td></tr>')
+      :'';
+    const rowClasses=[provisional?'ef-provisional-row':'',status.cls==='sent'?'ef-sent-row':''].filter(Boolean).join(' ');
+    return `${sentDivider}<tr class="${rowClasses}" onclick="loadRec(${Number(record.id)})">
       <td><span class="ef-status ${status.cls}">${status.label}</span></td>
       <td><div class="ef-record-name" title="${esc(record.Title||brands)}">${esc(record.Title||brands)}</div><div class="ef-record-meta">${esc(client)} · ${esc(brands)}</div></td>
       <td><div class="ef-code">${esc(record.sapcode||'—')}</div><div class="ef-record-meta" style="color:${provisional?'var(--amber)':'var(--g500)'}">Mission ${esc(missions)}</div></td>
       <td><div>${esc(fd(record.startdate)||'—')}</div><div class="ef-record-meta">to ${esc(fd(record.enddate)||'—')}</div></td>
       <td><div class="ef-record-name" style="font-size:10.5px">${esc(sectors)}</div><div class="ef-record-meta">${esc(stores)}</div></td>
-      <td>${shortReportTypes(record).map(type=>`<span class="ef-status active" style="margin:1px 2px 1px 0">${esc(type)}</span>`).join('')||'<span class="ef-record-meta">—</span>'}</td>
+      <td>${reportTypes.map(type=>`<span class="ef-status active" style="margin:1px 2px 1px 0">${esc(type)}</span>`).join('')||'<span class="ef-record-meta">—</span>'}</td>
     </tr>`;
   }).join('');
   return `<div class="ef-table-wrap"><table class="ef-table">
@@ -3122,9 +3150,21 @@ function renderEFLanding(){
   const panel=document.getElementById('emptyState');
   if(!panel||panel.style.display==='none')return;
   const source=filtRec||[];
-  const active=source.filter(isInRange).sort((a,b)=>String(a.enddate||'').localeCompare(String(b.enddate||'')));
-  const upcoming=source.filter(record=>record.startdate&&record.startdate>todayISO).sort((a,b)=>String(a.startdate).localeCompare(String(b.startdate)));
-  const past=source.filter(record=>record.startdate&&record.startdate<todayISO);
+  const statusFilter=document.getElementById('ef-status-filter')?.value||'all';
+  const active=source
+    .filter(isInRange)
+    .filter(record=>efAllowedReportTypes(record).length)
+    .filter(record=>efMatchesStatus(record,'active',statusFilter))
+    .sort((a,b)=>Number(!!a.first_report_date)-Number(!!b.first_report_date)||String(a.enddate||'').localeCompare(String(b.enddate||'')));
+  const upcoming=source
+    .filter(record=>record.startdate&&record.startdate>todayISO)
+    .filter(record=>efAllowedReportTypes(record).length)
+    .filter(record=>efMatchesStatus(record,'upcoming',statusFilter))
+    .sort((a,b)=>String(a.startdate).localeCompare(String(b.startdate)));
+  const past=source
+    .filter(record=>record.enddate&&record.enddate<todayISO)
+    .filter(record=>efMatchesStatus(record,'past',statusFilter))
+    .sort((a,b)=>String(b.enddate||'').localeCompare(String(a.enddate||'')));
   const provisional=[...active,...upcoming].filter(record=>!missionIdsForRecord(record).length);
   const sent=active.filter(record=>!!record.first_report_date&&!record.cancelled_date);
   const stats=document.getElementById('efStats');
@@ -3133,8 +3173,6 @@ function renderEFLanding(){
     <div class="ef-metric upcoming"><div class="ef-metric-icon">↗</div><div><div class="ef-metric-value">${upcoming.length}</div><div class="ef-metric-label">Coming soon</div></div></div>
     <div class="ef-metric provisional"><div class="ef-metric-icon">!</div><div><div class="ef-metric-value">${provisional.length}</div><div class="ef-metric-label">Provisional · Mission ID missing</div></div></div>
     <div class="ef-metric sent"><div class="ef-metric-icon">✓</div><div><div class="ef-metric-value">${sent.length}</div><div class="ef-metric-label">Reports sent · Active</div></div></div>`;
-  const sidebarCount=document.getElementById('sbPastCount');
-  if(sidebarCount)sidebarCount.textContent=past.length;
   const activeCount=document.getElementById('efActiveCount');
   if(activeCount)activeCount.textContent=`${active.length} record${active.length===1?'':'s'}`;
   const activeRoot=document.getElementById('efActiveTable');
@@ -3144,6 +3182,12 @@ function renderEFLanding(){
     <div class="ef-section-head" onclick="toggleSection('efUpcomingTable','efUpcomingCaret')">
       <strong>Coming soon</strong><span class="ef-section-count">${upcoming.length} record${upcoming.length===1?'':'s'}</span><span class="ef-section-caret" id="efUpcomingCaret">▲</span>
     </div><div id="efUpcomingTable">${buildEFRecordTable(upcoming,'upcoming')}</div>
+  </section>`;
+  const pastRoot=document.getElementById('efPastRecords');
+  if(pastRoot)pastRoot.innerHTML=`<section class="ef-section" style="margin-top:24px;">
+    <div class="ef-section-head" onclick="toggleSection('efPastTable','efPastCaret')">
+      <strong>Past records</strong><span class="ef-section-count">${past.length} record${past.length===1?'':'s'}</span><span class="ef-section-caret" id="efPastCaret">▲</span>
+    </div><div id="efPastTable">${past.length?buildEFRecordTable(past,'past'):'<div class="ef-empty">No past records match this status.</div>'}</div>
   </section>`;
 }
 function showEdit(){
@@ -3396,7 +3440,9 @@ function renderRetailerChoices(rootId,selectedIds,query,toggleFunction){
   const root=document.getElementById(rootId);
   if(!root)return;
   const q=String(query||'').trim().toLowerCase();
-  const retailers=allRetailers.filter(retailer=>!q||String(retailer.retailer||'').toLowerCase().includes(q)||String(retailer.id).includes(q));
+  const retailers=allRetailers
+    .filter(retailer=>!q||String(retailer.retailer||'').toLowerCase().includes(q)||String(retailer.id).includes(q))
+    .sort((a,b)=>Number(a.id)-Number(b.id)||String(a.id).localeCompare(String(b.id)));
   root.innerHTML=retailers.length?retailers.map(retailer=>{
     const selected=selectedIds.has(String(retailer.id));
     return `<label class="retailer-choice${selected?' selected':''}"><input type="checkbox" ${selected?'checked':''} onchange="${toggleFunction}(${Number(retailer.id)},this.checked)"><span><span class="retailer-choice-main">${esc(retailer.retailer||'Unnamed retailer')}</span><span class="retailer-choice-id">Retailer ID ${esc(retailer.id)}</span></span></label>`;
@@ -3430,7 +3476,7 @@ async function createRetailerForContact(context){
       }
       if(!retailer)throw new Error('Retailer was not returned by the database.');
       allRetailers.push(retailer);
-      allRetailers.sort((a,b)=>String(a.retailer||'').localeCompare(String(b.retailer||'')));
+      allRetailers.sort((a,b)=>Number(a.id)-Number(b.id)||String(a.id).localeCompare(String(b.id)));
     }
     selectedIds.add(String(retailer.id));
     input.value='';
@@ -4617,7 +4663,7 @@ async function refreshEntryForm(){
       sbGet('report_types?select=id,type&visible=eq.true&order=type'),
       sbGet('Sector?select=id,Name,companyid&order=Name'),
       sbGet('Contacts_Operations?select=id,firstname,lastname,email,jobtitle,company&order=lastname,firstname'),
-      sbGet('retailers?select=id,retailer&order=retailer'),
+      sbGet('retailers?select=id,retailer&order=id.asc'),
       sbGet('contact_retailers?select=contact_id,retailer_id&order=contact_id,retailer_id'),
       sbGetAll('InsightsTracking?select=*&order=startdate.desc.nullslast,createdat.desc'),
     ]);
