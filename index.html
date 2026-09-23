@@ -768,16 +768,15 @@ window._authReady=restoreSupabaseSession();
     <div class="header-tools">
       <div id="headerDate" class="header-date"></div>
       <details class="app-release">
-        <summary title="Open version history">V2026.09.22.1</summary>
+        <summary title="Open version history">V2026.09.23.3</summary>
         <div class="release-panel">
-          <div class="release-heading">New version V2026.09.22.1</div>
+          <div class="release-heading">New version V2026.09.23.3</div>
           <div class="release-date">What&rsquo;s new:</div>
           <ul class="release-list">
-            <li>New Record is now New Record &amp; Records, with a status filter and table-based sections.</li>
-            <li>Active Now and Coming Soon show BI Insights, BI Special and BA Insights only.</li>
-            <li>Report Sent rows are grouped at the bottom of Active Now, and Past Records moved to the page bottom.</li>
-            <li>Added schedule missions disappear from suggestions and return when unlinked.</li>
-            <li>Retailer choices are ordered from the smallest to the largest retailer ID.</li>
+            <li>Reports now match scheduled shifts using Promoter, Store and Brand IDs first.</li>
+            <li>Multiple shifts for the same promoter and date remain separate.</li>
+            <li>Agencies are ordered by ID from smallest to largest.</li>
+            <li>Delete confirmations now show Name Conf DOPE, record ID, client and operation dates.</li>
           </ul>
         </div>
       </details>
@@ -2194,7 +2193,7 @@ async function init(){
   try{
     startupWarnings=[];
     const [co,cl,br,st,con,rt,sec,ops,retailers,contactRetailers,rec]=await Promise.all([
-      startupGet('Companies',()=>sbGet('GI_company?select=id,name,country_id&active=eq.true&order=name')),
+      startupGet('Companies',()=>sbGet('GI_company?select=id,name,country_id&active=eq.true&order=id.asc')),
       startupGet('Clients',()=>sbGet('GI_clients?select=id,client&active=eq.true&order=client')),
       startupGet('Brands',()=>sbGet('GI_brands?select=id,brand,client_giid,visible&order=brand')),
       startupGet('Stores',()=>sbGet('GI_stores?select=id,store,country_id,Sector_id&visible=eq.true&order=store')),
@@ -3250,12 +3249,16 @@ async function sbDelete(table,id){await ensureFreshSession();const r=await fetch
 
 async function confirmDelete(){
   if(!curRec)return;
-  const title=document.getElementById('vTitle').textContent||'this record';
-  if(!confirm(`Delete "${title}"?\n\nThis will permanently remove the record from the database.`))return;
-  if(!confirm(`⚠️ Second confirmation required.\n\nDelete "${title}" permanently? This cannot be undone.`))return;
+  const recordToDelete={...curRec};
+  const nameConfDope=recordToDelete.Title||'No Name Conf DOPE';
+  const client=shortClient(recordToDelete)||recordToDelete.client||'No client';
+  const dates=`${fd(recordToDelete.startdate)||'No start date'} → ${fd(recordToDelete.enddate)||'No end date'}`;
+  const deleteSummary=`Name Conf DOPE: ${nameConfDope}\nID: ${recordToDelete.id}\nClient: ${client}\nDates: ${dates}`;
+  if(!confirm(`Delete this record?\n\n${deleteSummary}\n\nThis will permanently remove the record from the database.`))return;
+  if(!confirm(`⚠️ Second confirmation required.\n\n${deleteSummary}\n\nDelete permanently? This cannot be undone.`))return;
   try{
     showLoad(true);
-    const id=curRec.id;
+    const id=recordToDelete.id;
     await sbDelete('InsightsTracking',id);
     allRec=allRec.filter(r=>r.id!==id);
     filtRec=filtRec.filter(r=>r.id!==id);
@@ -3966,28 +3969,24 @@ async function applyReportingCompliance(records,{autoConfirm=false,asOfDate=''}=
   }
   try{
     const [scheduleRows,questionnaireRows]=await Promise.all([
-      sbGetAll(`GI_ScheduleV2?select=day,promoter_id,promoter_fullname,store_code,pos,brand,client,role,campaign_name,campaign_sapcode,timeslot_status&day=gte.${from}&day=lte.${to}&promoter_status=neq.Pending&brand=not.ilike.*JTI*&client=neq.${encodeURIComponent('GLOBE TRAVEL RETAIL')}&pos=neq.${encodeURIComponent('TOURNEE TERRAIN')}&campaign_name=not.ilike.*FIELD SUPERVISOR*&or=(timeslot_status.is.null,timeslot_status.neq.Annulé)&order=day.desc`),
-      sbGetAll(`legacy_questionnaire?select=Date,Promoter,Promoterid,Store&Date=gte.${from}&Date=lte.${to}`)
+      sbGetAll(`GI_ScheduleV2?select=day,promoter_id,promoter_fullname,store_code,pos,pos_id,brand,gi_brand_id,client,role,mission_id,campaign_name,campaign_sapcode,timeslot_status&day=gte.${from}&day=lte.${to}&promoter_status=neq.Pending&brand=not.ilike.*JTI*&client=neq.${encodeURIComponent('GLOBE TRAVEL RETAIL')}&pos=neq.${encodeURIComponent('TOURNEE TERRAIN')}&campaign_name=not.ilike.*FIELD SUPERVISOR*&or=(timeslot_status.is.null,timeslot_status.neq.Annulé)&order=day.desc`),
+      sbGetAll(`legacy_questionnaire?select=Date,Promoter,Promoterid,Store,Storeid,Brand,Brandid&Date=gte.${from}&Date=lte.${to}`)
     ]);
     const excludedRoles=new Set(['Team Leader','Team leader','Team Leader GVA','Superviseur / euse','Superviseur/euse','Téléopérateur/trice']);
     const excludedTerms=['training','coaching','store check','atelier s'];
-    const byRecord=new Map(targets.map(record=>[String(record.id),[]])),seen=new Set();
+    const byRecord=new Map(targets.map(record=>[String(record.id),[]])),seen=new Set(),linkedSchedules=[];
     scheduleRows.forEach(schedule=>{
       const campaign=String(schedule.campaign_name||'').trim().toLowerCase().replace(/\s+/g,' ');
       if(excludedRoles.has(schedule.role)||excludedTerms.some(term=>campaign.includes(term)))return;
       const record=rcFindTrackingRecord(schedule,targets);if(!record)return;
-      const key=`${record.id}|${schedule.day}|${schedule.promoter_id||rcNorm(schedule.promoter_fullname)}|${rcNorm(schedule.store_code||schedule.pos)}`;
+      const key=[record.id,schedule.day,schedule.promoter_id||rcNorm(schedule.promoter_fullname),schedule.pos_id||rcNorm(schedule.store_code||schedule.pos),schedule.gi_brand_id||rcNorm(schedule.brand),schedule.mission_id||'',rcNorm(schedule.campaign_sapcode)].join('|');
       if(seen.has(key))return;
-      seen.add(key);byRecord.get(String(record.id))?.push(schedule);
+      seen.add(key);byRecord.get(String(record.id))?.push(schedule);linkedSchedules.push(schedule);
     });
-    const exactReports=new Set(),promoterDayReports=new Set(),storeDayReports=new Set();
+    const reportAssignments=rcAssignReportedEntries(linkedSchedules,questionnaireRows,{dateField:'Date',promoterIdField:'Promoterid',promoterNameField:'Promoter'});
+    const storeDayReports=new Set();
     questionnaireRows.forEach(report=>{
-      const store=rcNorm(report.Store),name=rcNorm(report.Promoter);
-      exactReports.add(`${report.Date}|ID:${report.Promoterid}|${store}`);
-      exactReports.add(`${report.Date}|NM:${name}|${store}`);
-      promoterDayReports.add(`${report.Date}|ID:${report.Promoterid}`);
-      promoterDayReports.add(`${report.Date}|NM:${name}`);
-      storeDayReports.add(`${report.Date}|${store}`);
+      storeDayReports.add(`${report.Date}|${String(report.Storeid??'').trim()||rcNorm(report.Store)}`);
     });
     const updates=[];
     targets.forEach(record=>{
@@ -3998,20 +3997,9 @@ async function applyReportingCompliance(records,{autoConfirm=false,asOfDate=''}=
       const absent=schedules.filter(isAbsent).length;
       const backup=schedules.filter(isBackup).length;
       const eligible=schedules.filter(schedule=>!isAbsent(schedule)&&!isPending(schedule));
-      const promoterDayCounts=new Map();
-      eligible.forEach(schedule=>{
-        const promoter=schedule.promoter_id?`ID:${schedule.promoter_id}`:`NM:${rcNorm(schedule.promoter_fullname)}`;
-        const key=`${schedule.day}|${promoter}`;
-        promoterDayCounts.set(key,(promoterDayCounts.get(key)||0)+1);
-      });
       const reported=eligible.filter(schedule=>{
-        const store=rcNorm(schedule.store_code||schedule.pos);
-        const idExact=`${schedule.day}|ID:${schedule.promoter_id}|${store}`;
-        const nameExact=`${schedule.day}|NM:${rcNorm(schedule.promoter_fullname)}|${store}`;
-        if(exactReports.has(idExact)||exactReports.has(nameExact))return true;
-        const promoter=schedule.promoter_id?`ID:${schedule.promoter_id}`:`NM:${rcNorm(schedule.promoter_fullname)}`;
-        const promoterDay=`${schedule.day}|${promoter}`;
-        if((promoterDayCounts.get(promoterDay)||0)===1&&promoterDayReports.has(promoterDay))return true;
+        if((reportAssignments.assigned.get(schedule)||[]).length)return true;
+        const store=String(schedule.pos_id??'').trim()||rcNorm(schedule.store_code||schedule.pos);
         return isBackup(schedule)&&storeDayReports.has(`${schedule.day}|${store}`);
       }).length;
       record.reporting_compliance_total=eligible.length;
@@ -4655,7 +4643,7 @@ async function refreshEntryForm(){
   try{
     showLoad(true);
     const [co,cl,br,st,con,rt,sec,ops,retailers,contactRetailers,rec]=await Promise.all([
-      sbGet('GI_company?select=id,name,country_id&active=eq.true&order=name'),
+      sbGet('GI_company?select=id,name,country_id&active=eq.true&order=id.asc'),
       sbGet('GI_clients?select=id,client&active=eq.true&order=client'),
       sbGet('GI_brands?select=id,brand,client_giid,visible&order=brand'),
       sbGet('GI_stores?select=id,store,country_id,Sector_id&visible=eq.true&order=store'),
@@ -6609,34 +6597,35 @@ async function rc_reportTypeChanged(){
 const rcNorm=value=>String(value??'')
   .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
   .toUpperCase().replace(/[^A-Z0-9]+/g,' ').trim();
-const rcBaseKey=(day,promoter)=>`${day||''}|${rcNorm(promoter)}`;
-function rcAssignEntries(schedules,entries,dateField,promoterField){
-  const schedulesByPersonDay=new Map();
-  schedules.forEach(schedule=>{
-    const key=rcBaseKey(schedule.day,schedule.promoter_fullname);
-    if(!schedulesByPersonDay.has(key))schedulesByPersonDay.set(key,[]);
-    schedulesByPersonDay.get(key).push(schedule);
-  });
-
+function rcAssignReportedEntries(schedules,entries,{dateField,promoterIdField,promoterNameField}){
   const assigned=new Map(schedules.map(schedule=>[schedule,[]]));
+  const unresolved=new Map(schedules.map(schedule=>[schedule,[]]));
+  const samePromoterDay=(schedule,entry)=>{
+    if(String(schedule.day||'')!==String(entry[dateField]||''))return false;
+    const scheduleId=String(schedule.promoter_id??'').trim(),entryId=String(entry[promoterIdField]??'').trim();
+    if(scheduleId&&entryId)return scheduleId===entryId;
+    return rcNorm(schedule.promoter_fullname)===rcNorm(entry[promoterNameField]);
+  };
   entries.forEach(entry=>{
-    const candidates=schedulesByPersonDay.get(rcBaseKey(entry[dateField],entry[promoterField]))||[];
+    const candidates=schedules.filter(schedule=>samePromoterDay(schedule,entry));
     if(!candidates.length)return;
     if(candidates.length===1){assigned.get(candidates[0]).push(entry);return;}
-
-    const entryStore=rcNorm(entry.Store);
-    const entryBrand=rcNorm(entry.Brand);
+    const entryStore=rcNorm(entry.Store),entryBrand=rcNorm(entry.Brand);
+    const entryStoreId=String(entry.Storeid??'').trim(),entryBrandId=String(entry.Brandid??'').trim();
     const scored=candidates.map(schedule=>{
       const stores=[schedule.store_code,schedule.pos].map(rcNorm).filter(Boolean);
-      const storeMatch=!!entryStore&&stores.includes(entryStore);
-      const brandMatch=!!entryBrand&&rcNorm(schedule.brand)===entryBrand;
-      return{schedule,score:(storeMatch?2:0)+(brandMatch?1:0)};
+      const scheduleStoreId=String(schedule.pos_id??'').trim(),scheduleBrandId=String(schedule.gi_brand_id??'').trim();
+      const storeIdComparable=!!entryStoreId&&!!scheduleStoreId,brandIdComparable=!!entryBrandId&&!!scheduleBrandId;
+      const score=(storeIdComparable?(entryStoreId===scheduleStoreId?16:-16):(entryStore&&stores.includes(entryStore)?4:0))
+        +(brandIdComparable?(entryBrandId===scheduleBrandId?8:-8):(entryBrand&&rcNorm(schedule.brand)===entryBrand?2:0));
+      return{schedule,score};
     });
     const bestScore=Math.max(...scored.map(item=>item.score));
     const winners=scored.filter(item=>item.score===bestScore);
-    if(bestScore>0&&winners.length===1)assigned.get(winners[0].schedule).push(entry);
+    if(bestScore>0&&winners.length===1){assigned.get(winners[0].schedule).push(entry);return;}
+    winners.forEach(item=>unresolved.get(item.schedule).push(entry));
   });
-  return assigned;
+  return{assigned,unresolved};
 }
 
 const rcTrackingIds=value=>{
@@ -6740,7 +6729,7 @@ async function rc_loadLegacy(){
 
   try{
     const [schedRows,trackingRows,reportTypeRows] = await Promise.all([
-      sbGetAll(`GI_ScheduleV2?select=day,promoter_fullname,store_code,pos,agency,brand,client,role,mission_id,campaign_name,campaign_sapcode,synced_at&day=gte.${from}&day=lte.${to}&promoter_status=neq.Pending&brand=not.ilike.*JTI*&client=neq.${encodeURIComponent('GLOBE TRAVEL RETAIL')}&pos=neq.${encodeURIComponent('TOURNEE TERRAIN')}&campaign_name=not.ilike.*FIELD SUPERVISOR*&order=day.desc,promoter_fullname.asc`),
+      sbGetAll(`GI_ScheduleV2?select=day,promoter_id,promoter_fullname,store_code,pos,pos_id,agency,brand,gi_brand_id,client,role,mission_id,campaign_name,campaign_sapcode,synced_at&day=gte.${from}&day=lte.${to}&promoter_status=neq.Pending&brand=not.ilike.*JTI*&client=neq.${encodeURIComponent('GLOBE TRAVEL RETAIL')}&pos=neq.${encodeURIComponent('TOURNEE TERRAIN')}&campaign_name=not.ilike.*FIELD SUPERVISOR*&order=day.desc,promoter_fullname.asc`),
       sbGetAll(`InsightsTracking?select=id,Title,client,brand,sapcode,mission_id,store,brand_ids,store_ids,client_fk,report_type_ids,startdate,enddate,createdat,first_report_date,under_review_date,cancelled_date,not_sent_date&enddate=gte.${RC_MIN_DATE}`),
       sbGet('report_types?select=id,type&order=type'),
     ]);
@@ -6761,7 +6750,7 @@ async function rc_loadLegacy(){
     const seen = new Set();
     const deduped = schedRows.filter(r => {
       if(EXCLUDED_ROLES.has(r.role)) return false;
-      const key = [r.day,rcNorm(r.promoter_fullname),rcNorm(r.store_code||r.pos),rcNorm(r.brand),rcNorm(r.campaign_sapcode)].join('|');
+      const key = [r.day,String(r.promoter_id??'').trim()||rcNorm(r.promoter_fullname),String(r.pos_id??'').trim()||rcNorm(r.store_code||r.pos),String(r.gi_brand_id??'').trim()||rcNorm(r.brand),String(r.mission_id??'').trim(),rcNorm(r.campaign_sapcode)].join('|');
       if(seen.has(key)) return false;
       seen.add(key); return true;
     });
@@ -6783,12 +6772,12 @@ async function rc_loadLegacy(){
     const lastSynced=deduped.reduce((latest,r)=>r.synced_at&&r.synced_at>latest?r.synced_at:latest,'');
 
     const [questRows,salesRows] = await Promise.all([
-      sbGetAll(`legacy_questionnaire?select=Date,Promoter,Store,Brand,"Pieces Sold","Turnover of the day"&Date=gte.${from}&Date=lte.${to}`),
-      sbGetAll(`legacy_sales?select=Date,"Promoter Name",Store,Brand&Date=gte.${from}&Date=lte.${to}`),
+      sbGetAll(`legacy_questionnaire?select=Date,Promoter,Promoterid,Store,Storeid,Brand,Brandid,"Pieces Sold","Turnover of the day"&Date=gte.${from}&Date=lte.${to}`),
+      sbGetAll(`legacy_sales?select=Date,"Promoter Name",Promoterid,Store,Storeid,Brand,Brandid&Date=gte.${from}&Date=lte.${to}`),
     ]);
     if(requestId!==rc_loadRequest)return;
-    const qAssignments=rcAssignEntries(eligibleSchedules,questRows,'Date','Promoter');
-    const sAssignments=rcAssignEntries(eligibleSchedules,salesRows,'Date','Promoter Name');
+    const qAssignments=rcAssignReportedEntries(eligibleSchedules,questRows,{dateField:'Date',promoterIdField:'Promoterid',promoterNameField:'Promoter'}).assigned;
+    const sAssignments=rcAssignReportedEntries(eligibleSchedules,salesRows,{dateField:'Date',promoterIdField:'Promoterid',promoterNameField:'Promoter Name'}).assigned;
     const sectorNameById=new Map(allSectors.map(sector=>[String(sector.id),sector.Name]));
     const sectorByStore=new Map(allSt
       .filter(store=>store.store&&store.Sector_id!=null)
@@ -6897,7 +6886,7 @@ async function rc_load(){
 
   try{
     const [schedRows,trackingRows,reportTypeRows,storesWithSector] = await Promise.all([
-      sbGetAll(`GI_ScheduleV2?select=day,promoter_id,promoter_fullname,store_code,pos,agency,brand,client,role,mission_id,campaign_name,campaign_sapcode,timeslot_status,synced_at&day=gte.${from}&day=lte.${to}${selectedScheduleFilter}&promoter_status=neq.Pending&brand=not.ilike.*JTI*&client=neq.${encodeURIComponent('GLOBE TRAVEL RETAIL')}&pos=neq.${encodeURIComponent('TOURNEE TERRAIN')}&campaign_name=not.ilike.*FIELD SUPERVISOR*&or=(timeslot_status.is.null,timeslot_status.neq.Annulé)&order=day.desc,promoter_fullname.asc`),
+      sbGetAll(`GI_ScheduleV2?select=day,promoter_id,promoter_fullname,store_code,pos,pos_id,agency,brand,gi_brand_id,client,role,mission_id,campaign_name,campaign_sapcode,timeslot_status,synced_at&day=gte.${from}&day=lte.${to}${selectedScheduleFilter}&promoter_status=neq.Pending&brand=not.ilike.*JTI*&client=neq.${encodeURIComponent('GLOBE TRAVEL RETAIL')}&pos=neq.${encodeURIComponent('TOURNEE TERRAIN')}&campaign_name=not.ilike.*FIELD SUPERVISOR*&or=(timeslot_status.is.null,timeslot_status.neq.Annulé)&order=day.desc,promoter_fullname.asc`),
       sbGetAll(`InsightsTracking?select=*&enddate=gte.${RC_MIN_DATE}`),
       sbGet('report_types?select=id,type&order=type'),
       sbGet('GI_stores?select=id,store,Sector_id'),
@@ -6939,7 +6928,7 @@ async function rc_load(){
     const seen=new Set();
     const deduped=reportingSchedRows.filter(row=>{
       if(excludedRoles.has(row.role))return false;
-      const key=`${row.day}|${row.store_code}|${rcNorm(row.promoter_fullname)}`;
+      const key=[row.day,String(row.promoter_id??'').trim()||rcNorm(row.promoter_fullname),String(row.pos_id??'').trim()||rcNorm(row.store_code||row.pos),String(row.gi_brand_id??'').trim()||rcNorm(row.brand),String(row.mission_id??'').trim(),rcNorm(row.campaign_sapcode),rcNorm(row.campaign_name)].join('|');
       if(seen.has(key))return false;
       seen.add(key);
       return true;
@@ -6995,43 +6984,15 @@ async function rc_load(){
     }
 
     const [questRows,salesRows]=await Promise.all([
-      sbGetAll(`legacy_questionnaire?select=Date,Promoter,Promoterid,Store,Brand,"Pieces Sold","Turnover of the day"&Date=gte.${from}&Date=lte.${to}`),
-      sbGetAll(`legacy_sales?select=Date,"Promoter Name",Promoterid,Store,Brand&Date=gte.${from}&Date=lte.${to}`),
+      sbGetAll(`legacy_questionnaire?select=Date,Promoter,Promoterid,Store,Storeid,Brand,Brandid,"Pieces Sold","Turnover of the day"&Date=gte.${from}&Date=lte.${to}`),
+      sbGetAll(`legacy_sales?select=Date,"Promoter Name",Promoterid,Store,Storeid,Brand,Brandid&Date=gte.${from}&Date=lte.${to}`),
     ]);
     if(requestId!==rc_loadRequest)return;
-
-    const qMap={};
-    questRows.forEach(entry=>{
-      const idKey=`${entry.Date}|${entry.Promoterid}|${rcNorm(entry.Store)}`;
-      const nameKey=`${entry.Date}|${rcNorm(entry.Promoter)}|${rcNorm(entry.Store)}`;
-      [idKey,nameKey].forEach(key=>{if(!qMap[key])qMap[key]=[];qMap[key].push(entry);});
-    });
-    const sMap={};
-    salesRows.forEach(entry=>{
-      const idKey=`${entry.Date}|${entry.Promoterid}|${rcNorm(entry.Store)}`;
-      const nameKey=`${entry.Date}|${rcNorm(entry['Promoter Name'])}|${rcNorm(entry.Store)}`;
-      [idKey,nameKey].forEach(key=>{if(!sMap[key])sMap[key]=[];sMap[key].push(entry);});
-    });
-
-    const uniqueEntries=entries=>[...new Map(entries.map(entry=>[JSON.stringify(entry),entry])).values()];
+    const qAssignment=rcAssignReportedEntries(eligibleSchedules,questRows,{dateField:'Date',promoterIdField:'Promoterid',promoterNameField:'Promoter'});
+    const sAssignment=rcAssignReportedEntries(eligibleSchedules,salesRows,{dateField:'Date',promoterIdField:'Promoterid',promoterNameField:'Promoter Name'});
     rc_data=eligibleSchedules.map(schedule=>{
-      const storeCode=rcNorm(schedule.store_code);
-      const idKey=`${schedule.day}|${schedule.promoter_id}|${storeCode}`;
-      const nameKey=`${schedule.day}|${rcNorm(schedule.promoter_fullname)}|${storeCode}`;
-      let qEntries=qMap[idKey]||qMap[nameKey]||[];
-      let sEntries=sMap[idKey]||sMap[nameKey]||[];
-
-      const promoterShiftCount=eligibleSchedules.filter(item=>item.day===schedule.day&&String(item.promoter_id)===String(schedule.promoter_id)).length;
-      if(!qEntries.length&&promoterShiftCount===1){
-        const idPrefix=`${schedule.day}|${schedule.promoter_id}|`;
-        const namePrefix=`${schedule.day}|${rcNorm(schedule.promoter_fullname)}|`;
-        qEntries=uniqueEntries(Object.entries(qMap).filter(([key])=>key.startsWith(idPrefix)||key.startsWith(namePrefix)).flatMap(([,values])=>values));
-      }
-      if(!sEntries.length&&promoterShiftCount===1){
-        const idPrefix=`${schedule.day}|${schedule.promoter_id}|`;
-        const namePrefix=`${schedule.day}|${rcNorm(schedule.promoter_fullname)}|`;
-        sEntries=uniqueEntries(Object.entries(sMap).filter(([key])=>key.startsWith(idPrefix)||key.startsWith(namePrefix)).flatMap(([,values])=>values));
-      }
+      const qEntries=qAssignment.assigned.get(schedule)||[];
+      const sEntries=sAssignment.assigned.get(schedule)||[];
 
       const hasQ=qEntries.length>0;
       const hasS=sEntries.length>0;
