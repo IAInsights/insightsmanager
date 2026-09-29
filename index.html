@@ -768,15 +768,15 @@ window._authReady=restoreSupabaseSession();
     <div class="header-tools">
       <div id="headerDate" class="header-date"></div>
       <details class="app-release">
-        <summary title="Open version history">V2026.09.29.5</summary>
+        <summary title="Open version history">V2026.09.29.6</summary>
         <div class="release-panel">
-          <div class="release-heading">New version V2026.09.29.5</div>
+          <div class="release-heading">New version V2026.09.29.6</div>
           <div class="release-date">What&rsquo;s new:</div>
           <ul class="release-list">
-            <li>Non-multibrand fallback now requires a matching store or actual brand reference.</li>
-            <li>A report with both an unrelated store and brand no longer fills the scheduled shift.</li>
-            <li>Client ID alone can no longer connect reports from unrelated brands and stores.</li>
-            <li>Multibrand same-sector daily work blocks remain supported.</li>
+            <li>New Insights Manager records now save the authenticated creator.</li>
+            <li>Active, Coming Soon and Past Records tables include a Created by column.</li>
+            <li>Record details show both the creation date and creator.</li>
+            <li>Historical records without creator information display a dash.</li>
           </ul>
         </div>
       </details>
@@ -3127,7 +3127,7 @@ function buildEFRecordTable(records,scope='active'){
     const missions=missionIdsForRecord(record).join(', ')||'Missing Mission ID';
     const reportTypes=scope==='past'?shortReportTypes(record):efAllowedReportTypes(record);
     const sentDivider=scope==='active'&&status.cls==='sent'&&!sentDividerAdded
-      ?(sentDividerAdded=true,'<tr class="ef-sent-divider"><td colspan="6">Report sent — placed at the bottom</td></tr>')
+      ?(sentDividerAdded=true,'<tr class="ef-sent-divider"><td colspan="7">Report sent — placed at the bottom</td></tr>')
       :'';
     const rowClasses=[provisional?'ef-provisional-row':'',status.cls==='sent'?'ef-sent-row':''].filter(Boolean).join(' ');
     return `${sentDivider}<tr class="${rowClasses}" onclick="loadRec(${Number(record.id)})">
@@ -3136,12 +3136,13 @@ function buildEFRecordTable(records,scope='active'){
       <td><div class="ef-code">${esc(record.sapcode||'—')}</div><div class="ef-record-meta" style="color:${provisional?'var(--amber)':'var(--g500)'}">Mission ${esc(missions)}</div></td>
       <td><div>${esc(fd(record.startdate)||'—')}</div><div class="ef-record-meta">to ${esc(fd(record.enddate)||'—')}</div></td>
       <td><div class="ef-record-name" style="font-size:10.5px">${esc(sectors)}</div><div class="ef-record-meta">${esc(stores)}</div></td>
+      <td><div class="ef-record-name" style="font-size:10.5px" title="${esc(record.createdby||'Creator not recorded')}">${esc(record.createdby||'—')}</div></td>
       <td>${reportTypes.map(type=>`<span class="ef-status active" style="margin:1px 2px 1px 0">${esc(type)}</span>`).join('')||'<span class="ef-record-meta">—</span>'}</td>
     </tr>`;
   }).join('');
   return `<div class="ef-table-wrap"><table class="ef-table">
-    <colgroup><col style="width:95px"><col style="width:28%"><col style="width:17%"><col style="width:17%"><col style="width:23%"><col style="width:15%"></colgroup>
-    <thead><tr><th>Status</th><th>Campaign / Client</th><th>SAP / Mission</th><th>Dates</th><th>Sector / Store</th><th>Report Type</th></tr></thead>
+    <colgroup><col style="width:95px"><col style="width:24%"><col style="width:14%"><col style="width:15%"><col style="width:18%"><col style="width:15%"><col style="width:14%"></colgroup>
+    <thead><tr><th>Status</th><th>Campaign / Client</th><th>SAP / Mission</th><th>Dates</th><th>Sector / Store</th><th>Created by</th><th>Report Type</th></tr></thead>
     <tbody>${rows}</tbody>
   </table></div>`;
 }
@@ -3228,7 +3229,7 @@ function showView(r){
     {l:'Client Contact',v:contactSummary||'—',span:2,c:'recap-contact'},
     {l:'Commercial',v:manager?accountManagerName(manager):'—'},
     {l:'Comments',v:r.comments||'—',span:2},
-    {l:'Created Date',v:fd(r.createdat)||'—'},
+    {l:'Created Date',v:fd(r.createdat)||'—'},{l:'Created By',v:r.createdby||'—'},
   ];
   document.getElementById('vGrid').innerHTML=flds.map(f=>`<div class="vf${f.full?' full':''}${f.span===2?' span-2':''}${f.c?' '+f.c:''}"><div class="vf-label">${f.l}</div><div class="vf-val${f.html||f.v&&f.v!=='—'?'':' empty'}">${f.html||esc(f.v||'—')}</div></div>`).join('');
 }
@@ -3327,6 +3328,7 @@ async function saveRecord(asStandby=false){
       const mx=await sbGet('InsightsTracking?select=id&order=id.desc&limit=1');
       payload.id = mx.length ? parseInt(mx[0].id) + 1 : 1;
       payload.createdat=new Date().toISOString();
+      payload.createdby=window._currentUser?.email||window._currentUser?.name||null;
       await sbPost('InsightsTracking',payload);
       toast(asStandby?'Record saved as standby.':'Record created!','success');
     }else{
