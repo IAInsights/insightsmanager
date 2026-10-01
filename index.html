@@ -102,7 +102,7 @@ body{font-family:'Inter',sans-serif;font-size:13px;color:var(--g900);background:
 /* ─ Form panel ─ */
 .fp{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#fff;}
 /* ─ Analytics dashboard ─ */
-.dash{width:100%;max-width:900px;margin:0 auto;}
+.dash{width:100%;max-width:1100px;margin:0 auto;}
 .dash-title{font-size:18px;font-weight:700;color:var(--g900);margin-bottom:4px;}
 .dash-sub{font-size:13px;color:var(--g500);margin-bottom:20px;}
 .dash-new{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;background:var(--blue);color:#fff;border:none;border-radius:var(--r);font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:24px;transition:background .15s;}
@@ -117,6 +117,8 @@ body{font-family:'Inter',sans-serif;font-size:13px;color:var(--g900);background:
 .stat-card.amber .sc-val{color:var(--amber);}
 .stat-card.red .sc-val{color:var(--red);}
 .dash-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.dash-row-triple{grid-template-columns:repeat(3,minmax(0,1fr));}
+@media(max-width:760px){.dash-row-triple{grid-template-columns:1fr;}}
 .chart-card{background:#fff;border-radius:8px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.08);}
 .chart-title{font-size:13px;font-weight:700;color:var(--g700);margin-bottom:14px;}
 .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
@@ -300,7 +302,10 @@ button{text-decoration:none;}
 .p2-table tr:hover.p2-sent-row td{background:#dcfce7;}
 .sec-row td{background:var(--g50)!important;padding:6px 12px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);border-bottom:1px solid var(--g200);}
 .sec-row.act td{color:var(--blue);background:var(--blue-light)!important;}
-.rec-title{font-weight:600;font-size:13px;}
+.rec-title{font-weight:600;font-size:11px;line-height:1.25;overflow-wrap:anywhere;}
+.p2-client-cell{text-align:center;min-width:165px;max-width:200px;}
+.p2-client-cell .p2-client-name{font-size:11.5px;font-weight:700;color:var(--g900);overflow-wrap:anywhere;}
+.p2-client-cell .p2-client-sap{font-size:11px;margin-top:3px;overflow-wrap:anywhere;}
 .rec-sub{font-size:11.5px;color:var(--g600);margin-top:1px;}
 .date-cell{font-size:11.5px;color:var(--g600);line-height:1.7;}
 .store-cell{font-size:11.5px;color:var(--g600);line-height:1.5;max-width:120px;}
@@ -353,11 +358,20 @@ tr.cancelled-row .rec-title{text-decoration:line-through;}
 /* ══════════════ PAGE 3 – UNDER REVIEW ══════════════ */
 .p3{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--g50);}
 .p3-header{padding:14px 24px;background:#fff;border-bottom:1px solid var(--g200);flex-shrink:0;}
-.p3-top{display:flex;align-items:center;justify-content:flex-end;gap:12px;margin-bottom:4px;}
+.p3-top{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-bottom:4px;}
 .p3-top h2{display:none;}
 #p3-count-pending,#p3-count-all{display:none;}
 .p3-subtitle{font-size:12px;color:var(--g500);margin-bottom:10px;}
 .p3-tabs{display:flex;gap:6px;}
+.p3-top .p3-tabs{margin-right:auto;}
+#page4 .p3-top{justify-content:flex-start;}
+#page4 .p3-top .p3-tabs{margin-right:auto!important;}
+.wf-client-brand-sap{text-align:center;line-height:1.4;}
+.wf-client-brand-sap .wf-client{font-weight:800;color:var(--g900);}
+.wf-client-brand-sap .wf-brand{font-size:10.5px;color:var(--g600);}
+.p3-top input.company-filter,.p3-top button.company-filter{background:#fff;padding:0 10px;appearance:auto;}
+.record-ref-link{color:var(--blue);font-weight:700;text-decoration:underline;text-underline-offset:2px;cursor:pointer;}
+.record-ref-link:hover{color:var(--blue-dark);}
 .p3-tab{padding:5px 14px;border-radius:20px;border:1.5px solid var(--g300);background:#fff;font-family:inherit;font-size:12px;font-weight:500;color:var(--g600);cursor:pointer;}
 .p3-tab.active{background:var(--amber-light);border-color:var(--amber);color:var(--amber);}
 .p3-body{flex:1;overflow-y:auto;padding:14px 20px;display:flex;flex-direction:column;gap:14px;}
@@ -768,15 +782,13 @@ window._authReady=restoreSupabaseSession();
     <div class="header-tools">
       <div id="headerDate" class="header-date"></div>
       <details class="app-release">
-        <summary title="Open version history">V2026.09.29.6</summary>
+        <summary title="Open version history">V2026.10.01.6</summary>
         <div class="release-panel">
-          <div class="release-heading">New version V2026.09.29.6</div>
+          <div class="release-heading">New version V2026.10.01.6</div>
           <div class="release-date">What&rsquo;s new:</div>
           <ul class="release-list">
-            <li>New Insights Manager records now save the authenticated creator.</li>
-            <li>Active, Coming Soon and Past Records tables include a Created by column.</li>
-            <li>Record details show both the creation date and creator.</li>
-            <li>Historical records without creator information display a dash.</li>
+            <li>Status Updates uses smaller record names and a narrower Record column.</li>
+            <li>The Power BI column is 20% wider again; its text size is unchanged.</li>
           </ul>
         </div>
       </details>
@@ -787,11 +799,11 @@ window._authReady=restoreSupabaseSession();
   </div>
   <div class="header-nav">
     <button class="tab-btn active" id="tab0btn" onclick="switchTab(0)">Dashboard</button>
-    <button class="tab-btn"        id="tab1btn" onclick="switchTab(1)">New Record &amp; Records</button>
-    <button class="tab-btn"        id="tab2btn" onclick="switchTab(2)">Status Update</button>
+    <button class="tab-btn"        id="tab1btn" onclick="switchTab(1)">New Record &amp; List</button>
+    <button class="tab-btn"        id="tab2btn" onclick="switchTab(2)">Status Updates</button>
     <button class="tab-btn"        id="tab3btn" onclick="switchTab(3)">Under Review</button>
-    <button class="tab-btn"        id="tab9btn" onclick="switchTab(9)">Closing Check</button>
     <button class="tab-btn"        id="tab4btn" onclick="switchTab(4)">Ready to Send</button>
+    <button class="tab-btn"        id="tab9btn" onclick="switchTab(9)">Closing Check</button>
     <button class="tab-btn"        id="tab8btn" onclick="switchTab(8)">Reporting Check</button>
     <button class="tab-btn"        id="tab10btn" onclick="switchWorkflowTool()">Workflow Tools</button>
   </div>
@@ -871,16 +883,6 @@ window._authReady=restoreSupabaseSession();
       <div class="gfd-list" id="gfd-list-reporttype"><div class="gfd-empty">Loading…</div></div>
     </div>
   </div>
-  <div class="gfd" id="gfd-year">
-    <button class="gfd-btn" id="gfd-btn-year" onclick="toggleGFD('year')">
-      <span class="gfd-btn-val" id="gfd-val-year">All Years</span>
-      <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z"/></svg>
-    </button>
-    <div class="gfd-panel" id="gfd-panel-year" style="display:none;">
-      <input class="gfd-search" placeholder="Search all years..." id="gfd-search-year" oninput="filterGFDList('year',this.value)">
-      <div class="gfd-list" id="gfd-list-year"><div class="gfd-empty">Loading…</div></div>
-    </div>
-  </div>
   <button id="gf-clear" onclick="clearGFilter()" style="display:none;padding:4px 11px;border:1.5px solid var(--red);border-radius:16px;background:var(--red-light);color:var(--red);font-family:inherit;font-size:11.5px;font-weight:600;cursor:pointer;">✕ Clear</button>
   <span id="gf-count" style="font-size:11px;color:var(--g500);"></span>
 </div>
@@ -911,7 +913,7 @@ window._authReady=restoreSupabaseSession();
       <div id="efLanding" style="padding:18px 24px;width:100%">
         <div class="ef-landing-head">
           <div>
-            <div class="ef-landing-title">New Record &amp; Records</div>
+            <div class="ef-landing-title">New Record &amp; List</div>
             <div class="ef-landing-sub">Open an active or upcoming campaign, or create a new reporting record.</div>
           </div>
           <div class="ef-landing-actions">
@@ -1068,16 +1070,16 @@ window._authReady=restoreSupabaseSession();
 <div class="page" id="page2">
   <div class="p2">
     <div class="p2-header">
-      <div class="p2-filter-panel" id="p2FilterPanel" aria-label="Status Update filters">
+      <div class="p2-filter-panel" id="p2FilterPanel" aria-label="Status Updates filters">
         <div class="p2-filter-row">
           <span class="p2-filter-label">Records</span>
           <div class="p2-filter-options">
-            <button class="sf-pill active" id="flt-all" onclick="setFilter('all')" aria-pressed="true">All <span class="sf-count" id="cnt-all">—</span></button>
-            <button class="sf-pill" id="flt-active" onclick="setFilter('active')" aria-pressed="false">Active now <span class="sf-count" id="cnt-active">—</span></button>
+            <button class="sf-pill" id="flt-all" onclick="setFilter('all')" aria-pressed="false">All <span class="sf-count" id="cnt-all">—</span></button>
+            <button class="sf-pill active" id="flt-active" onclick="setFilter('active')" aria-pressed="true">Active now <span class="sf-count" id="cnt-active">—</span></button>
             <button class="sf-pill" id="p2BtnFuture" onclick="setP2View('future',true)" aria-pressed="false">Coming soon <span class="sf-count" id="p2FutureCount">—</span></button>
             <button class="sf-pill" id="flt-progress" onclick="setFilter('progress')" aria-pressed="false">In progress <span class="sf-count" id="cnt-progress">—</span></button>
             <button class="sf-pill" id="flt-review" onclick="setFilter('review')" aria-pressed="false">Under review <span class="sf-count" id="cnt-review">—</span></button>
-            <button class="sf-pill" id="flt-cancel" onclick="setFilter('cancel')" aria-pressed="false">Cancelled <span class="sf-count" id="cnt-cancel">—</span></button>
+            <button class="sf-pill" type="button" onclick="resetP2Filters()">Reset</button>
           </div>
           <div class="p2-filter-summary" title="Reports sent among records active today">
             <span class="p2-filter-summary-label">Completion</span>
@@ -1092,9 +1094,8 @@ window._authReady=restoreSupabaseSession();
       <table class="p2-table">
         <thead>
           <tr>
-            <th style="width:140px;min-width:120px">Record</th>
-            <th style="width:130px;min-width:110px">Client / Brand</th>
-            <th style="width:90px;min-width:80px">SAP Code</th>
+            <th style="width:145px;min-width:130px">Record</th>
+            <th style="width:180px;min-width:165px;text-align:center">Client / Brand / SAP</th>
             <th style="width:110px;min-width:100px">Dates</th>
             <th style="width:130px;min-width:110px">Sector / Store</th>
             <th style="width:110px;min-width:90px">Report Type</th>
@@ -1103,10 +1104,10 @@ window._authReady=restoreSupabaseSession();
             <th style="width:76px;min-width:72px">Under Review</th>
             <th style="width:76px;min-width:72px">Cancelled</th>
             <th style="width:130px;min-width:110px">Status Comments</th>
-            <th style="width:150px;min-width:130px">Power BI</th>
+            <th style="width:216px;min-width:188px">Power BI</th>
           </tr>
         </thead>
-        <tbody id="p2body"><tr><td colspan="12" class="p2-empty">Loading…</td></tr></tbody>
+        <tbody id="p2body"><tr><td colspan="11" class="p2-empty">Loading…</td></tr></tbody>
       </table>
     </div>
     <!-- p2FutureSection will be appended here by renderP2Future -->
@@ -1120,20 +1121,22 @@ window._authReady=restoreSupabaseSession();
     <div class="p3-header">
       <div class="p3-top">
         <h2 id="p3-report-count">0 reports</h2>
+        <div class="p3-tabs">
+          <button class="p3-tab active" id="p3-tab-pending" onclick="setP3View('pending')">Pending validation <span id="p3-count-pending" style="margin-left:5px;font-family:monospace;font-weight:800;">0</span></button>
+          <button class="p3-tab" id="p3-tab-all" onclick="setP3View('all')">All under review <span id="p3-count-all" style="margin-left:5px;font-family:monospace;font-weight:800;">0</span></button>
+        </div>
         <select class="company-filter" id="p3-company-filter" onchange="updateReviewCompanyFilter(3)" title="Filter by company">
           <option value="">All companies</option>
         </select>
         <select class="company-filter" id="p3-sector-filter" onchange="renderP3()" title="Filter by sector">
           <option value="">All sectors</option>
         </select>
+        <input class="company-filter" id="p3-client-filter" type="search" placeholder="Search client…" oninput="renderP3()" title="Filter by client name" style="min-width:160px;">
+        <button class="company-filter" type="button" onclick="resetReviewFilters(3)">Reset</button>
         <button onclick="loadP3(true)" style="display:flex;align-items:center;gap:5px;padding:6px 14px;border:1.5px solid var(--g300);border-radius:var(--r);background:#fff;font-family:inherit;font-size:12px;font-weight:600;color:var(--g600);cursor:pointer;">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
           Refresh
         </button>
-      </div>
-      <div class="p3-tabs">
-        <button class="p3-tab active" id="p3-tab-pending" onclick="setP3View('pending')">Pending validation <span id="p3-count-pending" style="margin-left:5px;font-family:monospace;font-weight:800;">0</span></button>
-        <button class="p3-tab"        id="p3-tab-all"     onclick="setP3View('all')">All under review <span id="p3-count-all" style="margin-left:5px;font-family:monospace;font-weight:800;">0</span></button>
       </div>
     </div>
     <div class="p3-body" id="p3body">
@@ -1166,20 +1169,21 @@ window._authReady=restoreSupabaseSession();
     <div class="p3-header">
       <div class="p3-top">
         <h2 id="p4-report-count">0 reports</h2>
+        <div class="p3-tabs">
+          <button class="p3-tab active" id="p4-tab-ready" onclick="setP4View('ready')">To send</button>
+          <button class="p3-tab"        id="p4-tab-sent"  onclick="setP4View('sent')">Already sent</button>
+        </div>
         <select class="company-filter" id="p4-company-filter" onchange="updateReviewCompanyFilter(4)" title="Filter by company">
           <option value="">All companies</option>
         </select>
         <select class="company-filter" id="p4-sector-filter" onchange="renderP4()" title="Filter by sector">
           <option value="">All sectors</option>
         </select>
+        <button class="company-filter" type="button" onclick="resetReviewFilters(4)">Reset</button>
         <button onclick="loadP3(true).then(()=>renderP4())" title="Refresh" style="display:flex;align-items:center;gap:5px;padding:6px 14px;border:1.5px solid var(--g300);border-radius:var(--r);background:#fff;font-family:inherit;font-size:12px;font-weight:600;color:var(--g600);cursor:pointer;">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
           Refresh
         </button>
-      </div>
-      <div class="p3-tabs">
-        <button class="p3-tab active" id="p4-tab-ready" onclick="setP4View('ready')">To send</button>
-        <button class="p3-tab"        id="p4-tab-sent"  onclick="setP4View('sent')">Already sent</button>
       </div>
     </div>
     <div class="p3-body" id="p4body">
@@ -1694,10 +1698,10 @@ const authenticatedFetch=async(url,options={})=>{
 };
 
 // ── Global Filter — Smart Cascading ──────────────────────────────────────────
-const GF_KEYS=['company','sector','store','client','brand','sapcode','reporttype','year'];
-const GF_LABELS={company:'All Companies',sector:'All Sectors',store:'All Stores',client:'All Clients',brand:'All Brands',sapcode:'All SAP Codes',reporttype:'All Report Types',year:'All Years'};
-const gF={company:'',sector:'',store:'',client:'',brand:'',sapcode:'',reporttype:'',year:''};
-const gFOpts={company:[],sector:[],store:[],client:[],brand:[],sapcode:[],reporttype:[],year:[]};
+const GF_KEYS=['company','sector','store','client','brand','sapcode','reporttype'];
+const GF_LABELS={company:'All Companies',sector:'All Sectors',store:'All Stores',client:'All Clients',brand:'All Brands',sapcode:'All SAP Codes',reporttype:'All Report Types'};
+const gF={company:'',sector:'',store:'',client:'',brand:'',sapcode:'',reporttype:''};
+const gFOpts={company:[],sector:[],store:[],client:[],brand:[],sapcode:[],reporttype:[]};
 
 function sapOptionsFromRecords(records){
   const unique=new Map();
@@ -1725,8 +1729,6 @@ function initGFOpts(){
   gFOpts.brand     = allBr.filter(o=>usedBr.has(String(o.id))).map(o=>({v:String(o.id),l:o.brand,cid:String(o.client_giid)}));
   gFOpts.reporttype= allRT.filter(o=>usedRT.has(String(o.id))).map(o=>({v:String(o.id),l:o.type}));
   gFOpts.sapcode   = sapOptionsFromRecords(allRec);
-  const yrs   = [...new Set(allRec.map(r=>r.startdate?r.startdate.slice(0,4):null).filter(Boolean))].sort().reverse();
-  gFOpts.year      = yrs.map(y=>({v:y,l:y}));
   cascadeGF();
 }
 
@@ -1782,18 +1784,14 @@ function cascadeGF(){
   const rtOpts = gFOpts.reporttype.filter(o=>usedRT.has(o.v));
   if(gF.reporttype) recs = recs.filter(r=>(r.report_type_ids||[]).map(String).includes(gF.reporttype));
 
-  // 8. Year
-  const yrs = [...new Set(recs.map(r=>r.startdate?r.startdate.slice(0,4):null).filter(Boolean))].sort().reverse();
-  const yrOpts = yrs.map(y=>({v:y,l:y}));
-
   // Clear selections that are no longer valid
-  const cur = {sector:sectorOpts,store:storeOpts,client:clientOpts,brand:brandOpts,sapcode:sapOpts,reporttype:rtOpts,year:yrOpts};
-  ['sector','store','client','brand','sapcode','reporttype','year'].forEach(k=>{
+  const cur = {sector:sectorOpts,store:storeOpts,client:clientOpts,brand:brandOpts,sapcode:sapOpts,reporttype:rtOpts};
+  ['sector','store','client','brand','sapcode','reporttype'].forEach(k=>{
     if(gF[k]&&!cur[k].find(o=>o.v===gF[k])) gF[k]='';
   });
 
   // Store current opts and re-render lists
-  const all = {company:gFOpts.company,sector:sectorOpts,store:storeOpts,client:clientOpts,brand:brandOpts,sapcode:sapOpts,reporttype:rtOpts,year:yrOpts};
+  const all = {company:gFOpts.company,sector:sectorOpts,store:storeOpts,client:clientOpts,brand:brandOpts,sapcode:sapOpts,reporttype:rtOpts};
   GF_KEYS.forEach(k=>{
     _gfRenderList(k, all[k], document.getElementById('gfd-search-'+k)?.value||'');
     _gfUpdateBtn(k, all[k]);
@@ -1884,7 +1882,11 @@ function closeAllGFD(){
 }
 
 function clearGFilter(){
-  GF_KEYS.forEach(k=>gF[k]='');
+  GF_KEYS.forEach(k=>{
+    gF[k]='';
+    const search=document.getElementById('gfd-search-'+k);
+    if(search)search.value='';
+  });
   closeAllGFD();
   cascadeGF();
   _gfRefresh();
@@ -1905,7 +1907,6 @@ function applyGlobalFilter(records){
   if(gF.brand)      r=r.filter(rec=>(rec.brand_ids||[]).map(String).includes(gF.brand));
   if(gF.sapcode)    r=r.filter(rec=>String(rec.sapcode??'').trim()===gF.sapcode);
   if(gF.reporttype) r=r.filter(rec=>(rec.report_type_ids||[]).map(String).includes(gF.reporttype));
-  if(gF.year)       r=r.filter(rec=>rec.startdate&&rec.startdate.startsWith(gF.year));
   return r;
 }
 
@@ -1947,7 +1948,7 @@ let missionSuggestionTimer=null;
 let missionSuggestionRequest=0;
 let p2All=[],p2Filt=[],p2FutureRows=[];
 let curRec=null, isNew=false;
-let p2Filter='all', p2Search={brand:'',store:''}, p2SortDir='desc';
+let p2Filter='active', p2Search={brand:'',store:''}, p2SortDir='desc';
 let currentTab=0;
 let currentWorkflowTool=5;
 const TODAY=new Date(); TODAY.setHours(0,0,0,0);
@@ -2011,7 +2012,11 @@ function renderContactRetailerSummary(){
 // ── Navigation ─────────────────────────────────────────────────────────────
 function resetFiltersForPage(page){
   if(page<=2){
-    GF_KEYS.forEach(key=>gF[key]='');
+    GF_KEYS.forEach(key=>{
+      gF[key]='';
+      const filterSearch=document.getElementById('gfd-search-'+key);
+      if(filterSearch)filterSearch.value='';
+    });
     closeAllGFD();
     cascadeGF();
     const search=document.getElementById('searchInput');
@@ -2020,7 +2025,7 @@ function resetFiltersForPage(page){
     if(sidebarCompany)sidebarCompany.value='';
   }
   if(page===2){
-    p2Filter='all';
+    p2Filter='active';
     p2Search={brand:'',store:''};
     p2SortDir='desc';
     p2View2='active';
@@ -2033,6 +2038,8 @@ function resetFiltersForPage(page){
     populateReviewSectorFilter(3);
     const sector=document.getElementById('p3-sector-filter');
     if(sector)sector.value='';
+    const client=document.getElementById('p3-client-filter');
+    if(client)client.value='';
     p3View='pending';
     ['pending','all'].forEach(view=>document.getElementById('p3-tab-'+view)?.classList.toggle('active',view==='pending'));
   }
@@ -2126,7 +2133,7 @@ function switchTab(n){
     const button=document.getElementById('workflowTool'+i+'btn');
     if(button)button.classList.toggle('active',n===i);
   });
-  showGFilterBar(n<=2);
+  showGFilterBar(n===1||n===2);
   if(n===0) renderDashboard();
   if(n===1) renderEFLanding();
   if(n===2) loadP2();
@@ -2263,7 +2270,7 @@ function liHTML(r,cur){
   return `<div class="li ${cls}" onclick="loadRec(${r.id})">
     <div class="li-body">
       <div class="li-row">${brandStr?`<span>${esc(brandStr)}</span>`:''} ${storeStr?`<span class="li-sep">·</span><span>${esc(storeStr)}</span>`:''}</div>
-      <div class="li-row">${client?`<span>${esc(client)}</span>`:''} ${sapStr?`<span class="li-sep">·</span><span class="li-sap">${esc(sapStr)}</span>`:''}${provisional?'<span class="ef-status provisional" style="margin-left:auto">Provisional</span>':''}</div>
+      <div class="li-row">${client?`<span>${esc(client)}</span>`:''} ${sapStr?`<span class="li-sep">·</span><span class="li-sap">${sapCodeLink(sapStr)}</span>`:''}${provisional?'<span class="ef-status provisional" style="margin-left:auto">Provisional</span>':''}</div>
       ${r.startdate?`<div class="li-date-line"><span class="li-lbl">Start</span>${fd(r.startdate)}</div>`:''}
       ${r.enddate  ?`<div class="li-date-line"><span class="li-lbl">End</span>${fd(r.enddate)}</div>`:''}
     </div>
@@ -2400,11 +2407,27 @@ function missionIdsForRecord(record){
   if(Number.isInteger(primary)&&primary>0)ids.unshift(primary);
   return [...new Set(ids)];
 }
+function missionIdLink(id){
+  const value=String(id??'').trim();
+  if(!/^\d+$/.test(value)||Number(value)<1)return esc(value||'—');
+  const url=`https://app.globe-intelligence.com/missions/details/${encodeURIComponent(value)}?pageNumber=1&pageSize=10&displayEmptyMissions=false&tab=general`;
+  return `<a class="record-ref-link" href="${esc(url)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" ondblclick="event.stopPropagation()" title="Open mission ${esc(value)}">${esc(value)}</a>`;
+}
+function missionLinksForRecord(record){
+  const ids=missionIdsForRecord(record);
+  return ids.length?ids.map(missionIdLink).join(', '):'—';
+}
+function sapCodeLink(code){
+  const value=String(code??'').trim();
+  if(!value)return '—';
+  const url=`https://app.globe-intelligence.com/missions/all?pageNumber=1&pageSize=10&campaignSapCode=${encodeURIComponent(value)}&startDate=&displayEmptyMissions=false`;
+  return `<a class="record-ref-link" href="${esc(url)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" ondblclick="event.stopPropagation()" title="Find missions for SAP ${esc(value)}">${esc(value)}</a>`;
+}
 function renderMissionIds(){
   const root=document.getElementById('f-missionid-chips');
   if(!root)return;
   root.innerHTML=formMissionIds.length
-    ?formMissionIds.map(id=>`<span class="mission-chip">${esc(id)}<button type="button" onclick="removeMissionId(${id})" aria-label="Remove Mission ${id}">×</button></span>`).join('')
+    ?formMissionIds.map(id=>`<span class="mission-chip">${missionIdLink(id)}<button type="button" onclick="removeMissionId(${id})" aria-label="Remove Mission ${id}">×</button></span>`).join('')
     :'<span class="mission-empty">No Mission IDs linked</span>';
   updateMissionRequirement();
 }
@@ -2676,8 +2699,7 @@ function showDashboard(){
 function renderDashboard(){
   const panel=document.getElementById('dashPanel');
   if(!panel||!allRec.length) return;
-  // Apply global filter before computing stats
-  const allRecF=applyGlobalFilter(allRec);
+  const allRecF=allRec;
 
   const thisYear = new Date().getFullYear();
   const lastYear = thisYear - 1;
@@ -2732,30 +2754,6 @@ function renderDashboard(){
       <div style="font-size:11.5px;font-weight:700;color:var(--g600);min-width:24px;text-align:right;">${cnt}</div>
     </div>
   </div>`).join('') : '<div style="font-size:12px;color:var(--g400);padding:8px 0;">No report type data yet.</div>';
-
-  // ─ Fastest validators ─
-  const valMap={};
-  allRecF.forEach(r=>{
-    if(!r.under_review_date||!r.validated_date||!r.validated_by) return;
-    const days=Math.round((new Date(r.validated_date)-new Date(r.under_review_date))/(1000*86400));
-    if(days<0) return;
-    if(!valMap[r.validated_by]) valMap[r.validated_by]={total:0,count:0};
-    valMap[r.validated_by].total+=days;
-    valMap[r.validated_by].count+=1;
-  });
-  const validators=Object.entries(valMap)
-    .map(([name,d])=>({name,avg:Math.round(d.total/d.count),count:d.count}))
-    .sort((a,b)=>a.avg-b.avg).slice(0,5);
-  const maxDays=validators.length?Math.max(...validators.map(v=>v.avg),1):1;
-  const valRows=validators.length ? validators.map((v)=>`<div style="margin-bottom:10px;">
-    <div style="font-size:11.5px;color:var(--g600);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(v.name)}</div>
-    <div style="display:flex;align-items:center;gap:8px;">
-      <div style="flex:1;height:14px;background:var(--g100);border-radius:7px;overflow:hidden;">
-        <div style="width:${Math.round((maxDays-v.avg+1)/maxDays*100)}%;height:100%;border-radius:7px;background:var(--green);opacity:.8;"></div>
-      </div>
-      <div style="font-size:11.5px;font-weight:700;color:var(--green);min-width:64px;text-align:right;">${v.avg===0?'Same day':v.avg+'d'} <span style="color:var(--g400);font-weight:400;">(${v.count})</span></div>
-    </div>
-  </div>`).join('') : '<div style="font-size:12px;color:var(--g400);padding:8px 0;">No validation data yet.</div>';
 
   // ─ Donut — scoped to ACTIVE NOW only ─
   const activeNow   = allRecF.filter(r=>isInRange(r));
@@ -2908,14 +2906,10 @@ function renderDashboard(){
       </div>
     </div>
 
-    <!-- ROW 2: Most common report types | Records by Client top 7 -->
-    <div class="dash-row" style="grid-template-columns:1fr 1fr;">
+    <!-- ROW 2: Most common report types | Records by Client | Records by Company -->
+    <div class="dash-row dash-row-triple">
       <div class="chart-card"><div class="chart-title">Most common report types</div>${typeRows}</div>
       <div class="chart-card"><div class="chart-title">Records by Client (top 7)</div>${barRows}</div>
-    </div>
-
-    <!-- ROW 3: Records by Company | Fastest validators -->
-    <div class="dash-row" style="grid-template-columns:1fr 1fr;">
       <div class="chart-card">
         <div class="chart-title">Records by Company</div>
         ${(()=>{
@@ -2937,10 +2931,10 @@ function renderDashboard(){
           </div>`).join(''):'<div style="color:var(--g400);font-size:12px;">No company data yet.</div>';
         })()}
       </div>
-      <div class="chart-card"><div class="chart-title">Fastest validators (avg days to validate)</div>${valRows}</div>
     </div>
   </div>`;
 }
+
 function renderEFLandingLegacy(){
   const panel=document.getElementById('emptyState');
   if(!panel||panel.style.display==='none') return;
@@ -3102,6 +3096,15 @@ const EF_VISIBLE_REPORT_TYPES=new Set(['bi insights','bi special','ba insights']
 function efAllowedReportTypes(record){
   return shortReportTypes(record).filter(type=>EF_VISIBLE_REPORT_TYPES.has(String(type||'').trim().toLowerCase()));
 }
+function isNoReportingRecord(record){
+  const ids=(record?.report_type_ids||[]).map(String);
+  if(ids.length&&ids.every(id=>id==='9'))return true;
+  const types=shortReportTypes(record).map(type=>String(type||'').trim().toLowerCase()).filter(Boolean);
+  return types.length>0&&types.every(type=>type==='no reporting');
+}
+function isOperationalReportRecord(record){
+  return efAllowedReportTypes(record).length>0;
+}
 function efRecordStatus(record,scope='active'){
   if(record.cancelled_date)return{label:'Cancelled',cls:'cancelled'};
   if(record.first_report_date)return{label:'Report sent',cls:'sent'};
@@ -3124,7 +3127,7 @@ function buildEFRecordTable(records,scope='active'){
     const brands=shortBrands(record).join(', ')||record.brand||'—';
     const sectors=shortSectors(record).join(', ')||'—';
     const stores=shortStores(record).join(', ')||record.store||'—';
-    const missions=missionIdsForRecord(record).join(', ')||'Missing Mission ID';
+    const missions=missionIdsForRecord(record).length?missionLinksForRecord(record):'Missing Mission ID';
     const reportTypes=scope==='past'?shortReportTypes(record):efAllowedReportTypes(record);
     const sentDivider=scope==='active'&&status.cls==='sent'&&!sentDividerAdded
       ?(sentDividerAdded=true,'<tr class="ef-sent-divider"><td colspan="7">Report sent — placed at the bottom</td></tr>')
@@ -3133,7 +3136,7 @@ function buildEFRecordTable(records,scope='active'){
     return `${sentDivider}<tr class="${rowClasses}" onclick="loadRec(${Number(record.id)})">
       <td><span class="ef-status ${status.cls}">${status.label}</span></td>
       <td><div class="ef-record-name" title="${esc(record.Title||brands)}">${esc(record.Title||brands)}</div><div class="ef-record-meta">${esc(client)} · ${esc(brands)}</div></td>
-      <td><div class="ef-code">${esc(record.sapcode||'—')}</div><div class="ef-record-meta" style="color:${provisional?'var(--amber)':'var(--g500)'}">Mission ${esc(missions)}</div></td>
+      <td><div class="ef-code">${sapCodeLink(record.sapcode)}</div><div class="ef-record-meta" style="color:${provisional?'var(--amber)':'var(--g500)'}">Mission ${missions}</div></td>
       <td><div>${esc(fd(record.startdate)||'—')}</div><div class="ef-record-meta">to ${esc(fd(record.enddate)||'—')}</div></td>
       <td><div class="ef-record-name" style="font-size:10.5px">${esc(sectors)}</div><div class="ef-record-meta">${esc(stores)}</div></td>
       <td><div class="ef-record-name" style="font-size:10.5px" title="${esc(record.createdby||'Creator not recorded')}">${esc(record.createdby||'—')}</div></td>
@@ -3225,7 +3228,7 @@ function showView(r){
     {l:'Client & Brand',html:pair('Client',clientName,'Brand',brands),c:'recap-accent'},
     {l:'Sector & Stores',html:pair('Sector',sectors,'Stores',stores),c:'recap-accent'},
     {l:'Operation Dates',html:pair('Start Date',fd(r.startdate),'End Date',fd(r.enddate))},
-    {l:'SAP Code',v:r.sapcode},{l:'Mission Code',v:missionIdsForRecord(r).join(', ')},
+    {l:'SAP Code',html:sapCodeLink(r.sapcode)},{l:'Mission Code',html:missionLinksForRecord(r)},
     {l:'Client Contact',v:contactSummary||'—',span:2,c:'recap-contact'},
     {l:'Commercial',v:manager?accountManagerName(manager):'—'},
     {l:'Comments',v:r.comments||'—',span:2},
@@ -3641,7 +3644,7 @@ async function refreshP2(){
 }
 async function loadP2(){
   try{
-    const rows=await sbGet('InsightsTracking?select=id,Title,client,brand,sapcode,store,brand_ids,store_ids,sector_ids,report_type_ids,client_fk,company_ids,startdate,enddate,comments,comments_status,powerbi_url,powerbi_title,first_report_date,under_review_date,cancelled_date,not_sent_date,not_sent_reason&order=startdate.desc.nullslast');
+    const rows=await sbGet('InsightsTracking?select=id,Title,client,brand,sapcode,store,brand_ids,store_ids,sector_ids,report_type_ids,client_fk,company_ids,startdate,enddate,comments,comments_status,powerbi_url,powerbi_title,first_report_date,email_sent_date,under_review_date,validated_date,validated_by,cancelled_date,not_sent_date,not_sent_reason&order=startdate.desc.nullslast');
     p2All=rows;
     const refreshedById=new Map(rows.map(row=>[String(row.id),row]));
     allRec=allRec.map(row=>refreshedById.has(String(row.id))?{...row,...refreshedById.get(String(row.id))}:row);
@@ -3653,12 +3656,33 @@ async function loadP2(){
 }
 
 const p2IsActive=r=>isInRange(r);
-const p2StatusScore=r=>r.first_report_date?1:0;
-const p2HasAnyStatus=r=>!!(r.first_report_date||r.under_review_date);
+const p2IsSent=r=>!!(r.first_report_date||r.email_sent_date);
+const p2HasAnyStatus=r=>!!(p2IsSent(r)||r.under_review_date||r.not_sent_date);
+// Keep Active Now aligned with New Record & List (date range + its three report types).
+const p2IsCurrentReport=r=>p2IsActive(r)&&isOperationalReportRecord(r);
+const p2IsInProgress=r=>!p2IsSent(r)&&!r.under_review_date&&!r.not_sent_date&&!r.cancelled_date;
+const p2IsUnderReview=r=>!!r.under_review_date&&!r.validated_date&&!p2IsSent(r)&&!r.cancelled_date;
 
 function setFilter(f){
   p2Filter=f;
   p2View2='active';
+  applyP2Filter();
+}
+
+function resetP2Filters(){
+  GF_KEYS.forEach(key=>{
+    gF[key]='';
+    const search=document.getElementById('gfd-search-'+key);
+    if(search)search.value='';
+  });
+  closeAllGFD();
+  cascadeGF();
+  p2Filter='active';
+  p2Search={brand:'',store:''};
+  p2SortDir='desc';
+  p2View2='active';
+  const arrow=document.getElementById('p2-sort-arrow');
+  if(arrow)arrow.textContent='↓';
   applyP2Filter();
 }
 
@@ -3675,18 +3699,12 @@ function toggleP2Sort(){
 }
 
 function applyP2Filter(){
-  const NO_REPORTING_ID='9'; // report_types id for "No Reporting"
   let rows=applyGlobalFilter(p2All)
-    // Exclude "No Reporting" records
-    .filter(r=>{
-      if(!r.report_type_ids||!r.report_type_ids.length)return true;
-      const ids=r.report_type_ids.map(String);
-      return !ids.every(id=>id===NO_REPORTING_ID);
-    });
+    .filter(r=>!isNoReportingRecord(r));
 
   // Split: future (startdate > today) vs current/past
-  const futureRows=rows.filter(r=>r.startdate&&r.startdate>todayISO);
-  rows=rows.filter(r=>!r.startdate||r.startdate<=todayISO);
+  const futureRows=rows.filter(r=>r.startdate&&r.startdate>todayISO&&isOperationalReportRecord(r)&&!r.cancelled_date);
+  if(p2Filter!=='all')rows=rows.filter(r=>!r.startdate||r.startdate<=todayISO);
   if(p2Search.brand) rows=rows.filter(r=>{
     const q=p2Search.brand;
     const br=shortBrands(r).join(' ').toLowerCase();
@@ -3698,11 +3716,11 @@ function applyP2Filter(){
     const st=shortStores(r).join(' ').toLowerCase();
     return st.includes(q)||(r.store||'').toLowerCase().includes(q);
   });
-  if(p2Filter==='active')   rows=rows.filter(p2IsActive);
+  if(p2Filter==='active')   rows=rows.filter(p2IsCurrentReport);
   else if(p2Filter==='none')     rows=rows.filter(r=>!p2HasAnyStatus(r)&&!r.cancelled_date);
-  else if(p2Filter==='progress') rows=rows.filter(r=>p2HasAnyStatus(r)&&!r.first_report_date&&!r.cancelled_date);
-  else if(p2Filter==='complete') rows=rows.filter(r=>!!r.first_report_date&&!r.cancelled_date);
-  else if(p2Filter==='review')   rows=rows.filter(r=>!!r.under_review_date&&!r.cancelled_date);
+  else if(p2Filter==='progress') rows=rows.filter(p2IsInProgress);
+  else if(p2Filter==='complete') rows=rows.filter(r=>p2IsSent(r)&&!r.cancelled_date);
+  else if(p2Filter==='review')   rows=rows.filter(p2IsUnderReview);
   else if(p2Filter==='notsent')  rows=rows.filter(r=>!!r.not_sent_date&&!r.cancelled_date);
   else if(p2Filter==='cancel')   rows=rows.filter(r=>!!r.cancelled_date);
   // Sort by start date
@@ -3719,53 +3737,56 @@ function applyP2Filter(){
 }
 
 function renderP2Stats(){
-  const NO_REP='9';
-  const all = applyGlobalFilter(p2All).filter(r=>!r.report_type_ids||!r.report_type_ids.map(String).every(id=>id===NO_REP));
-  const totalAll   = all.length;
-  const activeNow  = all.filter(p2IsActive);
+  const all = applyGlobalFilter(p2All).filter(r=>!isNoReportingRecord(r));
+  const activeNow  = all.filter(p2IsCurrentReport);
   const activeCount= activeNow.length;
 
   // Scoped counts — always from active now only
   const none    = activeNow.filter(r=>!p2HasAnyStatus(r)&&!r.cancelled_date).length;
-  const prog    = activeNow.filter(r=>p2HasAnyStatus(r)&&!r.first_report_date&&!r.cancelled_date).length;
-  const rev     = activeNow.filter(r=>!!r.under_review_date&&!r.cancelled_date).length;
-  const sent    = activeNow.filter(r=>!!r.first_report_date&&!r.cancelled_date).length;
+  const prog    = activeNow.filter(p2IsInProgress).length;
+  const rev     = activeNow.filter(p2IsUnderReview).length;
+  const sent    = activeNow.filter(p2IsSent).length;
   const notsent = activeNow.filter(r=>!!r.not_sent_date&&!r.cancelled_date).length;
-  const cancel  = activeNow.filter(r=>!!r.cancelled_date).length;
-  const conv    = activeCount?Math.round(sent/activeCount*100):0;
+  const convBase=activeNow.length;
+  const conv    = convBase?Math.round(sent/convBase*100):0;
 
   const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
-  set('cnt-all',     totalAll);
+  set('cnt-all',all.length);
   set('cnt-active',  activeCount);
   set('cnt-none',    none);
   set('cnt-progress',prog);
   set('cnt-review',  rev);
   set('cnt-complete',sent);
   set('cnt-notsent', notsent);
-  set('cnt-cancel',  cancel);
-  set('cnt-conversion',`Sent ${sent} / Active now ${activeCount} (${conv}%)`);
+  set('cnt-conversion',`Sent ${sent} / Active campaigns ${convBase} (${conv}%)`);
 }
 
 function renderP2(){
   const tbody=document.getElementById('p2body');
   const cnt=document.getElementById('p2ActiveCount');
   if(cnt) cnt.textContent=`(${p2Filt.length})`;
-  if(!p2Filt.length){tbody.innerHTML='<tr><td colspan="12" class="p2-empty">No records match.</td></tr>';return;}
-  // Sort active: no status → under review → report sent
+  if(!p2Filt.length){tbody.innerHTML='<tr><td colspan="11" class="p2-empty">No records match.</td></tr>';return;}
+  // Sort active: no status → under review → report sent → cancelled
   const activeStatusRank=r=>{
+    if(r.cancelled_date) return 3;
     if(r.first_report_date) return 2;   // sent — last
     if(r.under_review_date) return 1;   // under review — middle
     return 0;                            // no status — first
   };
-  const active    = p2Filt.filter(r=>p2IsActive(r)&&!r.cancelled_date)
+  const active    = p2Filt.filter(r=>p2Filter!=='cancel'&&p2IsCurrentReport(r))
                            .sort((a,b)=>activeStatusRank(a)-activeStatusRank(b));
-  const noStatus  = p2Filt.filter(r=>!p2IsActive(r)&&!p2HasAnyStatus(r)&&!r.cancelled_date);
-  const inProgress= p2Filt.filter(r=>!p2IsActive(r)&&p2HasAnyStatus(r)&&!r.first_report_date&&!r.cancelled_date);
-  const complete  = p2Filt.filter(r=>!p2IsActive(r)&&r.first_report_date&&!r.cancelled_date);
-  const cancelled = p2Filt.filter(r=>r.cancelled_date);
+  const otherActive=p2Filt.filter(r=>p2IsActive(r)&&!p2IsCurrentReport(r)&&!r.cancelled_date);
+  const isFuture=r=>!!(r.startdate&&r.startdate>todayISO);
+  const future    = p2Filt.filter(isFuture);
+  const noStatus  = p2Filt.filter(r=>!isFuture(r)&&!p2IsActive(r)&&!p2HasAnyStatus(r)&&!r.cancelled_date);
+  const inProgress= p2Filt.filter(r=>!isFuture(r)&&!p2IsActive(r)&&p2HasAnyStatus(r)&&!p2IsSent(r)&&!r.cancelled_date);
+  const complete  = p2Filt.filter(r=>!isFuture(r)&&!p2IsActive(r)&&p2IsSent(r)&&!r.cancelled_date);
+  const cancelled = p2Filt.filter(r=>!isFuture(r)&&r.cancelled_date&&(p2Filter==='cancel'||!p2IsCurrentReport(r)));
   let h='';
-  const sec=(rows,label,cls='')=>{if(!rows.length)return;h+=`<tr class="sec-row ${cls}"><td colspan="12">${label} (${rows.length})</td></tr>`;h+=rows.map(p2Row).join('');};
+  const sec=(rows,label,cls='')=>{if(!rows.length)return;h+=`<tr class="sec-row ${cls}"><td colspan="11">${label} (${rows.length})</td></tr>`;h+=rows.map(p2Row).join('');};
   sec(active,`Active now — today is ${fdToday()}`,'act');
+  sec(otherActive,'Other active report types');
+  sec(future,'Coming soon');
   sec(noStatus,'No status yet');
   sec(inProgress,'Under review');
   sec(cancelled,'Cancelled');
@@ -3790,7 +3811,7 @@ function renderP2Future(){
     <div style="height:6px;background:var(--g50);"></div>
     <table class="p2-table">
       <thead><tr class="sec-row" style="background:var(--blue-light);color:var(--blue);">
-        <td colspan="14" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:8px 12px;border-bottom:2px solid var(--blue);">
+        <td colspan="11" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:8px 12px;border-bottom:2px solid var(--blue);">
           Coming Soon — Future Activations (${p2FutureRows.length})
         </td>
       </tr></thead>
@@ -3834,9 +3855,8 @@ function p2Row(r){
     ondblclick="switchTab(1);loadRec(${r.id})"
     onmouseenter="if(!this._dbl)this.style.outline='2px solid var(--blue)'"
     onmouseleave="this.style.outline=''">
-    <td style="max-width:140px"><div class="rec-title" style="font-size:12px">${esc(title)}</div></td>
-    <td style="max-width:130px"><div class="rec-sub">${esc(client)}</div><div class="rec-sub">${esc(brands.join(', '))}</div></td>
-    <td style="font-size:11px;color:var(--g600);white-space:nowrap">${esc(r.sapcode||'—')}</td>
+    <td style="width:145px;min-width:130px;max-width:170px"><div class="rec-title">${esc(title)}</div></td>
+    <td class="p2-client-cell"><div class="p2-client-name">${esc(client)}</div><div class="rec-sub">${esc(brands.join(', ')||'—')}</div><div class="p2-client-sap">${sapCodeLink(r.sapcode)}</div></td>
     <td class="date-cell" style="font-size:11px;min-width:100px">${datesCell}</td>
     <td style="max-width:130px"><div style="font-size:11px;color:var(--blue);font-weight:600;margin-bottom:2px;">${esc(shortSectors(r).join(', ')||'—')}</div><div style="font-size:11px;color:var(--g600);">${esc(storeNames.join(', ')||'—')}</div></td>
     <td style="max-width:110px">${shortReportTypes(r).map(t=>`<span style="display:inline-block;font-size:10px;font-weight:600;padding:1px 7px;border-radius:10px;background:var(--purple-light);color:var(--purple);white-space:nowrap;margin-bottom:2px;">${esc(t)}</span>`).join('<br>')||'<span style="font-size:11px;color:var(--g400);">—</span>'}</td>
@@ -3845,7 +3865,7 @@ function p2Row(r){
     <td>${sBtn(r,'under_review_date','Under Review','s-review')}</td>
     <td>${sBtn(r,'cancelled_date','Cancelled','s-cancel')}</td>
     <td><textarea class="ie" rows="2" placeholder="Status comment…" onblur="saveField(${r.id},'comments_status',this.value)">${esc(r.comments_status||'')}</textarea></td>
-    <td style="min-width:140px"><div style="display:flex;flex-direction:column;gap:4px;">
+    <td style="width:216px;min-width:202px"><div style="display:flex;flex-direction:column;gap:4px;">
       ${pbiUrl?`<a class="pbi-link" href="${esc(pbiUrl)}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:5px;padding:3px 8px;font-size:11px;font-weight:600;color:var(--purple);text-decoration:none;background:var(--purple-light);border-radius:4px;width:fit-content;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h7v4H3zm0 6h7v12H3zm9-6h9v18h-9z"/></svg>${esc(r.powerbi_title||'Open Report')}</a>`:''}
       <input type="text" class="ie" placeholder="Report name…" value="${esc(r.powerbi_title||'')}" onblur="saveField(${r.id},'powerbi_title',this.value)" style="font-size:11px;">
       <input type="url" class="ie" placeholder="Paste URL…" value="${esc(r.powerbi_url||'')}" onblur="saveField2(${r.id},'powerbi_url',this.value)" style="font-size:11px;" title="${esc(r.powerbi_url||'')}">
@@ -3918,8 +3938,8 @@ async function toggleStatus(id,col,has){
     showLoad(true);
     const val=has?null:new Date().toISOString().split('T')[0];
     await sbPatch('InsightsTracking',id,{[col]:val});
-    [p2All,p2Filt].forEach(arr=>arr.forEach(r=>{if(r.id===id)r[col]=val;}));
-    renderP2Stats(); renderP2();
+    updateWorkflowRecordLocal(id,{[col]:val});
+    applyP2Filter();
     toast(has?'Status cleared':'Set to today!','success');
   }catch(e){toast('Failed: '+e.message,'error');}
   finally{showLoad(false);}
@@ -4040,10 +4060,10 @@ async function loadP3(force=false){
     try{
       let rows;
       try{
-        rows = await sbGet('InsightsTracking?select=id,Title,client,brand,sapcode,store,brand_ids,store_ids,sector_ids,report_type_ids,client_fk,company_ids,startdate,enddate,comments_status,powerbi_url,powerbi_title,contactName_Email,under_review_date,validated_date,validated_by,first_report_date,email_sent_date,reporting_compliant,kpis_ok,global_feedback_received&under_review_date=not.is.null&order=under_review_date.desc');
+        rows = await sbGet('InsightsTracking?select=id,Title,client,brand,sapcode,mission_id,mission_ids,store,brand_ids,store_ids,sector_ids,report_type_ids,client_fk,company_ids,startdate,enddate,comments_status,powerbi_url,powerbi_title,contactName_Email,under_review_date,validated_date,validated_by,first_report_date,email_sent_date,reporting_compliant,kpis_ok,global_feedback_received&under_review_date=not.is.null&order=under_review_date.desc');
         cc_schemaReady=true;
       }catch(error){
-        rows = await sbGet('InsightsTracking?select=id,Title,client,brand,sapcode,store,brand_ids,store_ids,sector_ids,report_type_ids,client_fk,company_ids,startdate,enddate,comments_status,powerbi_url,powerbi_title,contactName_Email,under_review_date,validated_date,validated_by,first_report_date,email_sent_date&under_review_date=not.is.null&order=under_review_date.desc');
+        rows = await sbGet('InsightsTracking?select=id,Title,client,brand,sapcode,mission_id,store,brand_ids,store_ids,sector_ids,report_type_ids,client_fk,company_ids,startdate,enddate,comments_status,powerbi_url,powerbi_title,contactName_Email,under_review_date,validated_date,validated_by,first_report_date,email_sent_date&under_review_date=not.is.null&order=under_review_date.desc');
         rows.forEach(record=>{record.reporting_compliant=false;record.kpis_ok=false;record.global_feedback_received=false;});
         cc_schemaReady=false;
       }
@@ -4095,6 +4115,25 @@ function setP3View(v){
   renderP3();
 }
 
+function resetReviewFilters(page){
+  const company=document.getElementById(`p${page}-company-filter`);
+  const sector=document.getElementById(`p${page}-sector-filter`);
+  if(company)company.value='';
+  populateReviewSectorFilter(page);
+  if(sector)sector.value='';
+  if(page===3){
+    const client=document.getElementById('p3-client-filter');
+    if(client)client.value='';
+    p3View='pending';
+    ['pending','all'].forEach(view=>document.getElementById('p3-tab-'+view)?.classList.toggle('active',view==='pending'));
+    renderP3();
+  }else{
+    p4View='ready';
+    ['ready','sent'].forEach(view=>document.getElementById('p4-tab-'+view)?.classList.toggle('active',view==='ready'));
+    renderP4();
+  }
+}
+
 let p3PageSize=30, p3Page=0, p3CurrentRows=[];
 const workflowSelected={3:null,4:null};
 
@@ -4111,7 +4150,9 @@ function workflowDetail(record,page){
   const pbi=safeHttpUrl(record.powerbi_url);
   const pbiName=String(record.powerbi_title||'').trim()||'Power BI name not set';
   const reportTypes=shortReportTypes(record).join(', ')||'No report type';
-  const missions=missionIdsForRecord(record).join(', ')||'—';
+  const isBISpecial=shortReportTypes(record).some(type=>String(type||'').trim().toLowerCase()==='bi special');
+  const missions=missionLinksForRecord(record);
+  const client=shortClient(record)||record.client||'—';
   const compliance=Number.isFinite(record.reporting_compliance_pct)
     ?`${record.reporting_compliance_pct}% · ${record.reporting_compliance_reported}/${record.reporting_compliance_total} reportable shifts · Absent: ${Number(record.reporting_compliance_absent)||0}`
     :'Compliance unavailable';
@@ -4123,29 +4164,73 @@ function workflowDetail(record,page){
   }else if(isSent){
     action=`<div style="padding:9px;border-radius:7px;background:var(--green-light);color:var(--green);font-size:11.5px;font-weight:700;text-align:center;">✓ Final report was sent<br>${fd(record.email_sent_date||record.first_report_date)||'—'}</div>`;
   }else{
-    action=buildEmailSection(record);
+    action=`${buildEmailSection(record)}<button class="btn-unvalidate wf-action" type="button" onclick="returnToUnderReview(${record.id})" style="margin-top:8px;width:100%;">Cancel / Return to Under Review</button>`;
   }
-  return `<div class="wf-detail-head"><div class="wf-eyebrow">${page===3?'Under review':'Client delivery'}</div><div class="wf-detail-title">${esc(record.Title||shortBrands(record).join(', ')||'Untitled report')}</div><div class="wf-detail-sub">Mission ${esc(missions)} · SAP ${esc(record.sapcode||'—')} · ${esc(reportTypes)}</div><div class="wf-range"><strong>Operation date range</strong>${fd(record.startdate)||'—'} → ${fd(record.enddate)||'—'}</div></div><div class="wf-detail-body"><div class="wf-section"><div class="wf-section-title">Reporting compliance</div><div style="font-size:11.5px;color:${Number(record.reporting_compliance_pct)>=75?'var(--green)':'var(--amber)'};font-weight:700;">${esc(compliance)}</div></div><div class="wf-section"><div class="wf-section-title">Power BI</div>${pbi?`<a class="cc-pbi" style="width:100%;justify-content:center;padding:7px" href="${esc(pbi)}" target="_blank" rel="noopener noreferrer">${esc(pbiName)}</a>`:`<div class="wf-meta">${esc(pbiName)} · No Power BI link set.</div>`}</div><div class="wf-section"><div class="wf-section-title">Review notes</div>${page===3&&!isValidated?`<textarea class="ie" rows="4" placeholder="Add notes…" onblur="saveField(${record.id},'comments_status',this.value)" style="width:100%;resize:vertical;font-size:11.5px;">${esc(record.comments_status||'')}</textarea>`:`<div style="font-size:11.5px;color:var(--g600);">${esc(record.comments_status||'No review notes.')}</div>`}</div><div class="wf-section"><div class="wf-section-title">${page===3?'Validation':'Email'}</div>${action}</div></div><div class="wf-detail-foot"><span class="wf-status ${isSent||isValidated?'ok':'pending'}">${isSent?'Sent':isValidated?'Validated':'Awaiting validation'}</span></div>`;
+  const biSpecialSection=page===3&&isBISpecial?`<div class="wf-section"><div class="wf-section-title">BI Special send date</div><div class="wf-meta" style="margin-bottom:6px;">Use this when the automatic Power Automate flow has sent the report.</div><div style="display:flex;gap:6px;"><input class="ie" type="date" id="bi-special-date-${record.id}" value="${esc(record.email_sent_date||record.first_report_date||todayISO)}" style="flex:1;"><button class="btn-validate ready" type="button" onclick="setBISpecialSendDate(${record.id})">Save date</button></div>${isSent?`<button class="btn-unvalidate wf-action" type="button" onclick="clearBISpecialSendDate(${record.id})" style="margin-top:6px;width:100%;">Clear send date</button>`:''}</div>`:'';
+  return `<div class="wf-detail-head">
+    <div class="wf-eyebrow">${page===3?'Under review':'Client delivery'}</div>
+    <div class="wf-detail-title">${esc(record.Title||shortBrands(record).join(', ')||'Untitled report')}</div>
+    <div class="wf-detail-sub"><strong>Client:</strong> ${esc(client)}<br>Mission ${missions} · SAP ${sapCodeLink(record.sapcode)} · ${esc(reportTypes)}</div>
+    <div class="wf-range"><strong>Operation date range</strong>${fd(record.startdate)||'—'} → ${fd(record.enddate)||'—'}</div>
+  </div><div class="wf-detail-body">
+    <div class="wf-section"><div class="wf-section-title">Reporting compliance</div><div style="font-size:11.5px;color:${Number(record.reporting_compliance_pct)>=75?'var(--green)':'var(--amber)'};font-weight:700;">${esc(compliance)}</div></div>
+    <div class="wf-section"><div class="wf-section-title">Power BI</div>${pbi?`<a class="cc-pbi" style="width:100%;justify-content:center;padding:7px" href="${esc(pbi)}" target="_blank" rel="noopener noreferrer">${esc(pbiName)}</a>`:`<div class="wf-meta">${esc(pbiName)} · No Power BI link set.</div>`}</div>
+    <div class="wf-section"><div class="wf-section-title">Review notes</div>${page===3&&!isValidated?`<textarea class="ie" rows="4" placeholder="Add notes…" onblur="saveField(${record.id},'comments_status',this.value)" style="width:100%;resize:vertical;font-size:11.5px;">${esc(record.comments_status||'')}</textarea>`:`<div style="font-size:11.5px;color:var(--g600);">${esc(record.comments_status||'No review notes.')}</div>`}</div>
+    ${biSpecialSection}
+    <div class="wf-section"><div class="wf-section-title">${page===3?'Validation':'Email'}</div>${action}</div>
+  </div><div class="wf-detail-foot"><span class="wf-status ${isSent||isValidated?'ok':'pending'}">${isSent?'Sent':isValidated?'Validated':'Awaiting validation'}</span></div>`;
 }
 function renderWorkflowLayout(body,rows,page){
   if(!rows.length)return;
   if(!rows.some(record=>String(record.id)===String(workflowSelected[page])))workflowSelected[page]=rows[0].id;
   const selected=rows.find(record=>String(record.id)===String(workflowSelected[page]))||rows[0];
-  if(page===4){
-    body.innerHTML=`<div class="wf-layout"><div class="wf-list"><table class="wf-table"><colgroup><col style="width:85px"><col style="width:220px"><col style="width:95px"><col style="width:125px"><col style="width:125px"><col style="width:150px"></colgroup><thead><tr><th>Status</th><th>Report / Mission</th><th>SAP code</th><th>Operation dates</th><th>Report Type</th><th>Power BI</th></tr></thead><tbody>${rows.map(record=>{const rowSelected=String(record.id)===String(selected.id),sent=!!(record.email_sent_date||record.first_report_date),status=sent?'Sent':'Ready',missions=missionIdsForRecord(record).join(', ')||'—',pbi=safeHttpUrl(record.powerbi_url),pbiName=record.powerbi_title||'Open Power BI',reportTypes=shortReportTypes(record).join(', ')||'—';return `<tr class="wf-row${rowSelected?' selected':''}" onclick="selectWorkflowRecord(${page},${record.id})"><td><span class="wf-status ok">${status}</span></td><td><div class="wf-name">${esc(record.Title||shortBrands(record).join(', ')||'Untitled report')}</div><div class="wf-meta">Mission ${esc(missions)} · ${esc(shortClient(record)||record.client||'')}</div></td><td><span class="cc-sap">${esc(record.sapcode||'—')}</span></td><td><div>${fd(record.startdate)||'—'}</div><div class="wf-meta">to ${fd(record.enddate)||'—'}</div></td><td><span class="wf-meta">${esc(reportTypes)}</span></td><td>${pbi?`<a class="cc-pbi" href="${esc(pbi)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${esc(pbiName)}</a>`:'—'}</td></tr>`;}).join('')}</tbody></table></div><aside class="wf-detail">${workflowDetail(selected,page)}</aside></div>`;
-    return;
-  }
-  body.innerHTML=`<div class="wf-layout"><div class="wf-list"><table class="wf-table"><colgroup><col style="width:78px"><col style="width:190px"><col style="width:88px"><col style="width:112px"><col style="width:85px"><col style="width:105px"><col style="width:142px"></colgroup><thead><tr><th>Status</th><th>Report / Mission</th><th>SAP code</th><th>Operation dates</th><th>Compliance</th><th>Report Type</th><th>Power BI</th></tr></thead><tbody>${rows.map(record=>{const rowSelected=String(record.id)===String(selected.id),validated=!!record.validated_date,sent=!!(record.email_sent_date||record.first_report_date),status=page===4?(sent?'Sent':'Ready'):(validated?'Validated':'In review'),statusClass=validated||sent?'ok':'pending',missions=missionIdsForRecord(record).join(', ')||'—',pbi=safeHttpUrl(record.powerbi_url),pbiName=String(record.powerbi_title||'').trim()||'Power BI name not set',reportTypes=shortReportTypes(record).join(', ')||'—';return `<tr class="wf-row${rowSelected?' selected':''}" onclick="selectWorkflowRecord(${page},${record.id})"><td><span class="wf-status ${statusClass}">${status}</span></td><td><div class="wf-name">${esc(record.Title||shortBrands(record).join(', ')||'Untitled report')}</div><div class="wf-meta">Mission ${esc(missions)} · ${esc(shortClient(record)||record.client||'')}</div></td><td><span class="cc-sap">${esc(record.sapcode||'—')}</span></td><td><div>${fd(record.startdate)||'—'}</div><div class="wf-meta">to ${fd(record.enddate)||'—'}</div></td><td>${workflowCompliance(record)}</td><td><span class="wf-meta">${esc(reportTypes)}</span></td><td>${pbi?`<a class="cc-pbi" href="${esc(pbi)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${esc(pbiName)}</a>`:`<span class="wf-meta">${esc(pbiName)}</span>`}</td></tr>`;}).join('')}</tbody></table></div><aside class="wf-detail">${workflowDetail(selected,page)}</aside></div>`;
+  const showCompliance=page===3;
+  const tableRows=rows.map(record=>{
+    const rowSelected=String(record.id)===String(selected.id);
+    const sent=!!(record.email_sent_date||record.first_report_date);
+    const validated=!!record.validated_date;
+    const status=page===4?(sent?'Sent':'Ready'):(validated?'Validated':'In review');
+    const statusClass=page===4||validated||sent?'ok':'pending';
+    const client=shortClient(record)||record.client||'—';
+    const pbi=safeHttpUrl(record.powerbi_url);
+    const pbiName=String(record.powerbi_title||'').trim()||'Power BI name not set';
+    const reportTypes=shortReportTypes(record).join(', ')||'—';
+    const brand=shortBrands(record).join(', ')||record.brand||'—';
+    if(page===4)return `<tr class="wf-row${rowSelected?' selected':''}" onclick="selectWorkflowRecord(4,${record.id})">
+      <td><div class="wf-name">${esc(record.Title||brand||'Untitled report')}</div><div class="wf-meta">Mission ${missionLinksForRecord(record)}</div></td>
+      <td class="wf-client-brand-sap"><div class="wf-client" title="${esc(client)}">${esc(client)}</div><div class="wf-brand">${esc(brand)}</div><div class="wf-meta">${sapCodeLink(record.sapcode)}</div></td>
+      <td><span class="wf-status ${statusClass}">${status}</span></td>
+      <td><div>${fd(record.startdate)||'—'}</div><div class="wf-meta">to ${fd(record.enddate)||'—'}</div></td>
+      <td><span class="wf-meta">${esc(reportTypes)}</span></td>
+      <td>${pbi?`<a class="cc-pbi" href="${esc(pbi)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${esc(pbiName)}</a>`:`<span class="wf-meta">${esc(pbiName)}</span>`}</td>
+    </tr>`;
+    return `<tr class="wf-row${rowSelected?' selected':''}" onclick="selectWorkflowRecord(${page},${record.id})">
+      <td><span class="wf-status ${statusClass}">${status}</span></td>
+      <td><div class="wf-name">${esc(record.Title||shortBrands(record).join(', ')||'Untitled report')}</div><div class="wf-meta">Mission ${missionLinksForRecord(record)}</div></td>
+      <td><div class="wf-name" title="${esc(client)}">${esc(client)}</div></td>
+      <td><span class="cc-sap">${sapCodeLink(record.sapcode)}</span></td>
+      <td><div>${fd(record.startdate)||'—'}</div><div class="wf-meta">to ${fd(record.enddate)||'—'}</div></td>
+      ${showCompliance?`<td>${workflowCompliance(record)}</td>`:''}
+      <td><span class="wf-meta">${esc(reportTypes)}</span></td>
+      <td>${pbi?`<a class="cc-pbi" href="${esc(pbi)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${esc(pbiName)}</a>`:`<span class="wf-meta">${esc(pbiName)}</span>`}</td>
+    </tr>`;
+  }).join('');
+  body.innerHTML=`<div class="wf-layout"><div class="wf-list"><table class="wf-table">
+    <colgroup>${page===4?'<col style="width:225px"><col style="width:185px"><col style="width:78px"><col style="width:120px"><col style="width:115px"><col style="width:145px">':'<col style="width:78px"><col style="width:205px"><col style="width:135px"><col style="width:90px"><col style="width:120px"><col style="width:85px"><col style="width:115px"><col style="width:145px">'}</colgroup>
+    <thead><tr>${page===4?'<th>Report / Mission</th><th style="text-align:center">Client / Brand / SAP</th><th>Status</th>':'<th>Status</th><th>Report / Mission</th><th>Client</th><th>SAP code</th>'}<th>Operation dates</th>${showCompliance?'<th>Compliance</th>':''}<th>Report Type</th><th>Power BI</th></tr></thead>
+    <tbody>${tableRows}</tbody></table></div><aside class="wf-detail">${workflowDetail(selected,page)}</aside></div>`;
 }
 
 function renderP3(){
   const body=document.getElementById('p3body');
   const cid3=getCompanyFilter('p3-company-filter');
   const sid3=getCompanyFilter('p3-sector-filter');
+  const clientQuery=String(document.getElementById('p3-client-filter')?.value||'').trim().toLowerCase();
   let filteredRows=p3All;
   if(cid3)filteredRows=filteredRows.filter(r=>matchesCompany(r,cid3));
   if(sid3)filteredRows=filteredRows.filter(r=>matchesSector(r,sid3));
-  const pendingRows=filteredRows.filter(r=>!r.validated_date);
+  if(clientQuery)filteredRows=filteredRows.filter(record=>String(shortClient(record)||record.client||'').toLowerCase().includes(clientQuery));
+  const pendingRows=filteredRows.filter(r=>!r.validated_date&&!r.email_sent_date&&!r.first_report_date);
   const pendingCount=document.getElementById('p3-count-pending');
   const allCount=document.getElementById('p3-count-all');
   if(pendingCount)pendingCount.textContent=pendingRows.length;
@@ -4205,13 +4290,15 @@ function renderP4(){
   if(!body) return;
   const cid4=getCompanyFilter('p4-company-filter');
   const sid4=getCompanyFilter('p4-sector-filter');
-  const validated = p3All.filter(r=>!!r.validated_date
+  // Sent BI Special records can bypass manual validation because delivery is
+  // completed by the separate Power Automate flow.
+  const isSent = r=>!!(r.email_sent_date||r.first_report_date);
+  const eligible = p3All.filter(r=>(!!r.validated_date||isSent(r))
     &&(cid4?matchesCompany(r,cid4):true)
     &&(sid4?matchesSector(r,sid4):true));
   // "Already sent" = email_sent_date OR first_report_date (handles legacy records)
-  const isSent = r=>!!(r.email_sent_date||r.first_report_date);
-  const readyRows=validated.filter(r=>!isSent(r));
-  const sentRows=validated.filter(r=>isSent(r));
+  const readyRows=eligible.filter(r=>!!r.validated_date&&!isSent(r));
+  const sentRows=eligible.filter(r=>isSent(r));
   const rows=p4View==='sent'?sentRows:readyRows;
   const reportCount=document.getElementById('p4-report-count');
   if(reportCount)reportCount.textContent=`${rows.length} report${rows.length===1?'':'s'}`;
@@ -4302,7 +4389,7 @@ function rvCard(r){
     const store=stores[0]||'';
     const firstName=(names[0]||client).split(' ')[0]; // first name only
     const now=new Date(); const monthYear=now.toLocaleString('en-US',{month:'long',year:'numeric'});
-    const subject=encodeURIComponent(`Globe TR - Power BI Dashboard - ${brand} - ${store} - ${monthYear}`);
+    const subject=encodeURIComponent(`Globe TR - Report - ${brand} - ${store} - ${monthYear}`);
     const linkLabel=`Access BI Dashboard ${brand}${store?' - '+store:''}`;
     const pbiLink=pbiUrl||'[Power BI link not set]';
     const bodyText=encodeURIComponent([`Dear ${firstName},`,``,`We hope that you are doing well.`,``,`Please find below the link to the Power BI dashboard:`,`${linkLabel}: ${pbiLink}`,``,`The dashboard has been updated with the latest available data.`,``,`Should you have any questions or need further support, please don't hesitate to reach out.`,``,`Kind regards,`].join('\r\n'));
@@ -4337,7 +4424,7 @@ function rvCard(r){
         <div class="rv-client-sap">
           ${client?`<span>${esc(client)}</span>`:''}
           ${client&&r.sapcode?'<span class="rv-dot">·</span>':''}
-          ${r.sapcode?`<span class="rv-sap">${esc(r.sapcode)}</span>`:''}
+          ${r.sapcode?`<span class="rv-sap">${sapCodeLink(r.sapcode)}</span>`:''}
         </div>
         <div class="rv-dates-stacked">
           ${r.startdate?`<div><span class="rv-dl">Start</span>${fd(r.startdate)}</div>`:''}
@@ -4388,12 +4475,12 @@ function buildEmailSection(r){
       }).join('')
     : `<span class="rv-no-contacts">No contacts linked — add contacts in New Record</span>`;
 
-  // Subject: Globe TR - Power BI Dashboard - Brand - Store - Month Year
+  // Subject: Globe TR - Report - Brand - Store - Month Year
   const _brand = shortBrands(r)[0]||r.brand||shortClient(r)||r.client||'';
   const _store = shortStores(r)[0]||r.store||'';
   const _now = new Date(); const _monthYear = _now.toLocaleString('en-US',{month:'long',year:'numeric'});
   const subject = encodeURIComponent(
-    `Globe TR - Power BI Dashboard - ${_brand}${_store?' - '+_store:''} - ${_monthYear}`
+    `Globe TR - Report - ${_brand}${_store?' - '+_store:''} - ${_monthYear}`
   );
 
   // First name only for salutation
@@ -4482,8 +4569,8 @@ async function markEmailSent(id){
   try{
     const today=new Date().toISOString().split('T')[0];
     await sbPatch('InsightsTracking',id,{email_sent_date:today,first_report_date:today});
-    const rec=p3All.find(r=>r.id===id);
-    if(rec){rec.email_sent_date=today;rec.first_report_date=today;}
+    updateWorkflowRecordLocal(id,{email_sent_date:today,first_report_date:today});
+    renderP3();
     renderP4();
     toast('Email opened — moved to Already Sent!','success');
   }catch(e){toast('Error: '+e.message,'error');}
@@ -4751,6 +4838,54 @@ function tryValidate(id){
   toggleValidate(id, false, sel.name);
 }
 
+function updateWorkflowRecordLocal(id,patch){
+  [p3All,p2All,allRec].forEach(rows=>rows.forEach(record=>{if(String(record.id)===String(id))Object.assign(record,patch);}));
+}
+
+async function setBISpecialSendDate(id){
+  const input=document.getElementById(`bi-special-date-${id}`);
+  const value=input?.value||'';
+  if(!value){toast('Please choose the send date.','error');return;}
+  try{
+    showLoad(true);
+    const patch={email_sent_date:value,first_report_date:value};
+    await sbPatch('InsightsTracking',id,patch);
+    updateWorkflowRecordLocal(id,patch);
+    renderP3();
+    renderP4();
+    toast('BI Special send date saved.','success');
+  }catch(error){toast('Could not save the send date: '+error.message,'error');}
+  finally{showLoad(false);}
+}
+
+async function clearBISpecialSendDate(id){
+  try{
+    showLoad(true);
+    const patch={email_sent_date:null,first_report_date:null};
+    await sbPatch('InsightsTracking',id,patch);
+    updateWorkflowRecordLocal(id,patch);
+    renderP3();
+    renderP4();
+    toast('BI Special send date cleared.','success');
+  }catch(error){toast('Could not clear the send date: '+error.message,'error');}
+  finally{showLoad(false);}
+}
+
+async function returnToUnderReview(id){
+  if(!window.confirm('Return this record to Under Review? The validation date will be cleared.'))return;
+  try{
+    showLoad(true);
+    const patch={validated_date:null,validated_by:null};
+    await sbPatch('InsightsTracking',id,patch);
+    updateWorkflowRecordLocal(id,patch);
+    workflowSelected[4]=null;
+    renderP3();
+    renderP4();
+    toast('Record returned to Under Review.','success');
+  }catch(error){toast('Could not return the record: '+error.message,'error');}
+  finally{showLoad(false);}
+}
+
 async function toggleValidate(id, isCurrentlyValidated, validatorName=''){
   try{
     showLoad(true);
@@ -4758,8 +4893,7 @@ async function toggleValidate(id, isCurrentlyValidated, validatorName=''){
       ? {validated_date: null, validated_by: null}
       : {validated_date: new Date().toISOString().split('T')[0], validated_by: validatorName||null};
     await sbPatch('InsightsTracking', id, patch);
-    const rec=p3All.find(r=>r.id===id);
-    if(rec){ rec.validated_date=patch.validated_date; rec.validated_by=patch.validated_by; }
+    updateWorkflowRecordLocal(id,patch);
     renderP3();
     toast(isCurrentlyValidated?'Validation removed':'Validated! Ready to send to client.','success');
   }catch(e){toast('Error: '+e.message,'error');}
@@ -6178,7 +6312,7 @@ async function cc_load(){
         cc_schemaReady=false;
       }
     }
-    cc_rows=cc_rows.filter(record=>!record.cancelled_date&&!record.not_sent_date&&!record.first_report_date&&!record.email_sent_date);
+    cc_rows=cc_rows.filter(record=>!isNoReportingRecord(record)&&!record.cancelled_date&&!record.not_sent_date&&!record.first_report_date&&!record.email_sent_date);
     await cc_applyAutomaticCompliance();
     if(!cc_rows.some(record=>String(record.id)===String(cc_selectedId)))cc_selectedId=cc_rows[0]?.id??null;
     cc_populateFilters();cc_render();
@@ -6226,7 +6360,7 @@ function cc_render(){
     const pct=Number.isFinite(record.reporting_compliance_pct)?`${record.reporting_compliance_pct}% · ${record.reporting_compliance_reported}/${record.reporting_compliance_total}`:'—';
     const absent=Number(record.reporting_compliance_absent)||0,backup=Number(record.reporting_compliance_backup)||0;
     const reportTypes=shortReportTypes(record).join(', ')||'—',pbiName=record.powerbi_title||'Open Power BI';
-    return `<tr class="cc-row${selected?' selected':''}" onclick="cc_select(${record.id})"><td><span class="cc-alert">${ccCountdownLabel(record.enddate)}</span></td><td><div class="cc-name">${esc(record.Title||'Untitled animation')}</div><div class="cc-meta">${esc(ccRecordClient(record))}</div><button class="cc-mission" onclick="event.stopPropagation();cc_openReporting(${record.id})">Mission ${esc(missionIdsForRecord(record).join(', ')||'—')} → Reporting Check</button></td><td><span class="cc-sap">${esc(record.sapcode||'—')}</span></td><td><div>${fd(record.startdate)||'—'}</div><div class="cc-meta">to ${fd(record.enddate)||'—'}</div></td><td><span class="cc-status ${record.reporting_compliant?'ok':'missing'}">${pct}</span><div class="cc-meta">Absent: ${absent}${backup?` · Backup: ${backup}`:''}</div></td><td><span class="cc-status ${record.kpis_ok?'ok':'missing'}">${record.kpis_ok?'✓ OK':'✕ Missing'}</span></td><td><span class="cc-status ${record.global_feedback_received?'ok':'missing'}">${record.global_feedback_received?'✓ Received':'✕ Missing'}</span></td><td><span class="cc-meta">${esc(reportTypes)}</span></td><td>${pbi?`<a class="cc-pbi" href="${esc(pbi)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${esc(pbiName)}</a>`:'—'}</td></tr>`;
+    return `<tr class="cc-row${selected?' selected':''}" onclick="cc_select(${record.id})"><td><span class="cc-alert">${ccCountdownLabel(record.enddate)}</span></td><td><div class="cc-name">${esc(record.Title||'Untitled animation')}</div><div class="cc-meta">${esc(ccRecordClient(record))}</div><div class="cc-meta">Mission ${missionLinksForRecord(record)}</div><button class="cc-mission" onclick="event.stopPropagation();cc_openReporting(${record.id})">→ Reporting Check</button></td><td><span class="cc-sap">${sapCodeLink(record.sapcode)}</span></td><td><div>${fd(record.startdate)||'—'}</div><div class="cc-meta">to ${fd(record.enddate)||'—'}</div></td><td><span class="cc-status ${record.reporting_compliant?'ok':'missing'}">${pct}</span><div class="cc-meta">Absent: ${absent}${backup?` · Backup: ${backup}`:''}</div></td><td><span class="cc-status ${record.kpis_ok?'ok':'missing'}">${record.kpis_ok?'✓ OK':'✕ Missing'}</span></td><td><span class="cc-status ${record.global_feedback_received?'ok':'missing'}">${record.global_feedback_received?'✓ Received':'✕ Missing'}</span></td><td><span class="cc-meta">${esc(reportTypes)}</span></td><td>${pbi?`<a class="cc-pbi" href="${esc(pbi)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${esc(pbiName)}</a>`:'—'}</td></tr>`;
   }).join('')}</tbody></table>`;
   cc_renderDetail(rows.find(record=>String(record.id)===String(cc_selectedId))||rows[0]);
 }
@@ -6243,7 +6377,7 @@ function cc_renderDetail(record){
   const absent=Number(record.reporting_compliance_absent)||0,backup=Number(record.reporting_compliance_backup)||0;
   const complianceHelp=Number.isFinite(record.reporting_compliance_pct)?`${record.reporting_compliance_pct}% · ${record.reporting_compliance_reported}/${record.reporting_compliance_total} reportable shifts · Absent: ${absent}${backup?` · Absent with backup: ${backup}`:''}${record.reporting_compliance_pct>=75?' · auto-confirmed at 75%+':' · manual override available'}`:'Calculated from Reporting Check · manual override available';
   const emailActions=allReady&&emails.length?`<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px"><a class="cc-email" href="${esc(mailto)}">Open client email</a><button class="cc-email" type="button" onclick="cc_confirmEmailSent(${record.id})" style="background:var(--green)">Mark email sent</button></div>`:`<span class="cc-email disabled">${emails.length?'Open client email':'No client email linked'}</span>`;
-  detail.innerHTML=`<div class="cc-detail-head"><div class="cc-eyebrow">Final client check · ${ccCountdownLabel(record.enddate)}</div><div class="cc-detail-title">${esc(record.Title||'Untitled animation')}</div><div class="cc-detail-sub">Mission ${esc(missionIdsForRecord(record).join(', ')||'—')} · SAP ${esc(record.sapcode||'—')} · ${esc(shortReportTypes(record).join(', ')||'No report type')}</div><div class="cc-date-range"><strong>Operation date range</strong>${fd(record.startdate)||'—'} → ${fd(record.enddate)||'—'}</div></div><div class="cc-detail-body"><div class="cc-section"><div class="cc-section-title">Final requirements</div>${cc_checkHtml(!!record.reporting_compliant,'Reporting compliance (75% minimum)',complianceHelp,'reporting_compliant',record.id)}${cc_checkHtml(!!record.kpis_ok,'KPIs checked','Select when results and data quality are confirmed','kpis_ok',record.id)}${cc_checkHtml(!!record.global_feedback_received,'Global feedback received','Select when final feedback is confirmed','global_feedback_received',record.id)}</div><div class="cc-section"><div class="cc-section-title">Power BI</div>${safeHttpUrl(record.powerbi_url)?`<a class="cc-pbi" style="width:100%;justify-content:center;padding:7px" href="${esc(safeHttpUrl(record.powerbi_url))}" target="_blank" rel="noopener noreferrer">${esc(record.powerbi_title||'Open Power BI report')}</a>`:'<div class="cc-meta">No Power BI link set.</div>'}</div></div><div class="cc-detail-foot"><div class="cc-ready-note" style="color:${allReady?'var(--green)':'var(--amber)'}">${allReady?'All requirements met · client email is ready':`Waiting for ${missing.join(', ')||'database setup'}`}</div>${emailActions}</div>`;
+  detail.innerHTML=`<div class="cc-detail-head"><div class="cc-eyebrow">Final client check · ${ccCountdownLabel(record.enddate)}</div><div class="cc-detail-title">${esc(record.Title||'Untitled animation')}</div><div class="cc-detail-sub">Mission ${missionLinksForRecord(record)} · SAP ${sapCodeLink(record.sapcode)} · ${esc(shortReportTypes(record).join(', ')||'No report type')}</div><div class="cc-date-range"><strong>Operation date range</strong>${fd(record.startdate)||'—'} → ${fd(record.enddate)||'—'}</div></div><div class="cc-detail-body"><div class="cc-section"><div class="cc-section-title">Final requirements</div>${cc_checkHtml(!!record.reporting_compliant,'Reporting compliance (75% minimum)',complianceHelp,'reporting_compliant',record.id)}${cc_checkHtml(!!record.kpis_ok,'KPIs checked','Select when results and data quality are confirmed','kpis_ok',record.id)}${cc_checkHtml(!!record.global_feedback_received,'Global feedback received','Select when final feedback is confirmed','global_feedback_received',record.id)}</div><div class="cc-section"><div class="cc-section-title">Power BI</div>${safeHttpUrl(record.powerbi_url)?`<a class="cc-pbi" style="width:100%;justify-content:center;padding:7px" href="${esc(safeHttpUrl(record.powerbi_url))}" target="_blank" rel="noopener noreferrer">${esc(record.powerbi_title||'Open Power BI report')}</a>`:'<div class="cc-meta">No Power BI link set.</div>'}</div></div><div class="cc-detail-foot"><div class="cc-ready-note" style="color:${allReady?'var(--green)':'var(--amber)'}">${allReady?'All requirements met · client email is ready':`Waiting for ${missing.join(', ')||'database setup'}`}</div>${emailActions}</div>`;
 }
 async function cc_toggle(id,field,value){
   try{await sbPatch('InsightsTracking',id,{[field]:value});const record=cc_rows.find(item=>String(item.id)===String(id));if(record)record[field]=value;cc_schemaReady=true;cc_render();toast('Closing check updated.','success');}catch(error){toast('Could not save this check. Confirm the Closing Check columns exist in Supabase.','error');}
@@ -7365,8 +7499,8 @@ function rc_renderLegacy(){
     dayRows.forEach(r => {
       html += `<tr style="border-bottom:1px solid var(--g100);" onmouseover="this.style.background='var(--g50)'" onmouseout="this.style.background=''">
         <td style="padding:8px 12px;font-size:12px;color:var(--g600);">${esc(r.day)}</td>
-        <td style="padding:8px 12px;font-family:monospace;font-size:11px;color:var(--g500);">${esc(r.missionId??'\u2014')}</td>
-        <td style="padding:8px 12px;font-family:monospace;font-size:11px;color:var(--g600);">${esc(r.scheduleSapcode||r.trackingSapcode||'\u2014')}</td>
+        <td style="padding:8px 12px;font-family:monospace;font-size:11px;color:var(--g500);">${missionIdLink(r.missionId)}</td>
+        <td style="padding:8px 12px;font-family:monospace;font-size:11px;color:var(--g600);">${sapCodeLink(r.scheduleSapcode||r.trackingSapcode)}</td>
         <td style="padding:8px 12px;font-weight:600;">${esc(r.promoter)}</td>
         <td style="padding:8px 12px;font-weight:600;max-width:320px;white-space:normal;line-height:1.3;" title="${esc(r.schedStore||'')}">${esc(r.schedStore||'\u2014')}</td>
         <td style="padding:8px 12px;color:var(--g600);">${esc(r.schedBrand||'\u2014')}</td>
@@ -7498,7 +7632,7 @@ function rc_render(){
     table+=`<tr style="border-bottom:1px solid var(--g100);height:70px;" onmouseover="this.style.background='var(--g50)'" onmouseout="this.style.background=''">
       <td style="padding:9px 8px;vertical-align:middle;overflow-wrap:anywhere;">
         <div style="font-size:11.5px;font-weight:800;">${esc(row.day)}</div>
-        <div style="font-family:monospace;font-size:9.5px;color:var(--g400);margin-top:3px;">Mission ${esc(row.missionId??'—')}</div>
+        <div style="font-family:monospace;font-size:9.5px;color:var(--g400);margin-top:3px;">Mission ${missionIdLink(row.missionId)}</div>
       </td>
       <td style="padding:9px 8px;vertical-align:middle;line-height:1.2;overflow-wrap:anywhere;${promoterColor}">
         <div style="font-size:12px;font-weight:700;">${esc(promoterFirst)}${!promoterLast?promoterSuffix:''}</div>
@@ -7512,7 +7646,7 @@ function rc_render(){
           ${row.schedBrand?`<strong>${esc(row.schedBrand)}</strong>`:(!row.schedClient?'<span>—</span>':'')}
         </div>
         ${row.campaignName?`<div style="font-size:9.5px;color:var(--g400);margin-top:3px;">${esc(row.campaignName)}</div>`:''}
-        ${displaySap?`<div style="font-family:monospace;font-size:9px;font-weight:700;color:var(--blue);margin-top:3px;">SAP: ${esc(displaySap)}</div>`:''}
+        ${displaySap?`<div style="font-family:monospace;font-size:9px;font-weight:700;color:var(--blue);margin-top:3px;">SAP: ${sapCodeLink(displaySap)}</div>`:''}
         ${splitBrands?`<div style="display:inline-flex;margin-top:4px;padding:2px 6px;border-radius:10px;background:var(--blue-light);color:var(--blue);font-size:9px;font-weight:700;">${brandLines.length} reported brands</div>`:''}
       </td>
       <td style="padding:9px 4px;text-align:center;vertical-align:middle;">${questionnaireCell}</td>
