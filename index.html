@@ -29,23 +29,32 @@ body{font-family:'Inter',sans-serif;font-size:13px;color:var(--g900);background:
 .header-meta{min-height:54px;padding:6px 16px 6px 4px;display:flex;align-items:center;gap:12px;flex:0 0 auto;}
 .header-user{font-size:13px;font-weight:400;color:#fff;white-space:nowrap;}
 .header-user strong{font-weight:800;}
-.header-tools{display:flex;align-items:center;gap:10px;min-width:0;}
-.header-account{display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
+.user-menu{position:relative;flex:0 0 auto;}
+.user-menu[open]{z-index:20000;}
+.user-menu-trigger{display:flex;align-items:center;gap:6px;padding:7px 8px;border-radius:6px;list-style:none;cursor:pointer;user-select:none;}
+.user-menu-trigger::-webkit-details-marker{display:none;}
+.user-menu-trigger:hover,.user-menu[open] .user-menu-trigger{background:rgba(255,255,255,.14);}
+.user-menu-trigger:focus-visible{outline:2px solid #fff;outline-offset:2px;}
+.user-menu-chevron{width:12px;height:12px;fill:currentColor;opacity:.8;transition:transform .15s;}
+.user-menu[open] .user-menu-chevron{transform:rotate(180deg);}
+.user-menu-panel{position:absolute;top:calc(100% + 8px);right:0;width:330px;max-width:calc(100vw - 20px);max-height:calc(100vh - 76px);overflow-y:auto;background:#fff;color:var(--g700);border:1px solid var(--g200);border-radius:9px;box-shadow:0 12px 30px rgba(15,23,42,.22);}
+.user-menu-version{padding:14px 15px 12px;}
+.user-menu-version-number{font-size:10px;font-weight:700;color:var(--blue);}
+.user-menu-logout{display:flex;align-items:center;gap:8px;width:100%;padding:11px 15px;border:0;border-top:1px solid var(--g200);background:#fff;color:var(--g700);font-family:inherit;font-size:11px;font-weight:600;line-height:1.3;text-align:left;cursor:pointer;}
+.user-menu-logout:hover{background:var(--g50);color:var(--blue);}
+.user-menu-logout svg{width:15px;height:15px;fill:currentColor;}
 .header-nav{display:flex;align-items:center;gap:6px;padding:7px 12px;flex:1 1 auto;min-width:0;overflow-x:auto;scrollbar-width:thin;}
 .tab-btn{height:36px;padding:0 16px;background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.32);color:rgba(255,255,255,.86);font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;border-radius:6px;transition:all .15s;white-space:nowrap;flex:0 0 auto;}
 .tab-btn:hover{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.65);color:#fff;}
 .tab-btn.active{background:#fff;border-color:#fff;color:var(--blue);font-weight:600;}
-.app-release{position:relative;flex-shrink:0}.app-release[open]{z-index:20000}.app-release summary{list-style:none;cursor:default;padding:0;border:0;border-bottom:1px solid rgba(255,255,255,.65);background:transparent;color:#fff;font-size:8px;font-weight:600;white-space:nowrap;user-select:none}.app-release summary::-webkit-details-marker{display:none}.app-release[open] summary{color:#fff;border-bottom-color:#fff}.release-panel{position:absolute;z-index:20001;top:100%;right:0;width:350px;max-height:min(440px,calc(100vh - 70px));overflow-y:auto;padding:14px 15px;background:#fff;color:var(--g700,#4b4f52);border:1px solid var(--g200);border-radius:9px;box-shadow:0 12px 30px rgba(15,23,42,.22)}.release-panel:before{content:"";position:absolute;top:-6px;right:32px;width:10px;height:10px;background:#fff;border-left:1px solid var(--g200);border-top:1px solid var(--g200);transform:rotate(45deg)}.release-heading{font-size:13px;font-weight:800;color:var(--g900)}.release-date{margin-top:2px;font-size:10px;color:var(--g400)}.release-list{display:block!important;visibility:visible!important;margin:11px 0 0;padding-left:19px;font-size:11px;line-height:1.45;color:var(--g700,#4b4f52)!important;list-style:disc}.release-list li{display:list-item!important;visibility:visible!important;color:var(--g700,#4b4f52)!important;list-style:disc}.release-list li+li{margin-top:6px}.release-list strong{color:var(--blue)}
-.logout-icon{height:30px;padding:0 9px;border:1px solid rgba(255,255,255,.34);border-radius:6px;background:rgba(255,255,255,.12);color:#fff;display:flex;align-items:center;justify-content:center;gap:5px;font-family:inherit;font-size:11px;font-weight:600;white-space:nowrap;cursor:pointer;transition:all .15s;flex:0 0 auto;}
-.logout-icon:hover{background:rgba(255,255,255,.24);border-color:rgba(255,255,255,.7);}
-.logout-icon svg{width:15px;height:15px;fill:currentColor;}
+.release-heading{margin-top:7px;font-size:13px;font-weight:800;color:var(--g900)}.release-list{display:block!important;visibility:visible!important;margin:8px 0 0;padding-left:19px;font-size:11px;line-height:1.45;color:var(--g700,#4b4f52)!important;list-style:disc}.release-list li{display:list-item!important;visibility:visible!important;color:var(--g700,#4b4f52)!important;list-style:disc}.release-list li+li{margin-top:6px}.release-list strong{color:var(--blue)}
 .workflow-tools-bar{display:none;align-items:center;gap:8px;padding:8px 20px;background:#fff;border-bottom:1px solid var(--g200);flex-shrink:0;}
 .workflow-tool-btn{height:34px;padding:0 16px;border:1.5px solid var(--g300);border-radius:6px;background:#fff;color:var(--g600);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;}
 .workflow-tool-btn:hover{border-color:var(--blue);color:var(--blue);}
 .workflow-tool-btn.active{background:var(--blue-light);border-color:var(--blue);color:var(--blue);}
 #gFilterBar{justify-content:flex-end}
 #gFilterBar>span:first-child{margin-right:auto}
-@media(max-width:900px){.header-meta{gap:8px;padding-right:8px}.header-tools{gap:7px}.header-user{font-size:11px}.release-panel{right:0}.header-nav{padding-inline:8px}}
+@media(max-width:900px){.header-meta{padding-right:8px}.header-user{font-size:11px}.header-nav{padding-inline:8px}}
 
 /* ─ Pages ─ */
 .page{display:none;flex:1;overflow:hidden;}
@@ -303,11 +312,15 @@ button{text-decoration:none;}
 .p2-table tr:hover.p2-sent-row td{background:#dcfce7;}
 .sec-row td{background:var(--g50)!important;padding:6px 12px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);border-bottom:1px solid var(--g200);}
 .sec-row.act td{color:var(--blue);background:var(--blue-light)!important;}
-.rec-title{font-weight:600;font-size:11px;line-height:1.25;overflow-wrap:anywhere;}
-.p2-client-cell{text-align:center;min-width:165px;max-width:200px;}
-.p2-client-cell .p2-client-name{font-size:11.5px;font-weight:700;color:var(--g900);overflow-wrap:anywhere;}
-.p2-client-cell .p2-client-sap{font-size:11px;margin-top:3px;overflow-wrap:anywhere;}
-.rec-sub{font-size:11.5px;color:var(--g600);margin-top:1px;}
+.rec-title{font-weight:600;font-size:9.5px;line-height:1.25;overflow-wrap:anywhere;}
+.p2-record-cell{min-width:230px;max-width:300px;}
+.p2-record-brand{font-size:14px;font-weight:800;color:var(--g900);margin-top:3px;overflow-wrap:anywhere;}
+.p2-record-client{font-size:11px;color:var(--g600);margin-top:2px;overflow-wrap:anywhere;}
+.p2-record-sap{font-size:11px;margin-top:3px;overflow-wrap:anywhere;}
+.p2-report-cell{vertical-align:top!important;width:240px;min-width:210px;max-width:300px;}
+.p2-report-types{min-height:21px;}
+.p2-report-comment{margin-top:6px;padding-top:6px;border-top:1px solid var(--g100);}
+.p2-comment-text{font-size:11.5px;color:var(--g700);line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere;}
 .date-cell{font-size:11.5px;color:var(--g600);line-height:1.7;}
 .store-cell{font-size:11.5px;color:var(--g600);line-height:1.5;max-width:120px;}
 tr.cancelled-row{opacity:.5;}
@@ -327,8 +340,8 @@ tr.cancelled-row .rec-title{text-decoration:line-through;}
 .company-filter:focus{border-color:var(--blue);}
 .p2-sent-row td{background:#f0fdf4 !important;}
 .p2-sent-row:hover td{background:#dcfce7 !important;}
-.not-sent-reason-show{font-size:10.5px;color:#7c3aed;font-style:italic;max-width:110px;word-break:break-word;line-height:1.3;}
-.not-sent-form{display:flex;flex-direction:column;gap:4px;background:#f5f3ff;border:1.5px solid #7c3aed;border-radius:var(--r);padding:6px;min-width:160px;}
+.not-sent-wrap{position:relative;display:inline-flex;justify-content:center;}
+.not-sent-form{position:absolute;top:calc(100% + 4px);left:0;z-index:20;display:flex;flex-direction:column;gap:4px;background:#f5f3ff;border:1.5px solid #7c3aed;border-radius:var(--r);padding:6px;min-width:160px;box-shadow:0 4px 12px rgba(0,0,0,.12);}
 .not-sent-form input{border:1px solid #c4b5fd;border-radius:4px;padding:4px 7px;font-family:inherit;font-size:11.5px;outline:none;background:#fff;}
 .not-sent-form input:focus{border-color:#7c3aed;}
 .not-sent-form-btns{display:flex;gap:4px;}
@@ -345,11 +358,21 @@ tr.cancelled-row .rec-title{text-decoration:line-through;}
 .sbtn.s-cancel .sbtn-lbl{color:var(--red);}
 .sbtn-date{font-size:9px;color:var(--g400);text-align:center;}
 .sbtn.s-first .sbtn-date,.sbtn.s-review .sbtn-date,.sbtn.s-cancel .sbtn-date{color:inherit;opacity:.75;}
+.sbtn.s-review .sbtn-date{font-size:8px;line-height:1.1;}
+.sbtn.s-check{display:inline-flex;align-items:center;justify-content:center;min-width:26px;max-width:26px;width:26px;height:26px;padding:0;border-radius:4px;font-size:16px;font-weight:700;line-height:1;}
+.sbtn.s-check[aria-pressed="true"]{box-shadow:inset 0 0 0 1px currentColor;}
+.sbtn.s-check.s-first{color:var(--green);}
+.sbtn.s-check.s-notsent{color:#7c3aed;}
+.sbtn.s-check.s-cancel{color:var(--red);}
+.p2-table th.p2-status-action,.p2-table td.p2-status-action{padding-left:5px;padding-right:5px;text-align:center;border-left:1px solid var(--g200);}
+.p2-table th.p2-status-action{white-space:normal;line-height:1.15;}
+.p2-table th.p2-status-end,.p2-table td.p2-status-end{border-right:1px solid var(--g200);}
 
 /* ─ Inline editable fields ─ */
 .ie{width:100%;border:1px solid transparent;border-radius:4px;padding:4px 6px;font-family:inherit;font-size:12px;color:var(--g900);background:transparent;resize:none;line-height:1.4;transition:border-color .15s,background .15s;}
 .ie:hover{background:var(--g50);border-color:var(--g300);}
 .ie:focus{outline:none;background:#fff;border-color:var(--blue);box-shadow:0 0 0 2px rgba(16,96,232,.1);}
+.p2-status-comment{height:68px;min-height:68px;font-size:10px;}
 .pbi-wrap{display:flex;align-items:center;gap:4px;}
 .pbi-link{display:flex;align-items:center;justify-content:center;width:24px;height:24px;background:var(--purple-light);border-radius:4px;text-decoration:none;flex-shrink:0;transition:background .15s;}
 .pbi-link:hover{background:#e0ccff;}
@@ -789,26 +812,20 @@ window._authReady=restoreSupabaseSession();
     <button class="tab-btn"        id="tab10btn" onclick="switchWorkflowTool()">Workflow Tools</button>
   </div>
   <div class="header-meta">
-    <div id="userGreeting" class="header-user"></div>
-    <div class="header-tools">
-      <div class="header-account">
-        <button class="logout-icon" onclick="doLogout()" title="Log out" aria-label="Log out">
-          <svg viewBox="0 0 24 24"><path d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2c1.1 0 2 .9 2 2v2h-2V4H5v16h9v-2h2v2c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h9z"/></svg>
-          <span>Log out</span>
-        </button>
-        <details class="app-release" onmouseenter="if(window.matchMedia('(hover:hover)').matches)this.open=true" onmouseleave="this.open=false">
-          <summary aria-label="Version history" onclick="if(window.matchMedia('(hover:hover)').matches)event.preventDefault()">V2026.10.02.1</summary>
-          <div class="release-panel" role="tooltip">
-            <div class="release-heading">New version V2026.10.02.1</div>
-            <div class="release-date">What&rsquo;s new:</div>
-            <ul class="release-list">
-              <li>The date was removed from the header.</li>
-              <li>The smaller version label now sits below Log out; its history still opens on hover.</li>
-            </ul>
-          </div>
-        </details>
+    <details class="user-menu" id="userMenu">
+      <summary class="user-menu-trigger"><span id="userGreeting" class="header-user"></span><svg class="user-menu-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5z"/></svg></summary>
+      <div class="user-menu-panel">
+        <div class="user-menu-version">
+          <div class="user-menu-version-number">V2026.10.05.8</div>
+          <div class="release-heading">What&rsquo;s new</div>
+          <ul class="release-list">
+            <li>Status Updates shows comment text without a label and leaves the space empty when there is no comment.</li>
+            <li>The saved Under Review date is smaller.</li>
+          </ul>
+        </div>
+        <button type="button" class="user-menu-logout" onclick="doLogout()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2c1.1 0 2 .9 2 2v2h-2V4H5v16h9v-2h2v2c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h9z"/></svg>Log out</button>
       </div>
-    </div>
+    </details>
   </div>
 </div>
 
@@ -1097,20 +1114,19 @@ window._authReady=restoreSupabaseSession();
       <table class="p2-table">
         <thead>
           <tr>
-            <th style="width:145px;min-width:130px">Record</th>
-            <th style="width:180px;min-width:165px;text-align:center">Client / Brand / SAP</th>
-            <th style="width:110px;min-width:100px">Dates</th>
-            <th style="width:130px;min-width:110px">Sector / Store</th>
-            <th style="width:110px;min-width:90px">Report Type</th>
-            <th style="width:76px;min-width:72px">Report Sent</th>
-            <th style="width:76px;min-width:72px">Not Sent</th>
-            <th style="width:76px;min-width:72px">Under Review</th>
-            <th style="width:76px;min-width:72px">Cancelled</th>
+            <th style="width:265px;min-width:230px">Record</th>
+            <th style="width:135px;min-width:115px">Sector / Store</th>
+            <th style="width:120px;min-width:105px">Dates</th>
+            <th style="width:240px;min-width:210px">Report Type / Comments</th>
+            <th class="p2-status-action" style="width:62px;min-width:58px">Cancelled</th>
+            <th class="p2-status-action" style="width:62px;min-width:58px">Not Sent</th>
+            <th class="p2-status-action" style="width:62px;min-width:58px">Report Sent</th>
+            <th class="p2-status-action p2-status-end" style="width:76px;min-width:72px">Under Review</th>
             <th style="width:130px;min-width:110px">Status Comments</th>
-            <th style="width:216px;min-width:188px">Power BI</th>
+            <th style="width:260px;min-width:245px">Power BI</th>
           </tr>
         </thead>
-        <tbody id="p2body"><tr><td colspan="11" class="p2-empty">Loading…</td></tr></tbody>
+        <tbody id="p2body"><tr><td colspan="10" class="p2-empty">Loading…</td></tr></tbody>
       </table>
     </div>
     <!-- p2FutureSection will be appended here by renderP2Future -->
@@ -2683,7 +2699,21 @@ function updateUserGreeting(){
   el.replaceChildren(document.createTextNode('Welcome, '),name);
 }
 
+document.addEventListener('click', e=>{
+  const menu=document.getElementById('userMenu');
+  if(menu?.open&&!menu.contains(e.target))menu.open=false;
+});
+document.addEventListener('keydown', e=>{
+  const menu=document.getElementById('userMenu');
+  if(e.key==='Escape'&&menu?.open){
+    menu.open=false;
+    menu.querySelector('summary')?.focus();
+  }
+});
+
 async function doLogout(){
+  const menu=document.getElementById('userMenu');
+  if(menu)menu.open=false;
   if(!LOGIN_ENABLED){
     window._pinUnlocked = true;
     const lock = document.getElementById('pinLock');
@@ -3781,7 +3811,7 @@ function renderP2(){
   const tbody=document.getElementById('p2body');
   const cnt=document.getElementById('p2ActiveCount');
   if(cnt) cnt.textContent=`(${p2Filt.length})`;
-  if(!p2Filt.length){tbody.innerHTML='<tr><td colspan="11" class="p2-empty">No records match.</td></tr>';return;}
+  if(!p2Filt.length){tbody.innerHTML='<tr><td colspan="10" class="p2-empty">No records match.</td></tr>';return;}
   // Sort active: no status → under review → report sent → cancelled
   const activeStatusRank=r=>{
     if(r.cancelled_date) return 3;
@@ -3799,7 +3829,7 @@ function renderP2(){
   const complete  = p2Filt.filter(r=>!isFuture(r)&&!p2IsActive(r)&&p2IsSent(r)&&!r.cancelled_date);
   const cancelled = p2Filt.filter(r=>!isFuture(r)&&r.cancelled_date&&(p2Filter==='cancel'||!p2IsCurrentReport(r)));
   let h='';
-  const sec=(rows,label,cls='')=>{if(!rows.length)return;h+=`<tr class="sec-row ${cls}"><td colspan="11">${label} (${rows.length})</td></tr>`;h+=rows.map(p2Row).join('');};
+  const sec=(rows,label,cls='')=>{if(!rows.length)return;h+=`<tr class="sec-row ${cls}"><td colspan="10">${label} (${rows.length})</td></tr>`;h+=rows.map(p2Row).join('');};
   sec(active,`Active now — today is ${fdToday()}`,'act');
   sec(otherActive,'Other active report types');
   sec(future,'Coming soon');
@@ -3827,7 +3857,7 @@ function renderP2Future(){
     <div style="height:6px;background:var(--g50);"></div>
     <table class="p2-table">
       <thead><tr class="sec-row" style="background:var(--blue-light);color:var(--blue);">
-        <td colspan="11" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:8px 12px;border-bottom:2px solid var(--blue);">
+        <td colspan="10" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:8px 12px;border-bottom:2px solid var(--blue);">
           Coming Soon — Future Activations (${p2FutureRows.length})
         </td>
       </tr></thead>
@@ -3841,6 +3871,7 @@ function renderP2Future(){
 function p2Row(r){
   const client  = shortClient(r) || r.client || '(untitled)';
   const brands  = shortBrands(r);
+  const brandLabel=brands.join(', ')||r.brand||'—';
   const storeNames = shortStores(r);
   const title   = r.Title || client;
   const canRow  = r.cancelled_date?'cancelled-row':'';
@@ -3851,63 +3882,60 @@ function p2Row(r){
   // Alert: started but not under review, and no report sent, and not cancelled
   const needsAlert = r.startdate && r.startdate<=todayISO
     && !r.under_review_date && !r.first_report_date && !r.cancelled_date;
+  const warningIcon=needsAlert?'<span title="Started but no report or review yet">⚠️</span> ':'';
 
   // Countdown to end date
   let countdown='';
   if(r.enddate){
     const ms=new Date(r.enddate)-new Date(todayISO);
     const days=Math.round(ms/(1000*60*60*24));
-    if(days>0)       countdown=`<div style="font-size:10px;font-weight:600;color:var(--g400);margin-top:2px;">${days}d left</div>`;
-    else if(days===0)countdown=`<div style="font-size:10px;font-weight:700;color:var(--orange);margin-top:2px;">Last day!</div>`;
-    else             countdown=`<div style="font-size:10px;color:var(--g400);margin-top:2px;">${Math.abs(days)}d ago</div>`;
+    if(days>0)       countdown=`<div style="font-size:10px;font-weight:600;color:var(--g400);margin-top:2px;">${warningIcon}${days}d left</div>`;
+    else if(days===0)countdown=`<div style="font-size:10px;font-weight:700;color:var(--orange);margin-top:2px;">${warningIcon}Last day!</div>`;
+    else             countdown=`<div style="font-size:10px;color:var(--g400);margin-top:2px;">${warningIcon}${Math.abs(days)}d ago</div>`;
   }
+  if(!r.enddate&&needsAlert)countdown=`<div style="font-size:10px;margin-top:2px;">${warningIcon.trim()}</div>`;
 
   const datesCell=`<div style="font-size:11px;color:var(--green);font-weight:600;">${r.startdate?fd(r.startdate):'—'}</div>
     <div style="font-size:11px;color:var(--red);font-weight:600;">${r.enddate?fd(r.enddate):'—'}</div>
-    ${countdown}
-    ${needsAlert?`<div title="Started but no report or review yet" style="font-size:12px;margin-top:2px;">⚠️ No review</div>`:''}`;
+    ${countdown}`;
 
   return `<tr class="${canRow} ${sentRow}" style="cursor:pointer;" title="Double-click to edit this record"
     ondblclick="switchTab(1);loadRec(${r.id})"
     onmouseenter="if(!this._dbl)this.style.outline='2px solid var(--blue)'"
     onmouseleave="this.style.outline=''">
-    <td style="width:145px;min-width:130px;max-width:170px"><div class="rec-title">${esc(title)}</div></td>
-    <td class="p2-client-cell"><div class="p2-client-name">${esc(client)}</div><div class="rec-sub">${esc(brands.join(', ')||'—')}</div><div class="p2-client-sap">${sapCodeLink(r.sapcode)}</div></td>
-    <td class="date-cell" style="font-size:11px;min-width:100px">${datesCell}</td>
-    <td style="max-width:130px"><div style="font-size:11px;color:var(--blue);font-weight:600;margin-bottom:2px;">${esc(shortSectors(r).join(', ')||'—')}</div><div style="font-size:11px;color:var(--g600);">${esc(storeNames.join(', ')||'—')}</div></td>
-    <td style="max-width:110px">${shortReportTypes(r).map(t=>`<span style="display:inline-block;font-size:10px;font-weight:600;padding:1px 7px;border-radius:10px;background:var(--purple-light);color:var(--purple);white-space:nowrap;margin-bottom:2px;">${esc(t)}</span>`).join('<br>')||'<span style="font-size:11px;color:var(--g400);">—</span>'}</td>
-    <td>${sBtn(r,'first_report_date','Report Sent','s-first')}</td>
-    <td>${sNotSentBtn(r)}</td>
-    <td>${sBtn(r,'under_review_date','Under Review','s-review')}</td>
-    <td>${sBtn(r,'cancelled_date','Cancelled','s-cancel')}</td>
-    <td><textarea class="ie" rows="2" placeholder="Status comment…" onblur="saveField(${r.id},'comments_status',this.value)">${esc(r.comments_status||'')}</textarea></td>
-    <td style="width:216px;min-width:202px"><div style="display:flex;flex-direction:column;gap:4px;">
-      ${pbiUrl?`<a class="pbi-link" href="${esc(pbiUrl)}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:5px;padding:3px 8px;font-size:11px;font-weight:600;color:var(--purple);text-decoration:none;background:var(--purple-light);border-radius:4px;width:fit-content;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h7v4H3zm0 6h7v12H3zm9-6h9v18h-9z"/></svg>${esc(r.powerbi_title||'Open Report')}</a>`:''}
-      <input type="text" class="ie" placeholder="Report name…" value="${esc(r.powerbi_title||'')}" onblur="saveField(${r.id},'powerbi_title',this.value)" style="font-size:11px;">
-      <input type="url" class="ie" placeholder="Paste URL…" value="${esc(r.powerbi_url||'')}" onblur="saveField2(${r.id},'powerbi_url',this.value)" style="font-size:11px;" title="${esc(r.powerbi_url||'')}">
+    <td class="p2-record-cell"><div class="rec-title">${esc(title)}</div><div class="p2-record-brand">${esc(brandLabel)}</div><div class="p2-record-client">${esc(client)}</div><div class="p2-record-sap">${sapCodeLink(r.sapcode)}</div></td>
+    <td style="max-width:135px"><div style="font-size:11px;color:var(--blue);font-weight:600;margin-bottom:2px;">${esc(shortSectors(r).join(', ')||'—')}</div><div style="font-size:11px;color:var(--g600);">${esc(storeNames.join(', ')||'—')}</div></td>
+    <td class="date-cell" style="font-size:11px;min-width:105px">${datesCell}</td>
+    <td class="p2-report-cell"><div class="p2-report-types">${shortReportTypes(r).map(t=>`<span style="display:inline-block;font-size:10px;font-weight:600;padding:1px 7px;border-radius:10px;background:var(--purple-light);color:var(--purple);white-space:nowrap;margin-bottom:2px;">${esc(t)}</span>`).join('<br>')||'<span style="font-size:11px;color:var(--g400);">—</span>'}</div>${String(r.comments??'').trim()?`<div class="p2-report-comment"><div class="p2-comment-text">${esc(r.comments)}</div></div>`:''}</td>
+    <td class="p2-status-action">${sBtn(r,'cancelled_date','Cancelled','s-cancel')}</td>
+    <td class="p2-status-action">${sNotSentBtn(r)}</td>
+    <td class="p2-status-action">${sBtn(r,'first_report_date','Report Sent','s-first')}</td>
+    <td class="p2-status-action p2-status-end">${sBtn(r,'under_review_date','Under Review','s-review')}</td>
+    <td><textarea class="ie p2-status-comment" rows="4" placeholder="Status comment…" onblur="saveField(${r.id},'comments_status',this.value)">${esc(r.comments_status||'')}</textarea></td>
+    <td style="width:260px;min-width:245px"><div style="display:flex;flex-direction:column;gap:4px;">
+      ${pbiUrl?`<a class="pbi-link" href="${esc(pbiUrl)}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:5px;padding:3px 8px;font-size:10px;font-weight:600;color:var(--purple);text-decoration:none;background:var(--purple-light);border-radius:4px;width:fit-content;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h7v4H3zm0 6h7v12H3zm9-6h9v18h-9z"/></svg>${esc(r.powerbi_title||'Open Report')}</a>`:''}
+      <input type="text" class="ie" placeholder="Report name…" value="${esc(r.powerbi_title||'')}" onblur="saveField(${r.id},'powerbi_title',this.value)" style="font-size:8px;">
+      <input type="url" class="ie" placeholder="Paste URL…" value="${esc(r.powerbi_url||'')}" onblur="saveField2(${r.id},'powerbi_url',this.value)" style="font-size:8px;" title="${esc(r.powerbi_url||'')}">
     </div></td>
   </tr>`;
 }
 
 function sBtn(r,col,label,doneClass){
   const v=r[col],cls=v?doneClass:'',ds=v?fd(v):'Click to set';
-  return `<button class="sbtn ${cls}" onclick="toggleStatus(${r.id},'${col}',${v?'true':'false'})"><span class="sbtn-lbl">${v?'':''}${label}</span><span class="sbtn-date">${ds}</span></button>`;
+  const hint=v?`${label}: ${fd(v)}. Click to clear.`:`${label}: click to set.`;
+  if(col!=='under_review_date')return `<button type="button" class="sbtn s-check ${cls}" title="${esc(hint)}" aria-label="${esc(hint)}" aria-pressed="${!!v}" onclick="toggleStatus(${r.id},'${col}',${v?'true':'false'})"><span aria-hidden="true">${v?'✓':''}</span></button>`;
+  return `<button type="button" class="sbtn ${cls}" title="${esc(hint)}" aria-label="${esc(hint)}" onclick="toggleStatus(${r.id},'${col}',${v?'true':'false'})"><span class="sbtn-lbl">${label}</span><span class="sbtn-date">${ds}</span></button>`;
 }
 
 function sNotSentBtn(r){
   if(r.not_sent_date){
+    const hint=`Not Sent: ${fd(r.not_sent_date)}${r.not_sent_reason?`. Reason: ${r.not_sent_reason}`:''}. Click to clear.`;
     return `<div class="not-sent-wrap">
-      <button class="sbtn s-notsent" onclick="clearNotSent(${r.id})">
-        <span class="sbtn-lbl">Not Sent — ${fd(r.not_sent_date)}</span>
-      </button>
-      ${r.not_sent_reason?`<div class="not-sent-reason-show">"${esc(r.not_sent_reason)}"</div>`:''}
+      <button type="button" class="sbtn s-check s-notsent" title="${esc(hint)}" aria-label="${esc(hint)}" aria-pressed="true" onclick="clearNotSent(${r.id})"><span aria-hidden="true">✓</span></button>
     </div>`;
   }
   return `<div class="not-sent-wrap" id="nsw-${r.id}">
-    <button class="sbtn" onclick="showNotSentForm(${r.id})">
-      <span class="sbtn-lbl">Not Sent</span>
-      <span class="sbtn-date">Add reason</span>
-    </button>
+    <button type="button" class="sbtn s-check" title="Not Sent: click to add a reason." aria-label="Not Sent: click to add a reason." aria-pressed="false" onclick="showNotSentForm(${r.id})"></button>
   </div>`;
 }
 
@@ -3927,6 +3955,7 @@ function showNotSentForm(id){
 async function saveNotSent(id){
   const reason=(document.getElementById('nsri-'+id)?.value||'').trim();
   if(!reason){toast('Please enter a reason','error');return;}
+  if(!window.confirm('Mark this record as Not Sent and save the reason?'))return;
   try{
     showLoad(true);
     const today=new Date().toISOString().split('T')[0];
@@ -3939,6 +3968,7 @@ async function saveNotSent(id){
 }
 
 async function clearNotSent(id){
+  if(!window.confirm('Clear the Not Sent date and reason for this record?'))return;
   try{
     showLoad(true);
     await sbPatch('InsightsTracking',id,{not_sent_date:null,not_sent_reason:null});
@@ -3950,6 +3980,8 @@ async function clearNotSent(id){
 }
 
 async function toggleStatus(id,col,has){
+  const label={first_report_date:'Report Sent',under_review_date:'Under Review',cancelled_date:'Cancelled'}[col]||'status';
+  if(!window.confirm(has?`Clear the ${label} date for this record?`:`Set ${label} to today for this record?`))return;
   try{
     showLoad(true);
     const val=has?null:new Date().toISOString().split('T')[0];
@@ -4172,11 +4204,14 @@ function workflowDetail(record,page){
   const compliance=Number.isFinite(record.reporting_compliance_pct)
     ?`${record.reporting_compliance_pct}% · ${record.reporting_compliance_reported}/${record.reporting_compliance_total} reportable shifts · Absent: ${Number(record.reporting_compliance_absent)||0}`
     :'Compliance unavailable';
+  const returnToStatusButton=page===3&&!isValidated&&!isSent
+    ?`<button class="btn-unvalidate wf-action" type="button" onclick="returnToStatusUpdates(${record.id})" style="margin-top:8px;width:100%;">Cancel / Return to Status Updates</button>`
+    :'';
   let action='';
   if(page===3){
     action=isValidated
       ?`<div class="wf-status ok">Validated by ${esc(record.validated_by||'—')}</div><button class="btn-unvalidate wf-action" onclick="toggleValidate(${record.id},true)">Undo validation</button>`
-      :`<div class="validate-name-wrap">${buildOpsDropdown(record)}</div><button class="btn-validate wf-action" id="vbtn-${record.id}" onclick="tryValidate(${record.id})" disabled>Validate</button>`;
+      :`<div class="validate-name-wrap">${buildOpsDropdown(record)}</div><button class="btn-validate wf-action" id="vbtn-${record.id}" onclick="tryValidate(${record.id})" disabled>Validate</button>${returnToStatusButton}`;
   }else if(isSent){
     action=`<div style="padding:9px;border-radius:7px;background:var(--green-light);color:var(--green);font-size:11.5px;font-weight:700;text-align:center;">✓ Final report was sent<br>${fd(record.email_sent_date||record.first_report_date)||'—'}</div>`;
   }else{
@@ -4242,7 +4277,7 @@ function renderP3(){
   const cid3=getCompanyFilter('p3-company-filter');
   const sid3=getCompanyFilter('p3-sector-filter');
   const clientQuery=String(document.getElementById('p3-client-filter')?.value||'').trim().toLowerCase();
-  let filteredRows=p3All;
+  let filteredRows=p3All.filter(record=>!!record.under_review_date);
   if(cid3)filteredRows=filteredRows.filter(r=>matchesCompany(r,cid3));
   if(sid3)filteredRows=filteredRows.filter(r=>matchesSector(r,sid3));
   if(clientQuery)filteredRows=filteredRows.filter(record=>String(shortClient(record)||record.client||'').toLowerCase().includes(clientQuery));
@@ -4899,6 +4934,28 @@ async function returnToUnderReview(id){
     renderP3();
     renderP4();
     toast('Record returned to Under Review.','success');
+  }catch(error){toast('Could not return the record: '+error.message,'error');}
+  finally{showLoad(false);}
+}
+
+async function returnToStatusUpdates(id){
+  const record=p3All.find(row=>String(row.id)===String(id));
+  if(!record||!record.under_review_date||record.validated_date||record.email_sent_date||record.first_report_date){
+    toast('Only records awaiting validation can return to Status Updates.','error');
+    return;
+  }
+  if(!window.confirm('Return this record to Status Updates? The Under Review date will be cleared.'))return;
+  try{
+    showLoad(true);
+    const patch={under_review_date:null};
+    await sbPatch('InsightsTracking',id,patch);
+    updateWorkflowRecordLocal(id,patch);
+    p3All=p3All.filter(row=>String(row.id)!==String(id));
+    workflowSelected[3]=null;
+    renderP3();
+    renderP4();
+    if(p2All.length)applyP2Filter();
+    toast('Record returned to Status Updates.','success');
   }catch(error){toast('Could not return the record: '+error.message,'error');}
   finally{showLoad(false);}
 }
