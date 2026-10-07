@@ -6386,7 +6386,7 @@ async function cc_load(){
         cc_schemaReady=false;
       }
     }
-    cc_rows=cc_rows.filter(record=>!isNoReportingRecord(record)&&!record.cancelled_date&&!record.not_sent_date&&!record.first_report_date&&!record.email_sent_date);
+    cc_rows=cc_rows.filter(record=>!isNoReportingRecord(record)&&!record.cancelled_date&&!record.not_sent_date);
     await cc_applyAutomaticCompliance();
     if(!cc_rows.some(record=>String(record.id)===String(cc_selectedId)))cc_selectedId=cc_rows[0]?.id??null;
     cc_populateFilters();cc_render();
@@ -6450,14 +6450,19 @@ function cc_renderDetail(record){
   const missing=[!record.reporting_compliant?'reporting compliance':'',!record.kpis_ok?'KPI confirmation':'',!record.global_feedback_received?'global feedback':''].filter(Boolean);
   const absent=Number(record.reporting_compliance_absent)||0,backup=Number(record.reporting_compliance_backup)||0;
   const complianceHelp=Number.isFinite(record.reporting_compliance_pct)?`${record.reporting_compliance_pct}% · ${record.reporting_compliance_reported}/${record.reporting_compliance_total} reportable shifts · Absent: ${absent}${backup?` · Absent with backup: ${backup}`:''}${record.reporting_compliance_pct>=75?' · auto-confirmed at 75%+':' · manual override available'}`:'Calculated from Reporting Check · manual override available';
-  const emailActions=allReady&&emails.length?`<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px"><a class="cc-email" href="${esc(mailto)}">Open client email</a><button class="cc-email" type="button" onclick="cc_confirmEmailSent(${record.id})" style="background:var(--green)">Mark email sent</button></div>`:`<span class="cc-email disabled">${emails.length?'Open client email':'No client email linked'}</span>`;
+  const sentDate=record.email_sent_date||record.first_report_date;
+  const emailActions=sentDate
+    ?`<span class="cc-email disabled" style="color:var(--green);border-color:var(--green-light);background:var(--green-light)">Report sent · ${fd(sentDate)}</span>`
+    :allReady&&emails.length
+      ?`<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px"><a class="cc-email" href="${esc(mailto)}">Open client email</a><button class="cc-email" type="button" onclick="cc_confirmEmailSent(${record.id})" style="background:var(--green)">Mark email sent</button></div>`
+      :`<span class="cc-email disabled">${emails.length?'Open client email':'No client email linked'}</span>`;
   detail.innerHTML=`<div class="cc-detail-head"><div class="cc-eyebrow">Final client check · ${ccCountdownLabel(record.enddate)}</div><div class="cc-detail-title">${esc(record.Title||'Untitled animation')}</div><div class="cc-detail-sub">Mission ${missionLinksForRecord(record)} · SAP ${sapCodeLink(record.sapcode)} · ${esc(shortReportTypes(record).join(', ')||'No report type')}</div><div class="cc-date-range"><strong>Operation date range</strong>${fd(record.startdate)||'—'} → ${fd(record.enddate)||'—'}</div></div><div class="cc-detail-body"><div class="cc-section"><div class="cc-section-title">Final requirements</div>${cc_checkHtml(!!record.reporting_compliant,'Reporting compliance (75% minimum)',complianceHelp,'reporting_compliant',record.id)}${cc_checkHtml(!!record.kpis_ok,'KPIs checked','Select when results and data quality are confirmed','kpis_ok',record.id)}${cc_checkHtml(!!record.global_feedback_received,'Global feedback received','Select when final feedback is confirmed','global_feedback_received',record.id)}</div><div class="cc-section"><div class="cc-section-title">Power BI</div>${safeHttpUrl(record.powerbi_url)?`<a class="cc-pbi" style="width:100%;justify-content:center;padding:7px" href="${esc(safeHttpUrl(record.powerbi_url))}" target="_blank" rel="noopener noreferrer">${esc(record.powerbi_title||'Open Power BI report')}</a>`:'<div class="cc-meta">No Power BI link set.</div>'}</div></div><div class="cc-detail-foot"><div class="cc-ready-note" style="color:${allReady?'var(--green)':'var(--amber)'}">${allReady?'All requirements met · client email is ready':`Waiting for ${missing.join(', ')||'database setup'}`}</div>${emailActions}</div>`;
 }
 async function cc_toggle(id,field,value){
   try{await sbPatch('InsightsTracking',id,{[field]:value});const record=cc_rows.find(item=>String(item.id)===String(id));if(record)record[field]=value;cc_schemaReady=true;cc_render();toast('Closing check updated.','success');}catch(error){toast('Could not save this check. Confirm the Closing Check columns exist in Supabase.','error');}
 }
 async function cc_markEmailSent(id){
-  try{const today=ccToday();await sbPatch('InsightsTracking',id,{email_sent_date:today,first_report_date:today});cc_rows=cc_rows.filter(record=>String(record.id)!==String(id));cc_selectedId=cc_rows[0]?.id??null;cc_populateFilters();cc_render();toast('Final report email marked as sent.','success');}catch(error){toast('Could not mark final report as sent: '+error.message,'error');}
+  try{const today=ccToday();await sbPatch('InsightsTracking',id,{email_sent_date:today,first_report_date:today});const record=cc_rows.find(item=>String(item.id)===String(id));if(record){record.email_sent_date=today;record.first_report_date=today;}cc_render();toast('Final report email marked as sent.','success');}catch(error){toast('Could not mark final report as sent: '+error.message,'error');}
 }
 function cc_confirmEmailSent(id){if(confirm('Confirm that the final client email has already been sent?'))cc_markEmailSent(id);}
 async function cc_openReporting(id){
