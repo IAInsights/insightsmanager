@@ -1200,6 +1200,12 @@ window._authReady=restoreSupabaseSession();
         <select class="company-filter" id="p4-sector-filter" onchange="renderP4()" title="Filter by sector">
           <option value="">All sectors</option>
         </select>
+        <select class="company-filter" id="p4-client-filter" onchange="renderP4()" title="Filter by client">
+          <option value="">All clients</option>
+        </select>
+        <select class="company-filter" id="p4-sap-filter" onchange="renderP4()" title="Filter by SAP code">
+          <option value="">All SAP codes</option>
+        </select>
         <button class="company-filter" type="button" onclick="resetReviewFilters(4)">Reset</button>
         <button onclick="loadP3(true).then(()=>renderP4())" title="Refresh" style="display:flex;align-items:center;gap:5px;padding:6px 14px;border:1.5px solid var(--g300);border-radius:var(--r);background:#fff;font-family:inherit;font-size:12px;font-weight:600;color:var(--g600);cursor:pointer;">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
@@ -2088,6 +2094,10 @@ function resetFiltersForPage(page){
     populateReviewSectorFilter(4);
     const sector=document.getElementById('p4-sector-filter');
     if(sector)sector.value='';
+    const client=document.getElementById('p4-client-filter');
+    if(client)client.value='';
+    const sap=document.getElementById('p4-sap-filter');
+    if(sap)sap.value='';
     p4View='ready';
     ['ready','sent'].forEach(view=>document.getElementById('p4-tab-'+view)?.classList.toggle('active',view==='ready'));
   }
@@ -4338,17 +4348,39 @@ function setP4View(v){
   renderP4();
 }
 
+function p4SetFilterOptions(id,values,label){
+  const select=document.getElementById(id);if(!select)return;
+  const previous=select.value;
+  const unique=[...new Set(values.map(value=>String(value||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true,sensitivity:'base'}));
+  select.innerHTML=`<option value="">All ${label}</option>`+unique.map(value=>`<option value="${esc(value)}">${esc(value)}</option>`).join('');
+  select.value=unique.includes(previous)?previous:'';
+}
+
+function populateP4ClientSapFilters(){
+  const companyId=getCompanyFilter('p4-company-filter');
+  const sectorId=getCompanyFilter('p4-sector-filter');
+  const isSent=record=>!!(record.email_sent_date||record.first_report_date);
+  const source=p3All.filter(record=>(!!record.validated_date||isSent(record))&&matchesCompany(record,companyId)&&matchesSector(record,sectorId));
+  p4SetFilterOptions('p4-client-filter',source.map(record=>shortClient(record)||record.client),'clients');
+  p4SetFilterOptions('p4-sap-filter',source.map(record=>record.sapcode),'SAP codes');
+}
+
 function renderP4(){
   const body=document.getElementById('p4body');
   if(!body) return;
+  populateP4ClientSapFilters();
   const cid4=getCompanyFilter('p4-company-filter');
   const sid4=getCompanyFilter('p4-sector-filter');
+  const client4=getCompanyFilter('p4-client-filter');
+  const sap4=getCompanyFilter('p4-sap-filter');
   // Sent BI Special records can bypass manual validation because delivery is
   // completed by the separate Power Automate flow.
   const isSent = r=>!!(r.email_sent_date||r.first_report_date);
   const eligible = p3All.filter(r=>(!!r.validated_date||isSent(r))
     &&(cid4?matchesCompany(r,cid4):true)
-    &&(sid4?matchesSector(r,sid4):true));
+    &&(sid4?matchesSector(r,sid4):true)
+    &&(!client4||(shortClient(r)||r.client||'')===client4)
+    &&(!sap4||String(r.sapcode||'')===sap4));
   // "Already sent" = email_sent_date OR first_report_date (handles legacy records)
   const readyRows=eligible.filter(r=>!!r.validated_date&&!isSent(r));
   const sentRows=eligible.filter(r=>isSent(r));
