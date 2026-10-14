@@ -1515,8 +1515,11 @@ window._authReady=restoreSupabaseSession();
   <div class="led-toolbar">
     <div class="led-title"><strong>Legacy Data Editor</strong><span>Edit existing Supabase records</span></div>
     <div class="led-tabs">
-      <button class="led-tab active" id="ledTabSales" onclick="led_switchTable('sales')">Sales</button>
-      <button class="led-tab" id="ledTabQuestionnaire" onclick="led_switchTable('questionnaire')">Questionnaire</button>
+      <button class="led-tab active" data-led-table="sales" onclick="led_switchTable('sales')">Sales</button>
+      <button class="led-tab" data-led-table="questionnaire" onclick="led_switchTable('questionnaire')">Questionnaire</button>
+      <button class="led-tab" data-led-table="installation" onclick="led_switchTable('installation')">Installation</button>
+      <button class="led-tab" data-led-table="fdf" onclick="led_switchTable('fdf')">FDF</button>
+      <button class="led-tab" data-led-table="global" onclick="led_switchTable('global')">Global Feedback</button>
     </div>
     <select class="led-control" id="ledSearchField" onchange="led_scheduleLoad(true)"></select>
     <input class="led-control led-search" id="ledSearch" type="search" placeholder="Search records…" oninput="led_scheduleLoad(true)">
@@ -1533,7 +1536,7 @@ window._authReady=restoreSupabaseSession();
   </div>
   <div class="led-shell" id="ledShell">
     <section class="led-card">
-      <div class="led-table-wrap" id="ledTableArea"><div class="led-empty">Open Sales or Questionnaire to load records.</div></div>
+      <div class="led-table-wrap" id="ledTableArea"><div class="led-empty">Choose a legacy table to load records.</div></div>
       <div class="led-pager" id="ledPager" style="display:none;">
         <span id="ledPageInfo"></span>
         <div style="display:flex;gap:6px;"><button class="led-btn" id="ledPrev" onclick="led_changePage(-1)">Previous</button><button class="led-btn" id="ledNext" onclick="led_changePage(1)">Next</button></div>
@@ -5354,6 +5357,51 @@ const LED_CONFIG={
       ['customa','Custom A','number'],['customb','Custom B','number'],['stand_comments','Stand comments','textarea'],['ftbuyer','FT buyer','number'],
       ['Tastings','Tastings','number'],['Pieces Sold','Pieces sold','number']
     ]
+  },
+  installation:{
+    label:'Installation',table:'legacy_installation',pk:'ID',date:'Date',
+    columns:[['ID','ID'],['Date','Date'],['Brand','Brand'],['Store','Store'],['promotername','Promoter'],['Materials','Materials'],['Issues','Issues']],
+    search:[['ID','ID','number'],['Brand','Brand','text'],['Store','Store','text'],['promotername','Promoter','text'],['Materials','Materials','text'],['Issues','Issues','text']],
+    lookups:[
+      {key:'client',label:'Client',idColumn:'clientid',idType:'text'},
+      {key:'brand',label:'Brand',idColumn:'Brandid',textColumn:'Brand'},
+      {key:'store',label:'Store',idColumn:'Storeid',textColumn:'Store'}
+    ],
+    fields:[
+      ['Date','Date','date'],['promotername','Promoter','text'],['Materials','Materials','text'],['MaterialsStored','Materials stored','textarea'],
+      ['MaterialsComments','Materials comments','textarea'],['Comments about GWPs','Comments about GWPs','textarea'],
+      ['Issues','Issues','textarea'],['AdditionalComments','Additional comments','textarea']
+    ]
+  },
+  fdf:{
+    label:'FDF',table:'legacy_fdf',pk:'ID',date:'Date',
+    columns:[['ID','ID'],['Date','Date'],['Brand','Brand'],['Store','Store'],['promotername','Promoter'],['Materials','Materials'],['Uniform','Uniform'],['Tasting','Tasting']],
+    search:[['ID','ID','number'],['Brand','Brand','text'],['Store','Store','text'],['promotername','Promoter','text'],['Materials','Materials','text'],['Visibility','Visibility','text']],
+    lookups:[
+      {key:'client',label:'Client',idColumn:'clientid',idType:'text'},
+      {key:'brand',label:'Brand',idColumn:'Brandid',textColumn:'Brand'},
+      {key:'store',label:'Store',idColumn:'Storeid',textColumn:'Store'}
+    ],
+    fields:[
+      ['Date','Date','date'],['promotername','Promoter','text'],['Best Days','Best days','text'],['Main destinations','Main destinations','textarea'],
+      ['Materials','Materials','text'],['MaterialsInput','Materials details','textarea'],['Uniform','Uniform','text'],['Tasting','Tasting','textarea'],
+      ['Visibility','Visibility','textarea'],['Competition','Competition','textarea']
+    ]
+  },
+  global:{
+    label:'Global Feedback',table:'legacy_global',pk:'ID',date:'Date',
+    columns:[['ID','ID'],['Date','Date'],['Brand','Brand'],['Store','Store'],['promotername','Promoter'],['Product','Product'],['Thoughts','Thoughts']],
+    search:[['ID','ID','number'],['Brand','Brand','text'],['Store','Store','text'],['promotername','Promoter','text'],['Product','Product','text'],['Thoughts','Thoughts','text']],
+    lookups:[
+      {key:'client',label:'Client',idColumn:'Client_id',idType:'text'},
+      {key:'brand',label:'Brand',idColumn:'Brandid',textColumn:'Brand'},
+      {key:'store',label:'Store',idColumn:'Storeid',textColumn:'Store'}
+    ],
+    fields:[
+      ['Date','Date','date'],['promotername','Promoter','text'],['Display','Display','textarea'],['Price','Price','textarea'],
+      ['Product','Product','textarea'],['Packaging','Packaging','textarea'],['Recommendations','Recommendations','textarea'],
+      ['Thoughts','Thoughts','textarea'],['Competition','Competition','textarea']
+    ]
   }
 };
 let led_table='sales',led_page=1,led_pageSize=50,led_rows=[],led_total=0,led_initialized=false;
@@ -5399,8 +5447,7 @@ function led_switchTable(table){
   if(!LED_CONFIG[table]||table===led_table)return;
   if(!led_closeEditor())return;
   led_table=table;led_page=1;
-  document.getElementById('ledTabSales').classList.toggle('active',table==='sales');
-  document.getElementById('ledTabQuestionnaire').classList.toggle('active',table==='questionnaire');
+  document.querySelectorAll('[data-led-table]').forEach(button=>button.classList.toggle('active',button.dataset.ledTable===table));
   document.getElementById('ledSearch').value='';
   document.getElementById('ledFrom').value='';
   document.getElementById('ledTo').value='';
@@ -5446,6 +5493,19 @@ function led_resetFilters(){
 }
 function led_searchType(name){return led_config().search.find(field=>field[0]===name)?.[2]||'text';}
 function led_safeSearch(value){return String(value||'').trim().replace(/[*,()]/g,' ');}
+function led_applyEntityFilter(url,key,selectedId){
+  if(!selectedId)return;
+  const config=led_config();
+  const definition=config.lookups.find(item=>item.key===key);
+  if(definition){
+    url.searchParams.set(led_quoteColumn(definition.idColumn),`eq.${selectedId}`);
+    return;
+  }
+  if(key==='promoter'&&config.fields.some(([name])=>name==='promotername')){
+    const promoter=led_refs.promoter.find(item=>String(item.id)===String(selectedId));
+    if(promoter)url.searchParams.set('promotername',`eq.${promoter.label}`);
+  }
+}
 async function led_loadPage(){
   const requestId=++led_loadRequest;
   const config=led_config();
@@ -5463,9 +5523,9 @@ async function led_loadPage(){
   const brandId=document.getElementById('ledBrandFilter')?.value;
   const storeId=document.getElementById('ledStoreFilter')?.value;
   const promoterId=document.getElementById('ledPromoterFilter')?.value;
-  if(brandId)url.searchParams.set('Brandid',`eq.${brandId}`);
-  if(storeId)url.searchParams.set('Storeid',`eq.${storeId}`);
-  if(promoterId)url.searchParams.set('Promoterid',`eq.${promoterId}`);
+  led_applyEntityFilter(url,'brand',brandId);
+  led_applyEntityFilter(url,'store',storeId);
+  led_applyEntityFilter(url,'promoter',promoterId);
   const from=document.getElementById('ledFrom').value;
   const to=document.getElementById('ledTo').value;
   if(from)url.searchParams.set(led_quoteColumn(config.date),`gte.${from}`);
@@ -5600,8 +5660,9 @@ function led_renderEditorForm(){
   const config=led_config();
   const row=led_currentRow;
   const form=document.getElementById('ledForm');
-  form.className=`led-form${led_table==='questionnaire'?' questionnaire':''}`;
-  const note=`<div class="led-lookup-note">Select the names from the lists. Their database IDs are updated automatically; ${led_table==='sales'?'Product, Brand and Client':'Brand and Client'} are linked.</div>`;
+  form.className=`led-form${led_table==='sales'?'':' questionnaire'}`;
+  const linkedLabels=config.lookups.map(def=>def.label).join(', ');
+  const note=`<div class="led-lookup-note">Select linked values from the lists. Their database IDs are updated automatically${linkedLabels?`; linked fields: ${esc(linkedLabels)}`:''}.</div>`;
   if(led_table==='questionnaire'){
     const lookup=key=>led_lookupFieldHtml(config.lookups.find(def=>def.key===key));
     const priorityNames=['Date','Turnover of the day','Pieces Sold','Interactions','Stopping rate','Conversion rate','customa','customb'];
@@ -5617,7 +5678,7 @@ function led_renderEditorForm(){
   }else{
     form.innerHTML=note+
       config.lookups.map(led_lookupFieldHtml).join('')+
-      `<label class="led-bulk-option"><input type="checkbox" id="ledBulkSameDay"><span><strong>Apply entity changes to this same-day Sales group</strong><span>Also update rows with the same original Date, Brand, Promoter and Store. Only changed Brand, Promoter or Store values will be applied.</span></span></label>`+
+      (led_table==='sales'?`<label class="led-bulk-option"><input type="checkbox" id="ledBulkSameDay"><span><strong>Apply entity changes to this same-day Sales group</strong><span>Also update rows with the same original Date, Brand, Promoter and Store. Only changed Brand, Promoter or Store values will be applied.</span></span></label>`:'')+
       config.fields.map((field,index)=>led_scalarFieldHtml(field,index,row)).join('');
   }
   led_refreshLookupControls();
@@ -5656,7 +5717,7 @@ async function led_openEditor(id){
   document.getElementById('ledEditorSub').textContent=`Record ${config.pk} ${row[config.pk]}`;
   document.getElementById('ledEditor').classList.add('open');
   document.getElementById('ledShell').classList.add('editor-open');
-  document.getElementById('ledShell').classList.toggle('questionnaire-editor',led_table==='questionnaire');
+  document.getElementById('ledShell').classList.toggle('questionnaire-editor',led_table!=='sales');
   document.getElementById('ledForm').innerHTML='<div class="led-empty" style="grid-column:1/-1;padding:35px 10px;">Loading linked lists…</div>';
   led_setState('saving','Loading lists…');
   led_renderTable();
@@ -5697,9 +5758,12 @@ function led_buildPayload(){
   led_config().lookups.forEach(def=>{
     const selected=led_lookupSelection[def.key];
     if(selected?.id!==null&&selected?.id!==undefined&&String(selected.id)!==''){
-      const id=Number(selected.id);
-      if(!Number.isFinite(id))throw new Error(`${def.label} ID is invalid.`);
-      payload[def.idColumn]=id;
+      if(def.idType==='text')payload[def.idColumn]=String(selected.id);
+      else{
+        const id=Number(selected.id);
+        if(!Number.isFinite(id))throw new Error(`${def.label} ID is invalid.`);
+        payload[def.idColumn]=id;
+      }
     }else payload[def.idColumn]=null;
     if(def.textColumn)payload[def.textColumn]=selected?.label||null;
   });
