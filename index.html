@@ -1967,6 +1967,22 @@ const sbPatch = async (t,id,d)=>{ await ensureFreshSession(); const sid=parseInt
 
 // ── State ──────────────────────────────────────────────────────────────────
 let allCo=[],allCl=[],allBr=[],allSt=[],allCon=[],allRT=[],allSectors=[],allAccountManagers=[];
+const REPORT_TYPE_PRIORITY=new Map([
+  ['bi insights',0],
+  ['bi special',1],
+  ['ba insights',2],
+  ['ba report',3],
+]);
+function orderedVisibleReportTypes(rows){
+  return [...(rows||[])]
+    .filter(row=>row&&row.visible!==false)
+    .sort((a,b)=>{
+      const aName=String(a.type||'').trim(),bName=String(b.type||'').trim();
+      const aRank=REPORT_TYPE_PRIORITY.get(aName.toLowerCase())??100;
+      const bRank=REPORT_TYPE_PRIORITY.get(bName.toLowerCase())??100;
+      return aRank-bRank||aName.localeCompare(bName);
+    });
+}
 let allRetailers=[],allContactRetailers=[];
 let allRec=[],filtRec=[];
 let creatorNamesByEmail=new Map();
@@ -2261,7 +2277,7 @@ async function init(){
       startupGet('Contact retailer links',()=>sbGet('contact_retailers?select=contact_id,retailer_id&order=contact_id,retailer_id')),
       startupGet('Insights Tracking records',()=>sbGetAll('InsightsTracking?select=*&order=startdate.desc.nullslast,createdat.desc'),{required:true}),
     ]);
-    allCo=co||[]; allCl=cl||[]; allBr=br||[]; allSt=st||[]; allCon=con||[]; allRT=rt||[]; allSectors=sec||[];
+    allCo=co||[]; allCl=cl||[]; allBr=br||[]; allSt=st||[]; allCon=con||[]; allRT=orderedVisibleReportTypes(rt); allSectors=sec||[];
     allRetailers=retailers||[]; allContactRetailers=contactRetailers||[];
     allAccountManagers=(ops||[]).filter(isAccountManager);
     setCreatorNames(ops);
@@ -2275,7 +2291,7 @@ async function init(){
     ms.sector.all    =sec.map(s=>({id:s.id,label:s.Name,sub:`ID ${s.id}`,meta:s}));
     ms.contact.all   =con.map(contactOption);
     ms.accountmanager.all=accountManagerOptions();
-    ms.reporttype.all=rt.map(r=>({id:r.id,label:r.type,sub:'',meta:r}));
+    ms.reporttype.all=allRT.map(r=>({id:r.id,label:r.type,sub:'',meta:r}));
     renderList();
     renderDashboard();
     renderEFLanding();
@@ -4897,7 +4913,7 @@ async function refreshEntryForm(){
       sbGet('contact_retailers?select=contact_id,retailer_id&order=contact_id,retailer_id'),
       sbGetAll('InsightsTracking?select=*&order=startdate.desc.nullslast,createdat.desc'),
     ]);
-    allCo=co; allCl=cl; allBr=br; allSt=st; allCon=con; allRT=rt; allSectors=sec;
+    allCo=co; allCl=cl; allBr=br; allSt=st; allCon=con; allRT=orderedVisibleReportTypes(rt); allSectors=sec;
     allRetailers=retailers||[]; allContactRetailers=contactRetailers||[];
     allAccountManagers=(ops||[]).filter(isAccountManager);
     setCreatorNames(ops);
@@ -4911,7 +4927,7 @@ async function refreshEntryForm(){
     ms.sector.all    =sec.map(s=>({id:s.id,label:s.Name,sub:`ID ${s.id}`,meta:s}));
     ms.contact.all   =con.map(contactOption);
     ms.accountmanager.all=accountManagerOptions();
-    ms.reporttype.all=rt.map(r=>({id:r.id,label:r.type,sub:'',meta:r}));
+    ms.reporttype.all=allRT.map(r=>({id:r.id,label:r.type,sub:'',meta:r}));
     populateCompanyFilters();
     initGFOpts();
     renderList();
@@ -6849,8 +6865,9 @@ async function rc_refreshTrackingPickers(){
   try{
     [rc_trackingRecords,rc_trackingReportTypes]=await Promise.all([
       sbGetAll(`InsightsTracking?select=*&startdate=not.is.null&enddate=gte.${RC_MIN_DATE}&order=enddate.desc`),
-      sbGet('report_types?select=id,type&order=type')
+      sbGet('report_types?select=id,type,visible&visible=eq.true&order=type')
     ]);
+    rc_trackingReportTypes=orderedVisibleReportTypes(rc_trackingReportTypes);
   }catch(error){
     rc_trackingRecords=[];rc_trackingReportTypes=[];
   }
@@ -7157,7 +7174,7 @@ async function rc_loadLegacy(){
     const [schedRows,trackingRows,reportTypeRows] = await Promise.all([
       sbGetAll(`GI_ScheduleV2?select=day,promoter_id,promoter_fullname,store_code,pos,pos_id,agency,brand,gi_brand_id,client,role,mission_id,campaign_name,campaign_sapcode,synced_at&day=gte.${from}&day=lte.${to}&promoter_status=neq.Pending&brand=not.ilike.*JTI*&client=neq.${encodeURIComponent('GLOBE TRAVEL RETAIL')}&pos=neq.${encodeURIComponent('TOURNEE TERRAIN')}&campaign_name=not.ilike.*FIELD SUPERVISOR*&order=day.desc,promoter_fullname.asc`),
       sbGetAll(`InsightsTracking?select=id,Title,client,brand,sapcode,mission_id,store,brand_ids,store_ids,client_fk,report_type_ids,startdate,enddate,createdat,first_report_date,under_review_date,cancelled_date,not_sent_date&enddate=gte.${RC_MIN_DATE}`),
-      sbGet('report_types?select=id,type&order=type'),
+      sbGet('report_types?select=id,type,visible&visible=eq.true&order=type'),
     ]);
     if(requestId!==rc_loadRequest)return;
 
@@ -7317,7 +7334,7 @@ async function rc_load(){
     const [schedRows,trackingRows,reportTypeRows,storesWithSector] = await Promise.all([
       sbGetAll(`GI_ScheduleV2?select=day,promoter_id,promoter_fullname,store_code,pos,pos_id,agency,brand,gi_brand_id,client,role,mission_id,campaign_name,campaign_sapcode,timeslot_status,synced_at&day=gte.${from}&day=lte.${to}${selectedScheduleFilter}&promoter_status=neq.Pending&brand=not.ilike.*JTI*&client=neq.${encodeURIComponent('GLOBE TRAVEL RETAIL')}&pos=neq.${encodeURIComponent('TOURNEE TERRAIN')}&campaign_name=not.ilike.*FIELD SUPERVISOR*&or=(timeslot_status.is.null,timeslot_status.neq.Annulé)&order=day.desc,promoter_fullname.asc`),
       sbGetAll(`InsightsTracking?select=*&enddate=gte.${RC_MIN_DATE}`),
-      sbGet('report_types?select=id,type&order=type'),
+      sbGet('report_types?select=id,type,visible&visible=eq.true&order=type'),
       sbGet('GI_stores?select=id,store,Sector_id'),
     ]);
     if(requestId!==rc_loadRequest)return;
