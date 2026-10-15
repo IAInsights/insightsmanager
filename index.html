@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Insights Manager</title>
 <link rel="icon" type="image/png" sizes="64x64" href="favicon.png?v=globe-insights-2">
 <link rel="shortcut icon" type="image/png" href="favicon.png?v=globe-insights-2">
@@ -817,7 +820,7 @@ window._authReady=restoreSupabaseSession();
       <summary class="user-menu-trigger"><span id="userGreeting" class="header-user"></span><svg class="user-menu-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5z"/></svg></summary>
       <div class="user-menu-panel">
         <div class="user-menu-version">
-          <div class="user-menu-version-number">V2026.10.05.8</div>
+          <div class="user-menu-version-number">V2026.10.15.1</div>
           <div class="release-heading">What&rsquo;s new</div>
           <ul class="release-list">
             <li>Status Updates shows comment text without a label and leaves the space empty when there is no comment.</li>
@@ -6995,6 +6998,19 @@ async function rc_initIfNeeded(forceRefresh=false){
     await rc_load();
   }else if(forceRefresh)await rc_load();
 }
+
+let rc_lastFocusRefresh=0;
+async function rc_refreshOnFocus(){
+  if(currentTab!==8||document.hidden||!rc_initialized)return;
+  const now=Date.now();
+  if(now-rc_lastFocusRefresh<30000)return;
+  rc_lastFocusRefresh=now;
+  await rc_refreshTrackingPickers();
+  rc_populateTrackingPickers();
+  await rc_load();
+}
+document.addEventListener('visibilitychange',rc_refreshOnFocus);
+window.addEventListener('focus',rc_refreshOnFocus);
 
 async function rc_refreshTrackingPickers(){
   const fallback=complianceYesterday();
