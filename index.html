@@ -1628,6 +1628,7 @@ window._authReady=restoreSupabaseSession();
       <div class="mfg"><label>Last Name *</label><input type="text" class="mfi" id="mc-lname" placeholder="Last name…"></div>
       <div class="mfg full"><label>Email</label><input type="email" class="mfi" id="mc-email" placeholder="email@example.com"></div>
       <div class="mfg full"><label>Client</label><input type="text" class="mfi readonly" id="mc-client" readonly></div>
+      <div class="mfg full"><label>Preferred Brand <span style="font-size:9.5px;font-weight:500;text-transform:none;color:var(--g400);">Optional · brands from this client only</span></label><select class="mfi" id="mc-brand-preference"></select></div>
       <div class="mfg full">
         <label>Retailers <span style="font-size:9.5px;font-weight:500;text-transform:none;color:var(--g400);">Optional · select one or several</span></label>
         <div class="retailer-picker">
@@ -1647,12 +1648,16 @@ window._authReady=restoreSupabaseSession();
   </div>
 </div>
 
-<!-- MANAGE CONTACT RETAILERS MODAL -->
+<!-- MANAGE CONTACT PREFERENCES MODAL -->
 <div class="modal-bg" id="manageContactRetailerModal" style="display:none" onclick="if(event.target===this)closeManageContactRetailers()">
   <div class="modal retailer-modal">
-    <h3>Manage Contact Retailers</h3>
+    <h3>Manage Contact Preferences</h3>
     <div class="modal-grid">
-      <div class="mfg full"><label>Client contact</label><input type="text" class="mfi readonly" id="mcr-contact" readonly></div>
+      <div class="mfg"><label>First Name *</label><input type="text" class="mfi" id="mcr-fname" maxlength="200"></div>
+      <div class="mfg"><label>Last Name *</label><input type="text" class="mfi" id="mcr-lname" maxlength="200"></div>
+      <div class="mfg full"><label>Email</label><input type="email" class="mfi" id="mcr-email" maxlength="320"></div>
+      <div class="mfg full"><label>Client</label><input type="text" class="mfi readonly" id="mcr-client" readonly></div>
+      <div class="mfg full"><label>Preferred Brand <span style="font-size:9.5px;font-weight:500;text-transform:none;color:var(--g400);">Optional · brands from this client only</span></label><select class="mfi" id="mcr-brand-preference"></select></div>
       <div class="mfg full">
         <label>Retailers <span style="font-size:9.5px;font-weight:500;text-transform:none;color:var(--g400);">Select one or several</span></label>
         <div class="retailer-picker">
@@ -1667,7 +1672,7 @@ window._authReady=restoreSupabaseSession();
     </div>
     <div class="modal-footer">
       <button class="m-btn secondary" onclick="closeManageContactRetailers()">Cancel</button>
-      <button class="m-btn primary" onclick="saveManagedContactRetailers()">Save Retailers</button>
+      <button class="m-btn primary" onclick="saveManagedContactRetailers()">Save Preferences</button>
     </div>
   </div>
 </div>
@@ -2054,12 +2059,33 @@ function retailersForContact(contactId){
 function clientOption(client){
   return{id:client.id,label:client.client,sub:`Client ID ${client.id}`,meta:client};
 }
+function brandsForClient(clientId){
+  return allBr
+    .filter(brand=>String(brand.client_giid)===String(clientId))
+    .sort((a,b)=>String(a.brand||'').localeCompare(String(b.brand||'')));
+}
+function preferredBrandForContact(contact){
+  if(contact?.brand_preference_id==null)return null;
+  return allBr.find(brand=>String(brand.id)===String(contact.brand_preference_id))||null;
+}
+function populateContactBrandPreference(selectId,clientId,selectedBrandId=null){
+  const select=document.getElementById(selectId);
+  if(!select)return;
+  const brands=brandsForClient(clientId);
+  select.innerHTML='<option value="">No preferred brand</option>'+brands.map(brand=>
+    `<option value="${esc(brand.id)}">${esc(brand.brand||'Unnamed brand')} · ID ${esc(brand.id)}${brand.visible===false?' · Not visible':''}</option>`
+  ).join('');
+  select.value=selectedBrandId==null?'':String(selectedBrandId);
+  if(select.value===''&&selectedBrandId!=null)select.value='';
+}
 function contactOption(contact){
   const retailers=retailersForContact(contact.id);
+  const preferredBrand=preferredBrandForContact(contact);
   const retailerText=retailers.length
     ?retailers.map(retailer=>`${retailer.id} · ${retailer.retailer}`).join(', ')
     :'No retailer linked';
-  return{id:contact.id,label:contact.Fullname||'—',sub:`${contact.email||'No email'} · ${retailerText}`,meta:{...contact,retailers}};
+  const brandText=preferredBrand?`Preferred brand: ${preferredBrand.brand}`:'No preferred brand';
+  return{id:contact.id,label:contact.Fullname||'—',sub:`${contact.email||'No email'} · ${brandText} · ${retailerText}`,meta:{...contact,retailers,preferredBrand}};
 }
 function rebuildContactOptions(selectedContactIds=[]){
   const keepIds=new Set((selectedContactIds.length?selectedContactIds:ms.contact.selected.map(option=>option.id)).map(String));
@@ -2075,7 +2101,10 @@ function renderContactRetailerSummary(){
   if(!ms.contact.selected.length){root.innerHTML='<span class="contact-retailer-empty">Select a contact to view or manage retailers.</span>';return;}
   root.innerHTML=ms.contact.selected.map(contact=>{
     const retailers=retailersForContact(contact.id);
-    return `<div class="contact-retailer-row"><span class="contact-retailer-name">${esc(contact.label)}</span>${retailers.length
+    const preferredBrand=preferredBrandForContact(contact.meta||contact);
+    return `<div class="contact-retailer-row"><span class="contact-retailer-name">${esc(contact.label)}</span>${preferredBrand
+      ?`<span class="retailer-chip">Preferred brand · ${esc(preferredBrand.brand)} · ID ${esc(preferredBrand.id)}</span>`
+      :'<span class="contact-retailer-empty">No preferred brand.</span>'}${retailers.length
       ?retailers.map(retailer=>`<span class="retailer-chip">ID ${esc(retailer.id)} · ${esc(retailer.retailer)}</span>`).join('')
       :'<span class="contact-retailer-empty">No retailer linked yet.</span>'}
       <button type="button" class="contact-retailer-manage" onclick="event.stopPropagation();openManageContactRetailers(${Number(contact.id)})">Manage</button></div>`;
@@ -2282,7 +2311,7 @@ async function init(){
       startupGet('Clients',()=>sbGet('GI_clients?select=id,client&active=eq.true&order=client')),
       startupGet('Brands',()=>sbGet('GI_brands?select=id,brand,client_giid,visible&order=brand')),
       startupGet('Stores',()=>sbGet('GI_stores?select=id,store,country_id,Sector_id&visible=eq.true&order=store')),
-      startupGet('Client contacts',()=>sbGet('C_contacts?select=id,Fullname,email,client_id,Retailer&active=eq.true&order=Fullname')),
+      startupGet('Client contacts',()=>sbGet('C_contacts?select=id,Fname,Lname,Fullname,email,client_id,Retailer,brand_preference_id&active=eq.true&order=Fullname')),
       startupGet('Report types',()=>sbGet('report_types?select=id,type&visible=eq.true&order=type')),
       startupGet('Sectors',()=>sbGet('Sector?select=id,Name,companyid&order=Name')),
       startupGet('Operations contacts',()=>sbGet('Contacts_Operations?select=id,firstname,lastname,email,jobtitle,company&order=lastname,firstname')),
@@ -3603,6 +3632,7 @@ function openAddContact(){
   document.getElementById('mc-lname').value='';
   document.getElementById('mc-email').value='';
   document.getElementById('mc-client').value=cOpt.label;
+  populateContactBrandPreference('mc-brand-preference',cOpt.id);
   document.getElementById('mc-retailer-search').value='';
   document.getElementById('mc-new-retailer').value='';
   newContactRetailerIds=new Set();
@@ -3615,6 +3645,7 @@ async function saveNewContact(){
   const fname=document.getElementById('mc-fname').value.trim();
   const lname=document.getElementById('mc-lname').value.trim();
   const email=document.getElementById('mc-email').value.trim();
+  const preferredBrandId=document.getElementById('mc-brand-preference').value||null;
   const cOpt=ms.client.selected[0]||null;
   if(!fname||!lname){toast('First name and last name are required','error');return;}
   if(!cOpt){toast('No client selected','error');return;}
@@ -3623,10 +3654,10 @@ async function saveNewContact(){
     const mxCon=await sbGet('C_contacts?select=id&order=id.desc&limit=1');
     const newId=mxCon.length?parseInt(mxCon[0].id)+1:1;
     const primaryRetailer=[...newContactRetailerIds][0]||null;
-    const createdRows=await sbPost('C_contacts',{id:newId,Fname:fname,Lname:lname,email:email||null,Fullname:fname+' '+lname,client_id:parseInt(cOpt.id),Retailer:primaryRetailer?Number(primaryRetailer):null,active:true});
-    const created=createdRows[0]||{id:newId,Fullname:fname+' '+lname,email:email||'',client_id:parseInt(cOpt.id),Retailer:primaryRetailer?Number(primaryRetailer):null};
+    const createdRows=await sbPost('C_contacts',{id:newId,Fname:fname,Lname:lname,email:email||null,Fullname:fname+' '+lname,client_id:parseInt(cOpt.id),Retailer:primaryRetailer?Number(primaryRetailer):null,brand_preference_id:preferredBrandId?Number(preferredBrandId):null,active:true});
+    const created=createdRows[0]||{id:newId,Fullname:fname+' '+lname,email:email||'',client_id:parseInt(cOpt.id),Retailer:primaryRetailer?Number(primaryRetailer):null,brand_preference_id:preferredBrandId?Number(preferredBrandId):null};
     await saveContactRetailerLinks(created.id,newContactRetailerIds);
-    allCon=await sbGet('C_contacts?select=id,Fullname,email,client_id,Retailer&active=eq.true&order=Fullname');
+    allCon=await sbGet('C_contacts?select=id,Fname,Lname,Fullname,email,client_id,Retailer,brand_preference_id&active=eq.true&order=Fullname');
     applyClientFilter(false);
     const newOpt=ms.contact.all.find(option=>String(option.id)===String(created.id));
     if(newOpt&&!ms.contact.selected.find(option=>String(option.id)===String(newOpt.id)))ms.contact.selected.push(newOpt);
@@ -3642,7 +3673,12 @@ function openManageContactRetailers(contactId){
   managedContactId=contact.id;
   const linked=retailersForContact(contact.id).map(retailer=>String(retailer.id));
   managedContactRetailerIds=new Set(contact.Retailer!=null?[String(contact.Retailer),...linked]:linked);
-  document.getElementById('mcr-contact').value=contact.Fullname||`Contact ${contact.id}`;
+  document.getElementById('mcr-fname').value=contact.Fname||String(contact.Fullname||'').trim().split(/\s+/)[0]||'';
+  document.getElementById('mcr-lname').value=contact.Lname||String(contact.Fullname||'').trim().split(/\s+/).slice(1).join(' ');
+  document.getElementById('mcr-email').value=contact.email||'';
+  const contactClient=allCl.find(client=>String(client.id)===String(contact.client_id));
+  document.getElementById('mcr-client').value=contactClient?.client||`Client ID ${contact.client_id}`;
+  populateContactBrandPreference('mcr-brand-preference',contact.client_id,contact.brand_preference_id);
   document.getElementById('mcr-retailer-search').value='';
   document.getElementById('mcr-new-retailer').value='';
   renderManagedContactRetailerPicker('');
@@ -3656,15 +3692,27 @@ async function saveManagedContactRetailers(){
     showLoad(true);
     const contactId=managedContactId;
     const selectedContactIds=ms.contact.selected.map(option=>option.id);
+    const fname=document.getElementById('mcr-fname').value.trim();
+    const lname=document.getElementById('mcr-lname').value.trim();
+    const email=document.getElementById('mcr-email').value.trim();
+    if(!fname||!lname){toast('First name and last name are required.','error');return;}
     await saveContactRetailerLinks(contactId,managedContactRetailerIds);
     const primaryRetailer=[...managedContactRetailerIds][0]||null;
-    await sbPatch('C_contacts',contactId,{Retailer:primaryRetailer?Number(primaryRetailer):null});
+    const preferredBrandId=document.getElementById('mcr-brand-preference').value||null;
+    await sbPatch('C_contacts',contactId,{Fname:fname,Lname:lname,Fullname:`${fname} ${lname}`,email:email||null,Retailer:primaryRetailer?Number(primaryRetailer):null,brand_preference_id:preferredBrandId?Number(preferredBrandId):null});
     const contact=allCon.find(item=>String(item.id)===String(contactId));
-    if(contact)contact.Retailer=primaryRetailer?Number(primaryRetailer):null;
+    if(contact){
+      contact.Fname=fname;
+      contact.Lname=lname;
+      contact.Fullname=`${fname} ${lname}`;
+      contact.email=email||null;
+      contact.Retailer=primaryRetailer?Number(primaryRetailer):null;
+      contact.brand_preference_id=preferredBrandId?Number(preferredBrandId):null;
+    }
     rebuildContactOptions(selectedContactIds);
     closeManageContactRetailers();
-    toast('Contact retailers updated!','success');
-  }catch(error){toast('Could not update contact retailers: '+error.message,'error');}
+    toast('Contact preferences updated!','success');
+  }catch(error){toast('Could not update contact preferences: '+error.message,'error');}
   finally{showLoad(false);}
 }
 
@@ -4927,7 +4975,7 @@ async function refreshEntryForm(){
       sbGet('GI_clients?select=id,client&active=eq.true&order=client'),
       sbGet('GI_brands?select=id,brand,client_giid,visible&order=brand'),
       sbGet('GI_stores?select=id,store,country_id,Sector_id&visible=eq.true&order=store'),
-      sbGet('C_contacts?select=id,Fullname,email,client_id,Retailer&active=eq.true&order=Fullname'),
+      sbGet('C_contacts?select=id,Fname,Lname,Fullname,email,client_id,Retailer,brand_preference_id&active=eq.true&order=Fullname'),
       sbGet('report_types?select=id,type&visible=eq.true&order=type'),
       sbGet('Sector?select=id,Name,companyid&order=Name'),
       sbGet('Contacts_Operations?select=id,firstname,lastname,email,jobtitle,company&order=lastname,firstname'),
@@ -8066,3 +8114,4 @@ Promise.resolve(window._authReady).then(authenticated=>{
 </script>
 </body>
 </html>
+
