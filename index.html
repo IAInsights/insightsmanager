@@ -820,9 +820,10 @@ window._authReady=restoreSupabaseSession();
       <summary class="user-menu-trigger"><span id="userGreeting" class="header-user"></span><svg class="user-menu-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5z"/></svg></summary>
       <div class="user-menu-panel">
         <div class="user-menu-version">
-          <div class="user-menu-version-number">V2026.10.15.1</div>
+          <div class="user-menu-version-number">V2026.10.15.2</div>
           <div class="release-heading">What&rsquo;s new</div>
           <ul class="release-list">
+            <li>Reporting Check now reads the sanitized Club Avolta submission status for consistent results across users.</li>
             <li>Status Updates shows comment text without a label and leaves the space empty when there is no comment.</li>
             <li>The saved Under Review date is smaller.</li>
           </ul>
@@ -4155,14 +4156,11 @@ function rcAddUtcDays(value,days){
   return date.toISOString().slice(0,10);
 }
 async function rcLoadClubAvoltaSubmissions(from,to,signal){
-  const rows=[];
-  for(let start=from;start<=to;){
-    const batchEnd=rcAddUtcDays(start,369);
-    const end=batchEnd<to?batchEnd:to;
-    rows.push(...await sbPost('rpc/club_avolta_submissions',{p_from:start,p_to:end},{signal}));
-    start=rcAddUtcDays(end,1);
-  }
-  return rows;
+  return sbGetAll(
+    `club_avolta_submission_status?select=activity_date,promoter_id,store_id,submitted&activity_date=gte.${from}&activity_date=lte.${to}&submitted=eq.true&order=activity_date.asc`,
+    1000,
+    {signal}
+  );
 }
 
 async function applyReportingCompliance(records,{autoConfirm=false,asOfDate=''}={}){
