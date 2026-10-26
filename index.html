@@ -605,6 +605,7 @@ tr.cancelled-row .rec-title{text-decoration:line-through;}
 .cc-shell{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--g50);}
 .cc-head{padding:12px 20px;background:#fff;border-bottom:1px solid var(--g200);display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap;flex-shrink:0;}
 .cc-head-copy{display:none}.cc-title{font-size:15px;font-weight:700}.cc-sub{font-size:11.5px;color:var(--g500);margin-top:2px}.cc-filter{height:30px;min-width:125px;max-width:165px;padding:0 8px;border:1.5px solid var(--g300);border-radius:var(--r);background:#fff;color:var(--g600);font-family:inherit;font-size:11.5px;outline:none}.cc-filter:focus{border-color:var(--blue)}
+.cc-export{border-color:var(--green);color:var(--green);font-weight:700;cursor:pointer;white-space:nowrap}.cc-export:hover:not(:disabled){background:var(--green-light)}.cc-export:disabled{opacity:.45;cursor:not-allowed}.cc-store{color:var(--g700);font-size:10.5px;overflow-wrap:anywhere}
 #rc_subline_text{display:none!important}
 .cc-body{flex:1;min-height:0;display:grid;grid-template-columns:minmax(650px,1fr) 330px;gap:10px;padding:12px 20px;overflow:hidden}.cc-list,.cc-detail{background:#fff;border:1px solid var(--g200);border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.06);overflow:hidden;min-height:0}.cc-list{overflow:auto}.cc-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:11px}.cc-table th{position:sticky;top:0;z-index:2;padding:8px;background:var(--g50);border-bottom:2px solid var(--g200);color:var(--g600);text-align:left;text-transform:uppercase;letter-spacing:.04em;font-size:9.5px}.cc-table td{padding:9px 8px;border-bottom:1px solid var(--g100);vertical-align:middle}.cc-row{cursor:pointer}.cc-row:hover,.cc-row.selected{background:#f8fbff}.cc-row.selected{box-shadow:inset 3px 0 0 var(--blue)}.cc-alert{display:inline-flex;align-items:center;padding:3px 7px;border-radius:20px;background:var(--amber-light);color:var(--amber);font-size:10px;font-weight:700}.cc-name{font-weight:700;color:var(--g900);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cc-meta{font-size:10px;color:var(--g500);margin-top:3px}.cc-mission{border:0;background:none;color:var(--blue);font:600 10px/1.3 monospace;text-decoration:underline;cursor:pointer;padding:0;margin-top:4px}.cc-sap{font:700 10px/1.3 monospace;color:var(--blue)}.cc-status{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700}.cc-status.ok{color:var(--green)}.cc-status.missing{color:var(--red)}.cc-status.pending{color:var(--amber)}.cc-pbi{display:inline-flex;align-items:center;padding:4px 7px;border-radius:5px;background:var(--purple-light);color:var(--purple);font-size:10px;font-weight:700;text-decoration:none}
 .cc-detail{display:flex;flex-direction:column}.cc-detail-head{padding:13px 15px;border-bottom:1px solid var(--g200)}.cc-eyebrow{font-size:9.5px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.05em}.cc-detail-title{font-size:15px;font-weight:700;margin-top:6px}.cc-detail-sub{font-size:10.5px;color:var(--g500);margin-top:4px}.cc-date-range{margin-top:9px;padding:8px 10px;border-radius:7px;background:var(--blue-light);color:var(--blue-dark);font-size:11px}.cc-date-range strong{display:block;font-size:9.5px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}.cc-detail-body{flex:1;overflow:auto;padding:12px 15px}.cc-section+.cc-section{border-top:1px solid var(--g100);margin-top:13px;padding-top:13px}.cc-section-title{font-size:9.5px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.05em;margin-bottom:7px}.cc-check{display:grid;grid-template-columns:23px 1fr auto;align-items:center;gap:8px;min-height:48px}.cc-check+.cc-check{border-top:1px solid var(--g100)}.cc-check-box{width:22px;height:22px;border:1.5px solid var(--g300);border-radius:5px;display:grid;place-items:center;background:#fff;color:var(--g400);font-size:14px;cursor:pointer}.cc-check-box.checked{background:var(--green);border-color:var(--green);color:#fff}.cc-check-label{font-size:11px;font-weight:700}.cc-check-help{font-size:9.5px;color:var(--g500);margin-top:2px}.cc-check-tag{padding:2px 6px;border-radius:10px;background:var(--g100);color:var(--g500);font-size:9.5px}.cc-check-tag.ok{background:var(--green-light);color:var(--green)}.cc-detail-foot{padding:10px 15px;background:var(--g50);border-top:1px solid var(--g200)}.cc-ready-note{font-size:10.5px;color:var(--amber);margin-bottom:7px}.cc-email{display:flex;align-items:center;justify-content:center;width:100%;height:34px;border:0;border-radius:var(--r);background:var(--blue);color:#fff;font-family:inherit;font-size:11.5px;font-weight:700;text-decoration:none;cursor:pointer}.cc-email.disabled{background:var(--g300);color:var(--g500);pointer-events:none}.cc-empty{padding:50px;text-align:center;color:var(--g500)}
@@ -1177,8 +1178,14 @@ window._authReady=restoreSupabaseSession();
       <select class="cc-filter" id="cc-filter-client" onchange="cc_render()"><option value="">All clients</option></select>
       <select class="cc-filter" id="cc-filter-agency" onchange="cc_render()"><option value="">All agencies</option></select>
       <select class="cc-filter" id="cc-filter-sector" onchange="cc_render()"><option value="">All sectors</option></select>
+      <select class="cc-filter" id="cc-filter-feedback" onchange="cc_render()" aria-label="Filter by Global Feedback">
+        <option value="">All Global Feedback</option>
+        <option value="received">Received</option>
+        <option value="missing">Missing</option>
+      </select>
       <button class="cc-filter" type="button" onclick="cc_resetFilters()">Reset</button>
       <button class="cc-filter" type="button" onclick="cc_load()">Refresh</button>
+      <button class="cc-filter cc-export" id="cc-export-n0" type="button" onclick="cc_exportN0()" disabled>Export N-0 (0)</button>
     </div>
     <div class="cc-body">
       <div class="cc-list" id="cc-list"><div class="cc-empty">Loading…</div></div>
@@ -6602,6 +6609,8 @@ const ccCountdownLabel=enddate=>{
 const ccAgencyNames=record=>resolveIds(record.company_ids,allCo,'name').filter(Boolean);
 const ccRecordClient=record=>shortClient(record)||record.client||'';
 const ccRecordSectors=record=>shortSectors(record);
+// These are the stores configured for this KPI/reporting record, not schedule POS fields.
+const ccRecordStores=record=>[...new Set(shortStores(record).map(store=>String(store).trim()).filter(Boolean))];
 const ccManager=record=>{
   const manager=allAccountManagers.find(contact=>String(contact.id)===String(record.account_manager_id));
   return manager?{name:accountManagerName(manager),email:String(manager.email||'').trim()}:{name:'Not assigned',email:''};
@@ -6672,9 +6681,36 @@ function cc_filteredRows(source=cc_rows){
   const client=document.getElementById('cc-filter-client')?.value||'';
   const agency=document.getElementById('cc-filter-agency')?.value||'';
   const sector=document.getElementById('cc-filter-sector')?.value||'';
-  return source.filter(record=>(!sap||record.sapcode===sap)&&(!client||ccRecordClient(record)===client)&&(!agency||ccAgencyNames(record).includes(agency))&&(!sector||ccRecordSectors(record).includes(sector)));
+  const feedback=document.getElementById('cc-filter-feedback')?.value||'';
+  return source.filter(record=>(!sap||record.sapcode===sap)&&(!client||ccRecordClient(record)===client)&&(!agency||ccAgencyNames(record).includes(agency))&&(!sector||ccRecordSectors(record).includes(sector))&&(!feedback||(feedback==='received'?!!record.global_feedback_received:!record.global_feedback_received)));
 }
-function cc_resetFilters(){['cc-filter-sap','cc-filter-client','cc-filter-agency','cc-filter-sector'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});cc_render();}
+function cc_resetFilters(){['cc-filter-sap','cc-filter-client','cc-filter-agency','cc-filter-sector','cc-filter-feedback'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});cc_render();}
+function cc_exportN0(){
+  const rows=cc_filteredRows().filter(record=>ccCountdownLabel(record.enddate)==='N-0');
+  if(!rows.length){toast('No N-0 animations match the selected filters.','error');return;}
+  if(typeof XLSX==='undefined'){toast('Excel export is unavailable. Please refresh and try again.','error');return;}
+  const sheetData=rows.map(record=>({
+    'Alert':'N-0',
+    'Animation / Mission':record.Title||'Untitled animation',
+    'Mission ID(s)':missionIdsForRecord(record).join(', '),
+    'Client':ccRecordClient(record),
+    'Store':ccRecordStores(record).join(', ')||'—',
+    'Reporting Check':record.reporting_compliant?'Compliant':'Not compliant',
+    'SAP Code':record.sapcode||'',
+    'Operation Start':record.startdate||'',
+    'Operation End':record.enddate||'',
+    'Compliance':Number.isFinite(record.reporting_compliance_pct)?`${record.reporting_compliance_pct}% · ${record.reporting_compliance_reported}/${record.reporting_compliance_total}`:'—',
+    'Absent':Number(record.reporting_compliance_absent)||0,
+    'Backup':Number(record.reporting_compliance_backup)||0,
+    'KPIs':record.kpis_ok?'OK':'Missing',
+    'Global Feedback':record.global_feedback_received?'Received':'Missing'
+  }));
+  const sheet=XLSX.utils.json_to_sheet(sheetData);
+  sheet['!cols']=[{wch:8},{wch:48},{wch:24},{wch:25},{wch:35},{wch:18},{wch:18},{wch:16},{wch:16},{wch:20},{wch:10},{wch:10},{wch:14},{wch:20}];
+  const book=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(book,sheet,'Closing N-0');
+  XLSX.writeFile(book,`Closing_Check_N-0_${ccToday()}.xlsx`);
+}
 function cc_select(id){cc_selectedId=id;cc_render();}
 async function cc_applyAutomaticCompliance(){
   await applyReportingCompliance(cc_rows,{autoConfirm:true});
@@ -6684,6 +6720,12 @@ function cc_checkHtml(value,label,help,field,id){
 }
 function cc_render(){
   const rows=cc_filteredRows();
+  const exportButton=document.getElementById('cc-export-n0');
+  if(exportButton){
+    const count=rows.filter(record=>ccCountdownLabel(record.enddate)==='N-0').length;
+    exportButton.disabled=count===0;
+    exportButton.textContent=`Export N-0 (${count})`;
+  }
   const list=document.getElementById('cc-list');
   const sub=document.getElementById('cc-subline');
   if(sub)sub.textContent=`${rows.length} unsent animation${rows.length===1?'':'s'} from N+1 to N-5 · final client-send requirements${cc_schemaReady?'':' · database setup required'}`;
@@ -6691,11 +6733,11 @@ function cc_render(){
   if(!list)return;
   if(!rows.length){list.innerHTML='<div class="cc-empty">No unsent final reports from N+1 to N-5 match these filters.</div>';document.getElementById('cc-detail').innerHTML='<div class="cc-empty">No animation selected.</div>';return;}
   if(!rows.some(record=>String(record.id)===String(cc_selectedId)))cc_selectedId=rows[0].id;
-  list.innerHTML=`<table class="cc-table"><colgroup><col style="width:70px"><col style="width:235px"><col style="width:105px"><col style="width:105px"><col style="width:135px"><col style="width:150px"><col style="width:95px"><col style="width:135px"></colgroup><thead><tr><th>Alert</th><th>Animation / mission</th><th>Reporting Check</th><th>SAP code</th><th>Operation dates</th><th>Compliance</th><th>KPIs</th><th>Global Feedback</th></tr></thead><tbody>${rows.map(record=>{
+  list.innerHTML=`<table class="cc-table"><colgroup><col style="width:65px"><col style="width:215px"><col style="width:115px"><col style="width:95px"><col style="width:95px"><col style="width:125px"><col style="width:140px"><col style="width:85px"><col style="width:115px"></colgroup><thead><tr><th>Alert</th><th>Animation / mission</th><th>Store</th><th>Reporting Check</th><th>SAP code</th><th>Operation dates</th><th>Compliance</th><th>KPIs</th><th>Global Feedback</th></tr></thead><tbody>${rows.map(record=>{
     const selected=String(record.id)===String(cc_selectedId);
     const pct=Number.isFinite(record.reporting_compliance_pct)?`${record.reporting_compliance_pct}% · ${record.reporting_compliance_reported}/${record.reporting_compliance_total}`:'—';
     const absent=Number(record.reporting_compliance_absent)||0,backup=Number(record.reporting_compliance_backup)||0;
-    return `<tr class="cc-row${selected?' selected':''}" onclick="cc_select(${record.id})"><td><span class="cc-alert">${ccCountdownLabel(record.enddate)}</span></td><td><div class="cc-name">${esc(record.Title||'Untitled animation')}</div><div class="cc-meta">${esc(ccRecordClient(record))}</div><div class="cc-meta">Mission ${missionLinksForRecord(record)}</div></td><td><button class="cc-mission" onclick="event.stopPropagation();cc_openReporting(${record.id})">Open check →</button></td><td><span class="cc-sap">${sapCodeLink(record.sapcode)}</span></td><td><div>${fd(record.startdate)||'—'}</div><div class="cc-meta">to ${fd(record.enddate)||'—'}</div></td><td><span class="cc-status ${record.reporting_compliant?'ok':'missing'}">${pct}</span><div class="cc-meta">Absent: ${absent}${backup?` · Backup: ${backup}`:''}</div></td><td><span class="cc-status ${record.kpis_ok?'ok':'missing'}">${record.kpis_ok?'✓ OK':'✕ Missing'}</span></td><td><span class="cc-status ${record.global_feedback_received?'ok':'missing'}">${record.global_feedback_received?'✓ Received':'✕ Missing'}</span></td></tr>`;
+    return `<tr class="cc-row${selected?' selected':''}" onclick="cc_select(${record.id})"><td><span class="cc-alert">${ccCountdownLabel(record.enddate)}</span></td><td><div class="cc-name">${esc(record.Title||'Untitled animation')}</div><div class="cc-meta">${esc(ccRecordClient(record))}</div><div class="cc-meta">Mission ${missionLinksForRecord(record)}</div></td><td><div class="cc-store">${esc(ccRecordStores(record).join(', ')||'—')}</div></td><td><button class="cc-mission" onclick="event.stopPropagation();cc_openReporting(${record.id})">Open check →</button></td><td><span class="cc-sap">${sapCodeLink(record.sapcode)}</span></td><td><div>${fd(record.startdate)||'—'}</div><div class="cc-meta">to ${fd(record.enddate)||'—'}</div></td><td><span class="cc-status ${record.reporting_compliant?'ok':'missing'}">${pct}</span><div class="cc-meta">Absent: ${absent}${backup?` · Backup: ${backup}`:''}</div></td><td><span class="cc-status ${record.kpis_ok?'ok':'missing'}">${record.kpis_ok?'✓ OK':'✕ Missing'}</span></td><td><span class="cc-status ${record.global_feedback_received?'ok':'missing'}">${record.global_feedback_received?'✓ Received':'✕ Missing'}</span></td></tr>`;
   }).join('')}</tbody></table>`;
   cc_renderDetail(rows.find(record=>String(record.id)===String(cc_selectedId))||rows[0]);
 }
