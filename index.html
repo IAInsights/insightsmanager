@@ -1194,7 +1194,7 @@ window._authReady=restoreSupabaseSession();
       </select>
       <button class="cc-filter" type="button" onclick="cc_resetFilters()">Reset</button>
       <button class="cc-filter" type="button" onclick="cc_load()">Refresh</button>
-      <button class="cc-filter cc-export" id="cc-export-n0" type="button" onclick="cc_exportN0()" disabled>Export N-0 (0)</button>
+      <button class="cc-filter cc-export" id="cc-export-excel" type="button" onclick="cc_exportExcel()" disabled>Export Excel (0)</button>
     </div>
     <div class="cc-body">
       <div class="cc-list" id="cc-list"><div class="cc-empty">Loading…</div></div>
@@ -6763,31 +6763,28 @@ function cc_resetFilters(){
   const search=document.getElementById('cc-sector-search');if(search)search.value='';
   cc_populateFilters();cc_closeSectorPanel();cc_render();
 }
-function cc_exportN0(){
-  const rows=cc_filteredRows().filter(record=>ccCountdownLabel(record.enddate)==='N-0');
-  if(!rows.length){toast('No N-0 animations match the selected filters.','error');return;}
+function cc_exportExcel(){
+  const rows=cc_filteredRows();
+  if(!rows.length){toast('No animations match the selected filters.','error');return;}
   if(typeof XLSX==='undefined'){toast('Excel export is unavailable. Please refresh and try again.','error');return;}
   const sheetData=rows.map(record=>({
-    'Alert':'N-0',
-    'Animation / Mission':record.Title||'Untitled animation',
-    'Mission ID(s)':missionIdsForRecord(record).join(', '),
-    'Client':ccRecordClient(record),
+    'Alert':ccCountdownLabel(record.enddate),
+    'Animation Name':record.Title||'Untitled animation',
+    'Brand':ccRecordBrands(record).join(', ')||'—',
     'Store':ccRecordStores(record).join(', ')||'—',
-    'Reporting Check':record.reporting_compliant?'Compliant':'Not compliant',
-    'SAP Code':record.sapcode||'',
-    'Operation Start':record.startdate||'',
-    'Operation End':record.enddate||'',
-    'Compliance':Number.isFinite(record.reporting_compliance_pct)?`${record.reporting_compliance_pct}% · ${record.reporting_compliance_reported}/${record.reporting_compliance_total}`:'—',
-    'Absent':Number(record.reporting_compliance_absent)||0,
-    'Backup':Number(record.reporting_compliance_backup)||0,
+    'Start Date':record.startdate||'',
+    'End Date':record.enddate||'',
+    'Global Feedback':record.global_feedback_received?'Received':'Missing',
     'KPIs':record.kpis_ok?'OK':'Missing',
-    'Global Feedback':record.global_feedback_received?'Received':'Missing'
+    'Compliance %':Number.isFinite(record.reporting_compliance_pct)?record.reporting_compliance_pct+'%':'—',
+    'Mission ID':missionIdsForRecord(record).join(', ')||'—'
   }));
   const sheet=XLSX.utils.json_to_sheet(sheetData);
-  sheet['!cols']=[{wch:8},{wch:48},{wch:24},{wch:25},{wch:35},{wch:18},{wch:18},{wch:16},{wch:16},{wch:20},{wch:10},{wch:10},{wch:14},{wch:20}];
+  sheet['!cols']=[{wch:9},{wch:48},{wch:25},{wch:30},{wch:14},{wch:14},{wch:20},{wch:14},{wch:16},{wch:24}];
+  sheet['!autofilter']={ref:sheet['!ref']};
   const book=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(book,sheet,'Closing N-0');
-  XLSX.writeFile(book,`Closing_Check_N-0_${ccToday()}.xlsx`);
+  XLSX.utils.book_append_sheet(book,sheet,'Closing Check');
+  XLSX.writeFile(book,'Closing_Check_'+ccToday()+'.xlsx');
 }
 function cc_select(id){cc_selectedId=id;cc_render();}
 async function cc_applyAutomaticCompliance(){
@@ -6798,11 +6795,11 @@ function cc_checkHtml(value,label,help,field,id){
 }
 function cc_render(){
   const rows=cc_filteredRows();
-  const exportButton=document.getElementById('cc-export-n0');
+  const exportButton=document.getElementById('cc-export-excel');
   if(exportButton){
-    const count=rows.filter(record=>ccCountdownLabel(record.enddate)==='N-0').length;
+    const count=rows.length;
     exportButton.disabled=count===0;
-    exportButton.textContent=`Export N-0 (${count})`;
+    exportButton.textContent='Export Excel ('+count+')';
   }
   const list=document.getElementById('cc-list');
   const sub=document.getElementById('cc-subline');
