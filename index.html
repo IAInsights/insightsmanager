@@ -1175,6 +1175,10 @@ window._authReady=restoreSupabaseSession();
 <div class="page" id="page9">
   <div class="cc-shell">
     <div class="cc-head">
+      <select class="cc-filter" id="cc-filter-report-type" onchange="cc_filtersChanged('report-type')" aria-label="Filter by report type">
+        <option value="">All report types</option>
+        <option value="BI Insights" selected>BI Insights</option>
+      </select>
       <select class="cc-filter" id="cc-filter-sap" onchange="cc_render()"><option value="">All SAP codes</option></select>
       <select class="cc-filter" id="cc-filter-client" onchange="cc_filtersChanged('client')"><option value="">All clients</option></select>
       <select class="cc-filter" id="cc-filter-agency" onchange="cc_filtersChanged('agency')"><option value="">All agencies</option></select>
@@ -6620,6 +6624,7 @@ const ccAgencyNames=record=>resolveIds(record.company_ids,allCo,'name').filter(B
 const ccRecordClient=record=>shortClient(record)||record.client||'';
 const ccRecordSectors=record=>shortSectors(record);
 const ccRecordBrands=record=>[...new Set(shortBrands(record))];
+const ccRecordReportTypes=record=>[...new Set(shortReportTypes(record))];
 // These are the stores configured for this KPI/reporting record, not schedule POS fields.
 const ccRecordStores=record=>[...new Set(shortStores(record).map(store=>String(store).trim()).filter(Boolean))];
 const ccManager=record=>{
@@ -6682,7 +6687,10 @@ function ccSetOptions(id,values,label){
 }
 function cc_populateFilters(changed=''){
   const records=[...cc_rows,...cc_sentRows];
-  ccSetOptions('cc-filter-sap',records.map(record=>record.sapcode),'SAP codes');
+  ccSetOptions('cc-filter-report-type',['BI Insights',...records.flatMap(ccRecordReportTypes)],'report types');
+  const reportType=(document.getElementById('cc-filter-report-type')?.value||'').trim().toLowerCase();
+  const reportRecords=records.filter(record=>!reportType||ccRecordReportTypes(record).some(type=>String(type).trim().toLowerCase()===reportType));
+  ccSetOptions('cc-filter-sap',reportRecords.map(record=>record.sapcode),'SAP codes');
   const clientSelect=document.getElementById('cc-filter-client');
   const agencySelect=document.getElementById('cc-filter-agency');
   const clientMatches=record=>!clientSelect?.value||ccRecordClient(record)===clientSelect.value;
@@ -6690,13 +6698,13 @@ function cc_populateFilters(changed=''){
   // Recompute from the selected records. If one side is changed, keep that
   // selection and clear incompatible choices on the other side first.
   if(changed==='agency'){
-    ccSetOptions('cc-filter-client',records.filter(agencyMatches).map(ccRecordClient),'clients');
-    ccSetOptions('cc-filter-agency',records.filter(clientMatches).flatMap(ccAgencyNames),'agencies');
+    ccSetOptions('cc-filter-client',reportRecords.filter(agencyMatches).map(ccRecordClient),'clients');
+    ccSetOptions('cc-filter-agency',reportRecords.filter(clientMatches).flatMap(ccAgencyNames),'agencies');
   }else{
-    ccSetOptions('cc-filter-agency',records.filter(clientMatches).flatMap(ccAgencyNames),'agencies');
-    ccSetOptions('cc-filter-client',records.filter(agencyMatches).map(ccRecordClient),'clients');
+    ccSetOptions('cc-filter-agency',reportRecords.filter(clientMatches).flatMap(ccAgencyNames),'agencies');
+    ccSetOptions('cc-filter-client',reportRecords.filter(agencyMatches).map(ccRecordClient),'clients');
   }
-  const compatible=records.filter(record=>clientMatches(record)&&agencyMatches(record));
+  const compatible=reportRecords.filter(record=>clientMatches(record)&&agencyMatches(record));
   ccSetOptions('cc-filter-brand',compatible.flatMap(ccRecordBrands),'brands');
   const brand=document.getElementById('cc-filter-brand')?.value||'';
   cc_availableSectors=[...new Set(compatible.filter(record=>!brand||ccRecordBrands(record).includes(brand)).flatMap(ccRecordSectors))]
@@ -6750,15 +6758,17 @@ function cc_selectAllSectors(){
 }
 function cc_clearSectors(){cc_selectedSectors.clear();cc_renderSectorOptions();cc_render();}
 function cc_filteredRows(source=cc_rows){
+  const reportType=(document.getElementById('cc-filter-report-type')?.value||'').trim().toLowerCase();
   const sap=document.getElementById('cc-filter-sap')?.value||'';
   const client=document.getElementById('cc-filter-client')?.value||'';
   const agency=document.getElementById('cc-filter-agency')?.value||'';
   const brand=document.getElementById('cc-filter-brand')?.value||'';
   const feedback=document.getElementById('cc-filter-feedback')?.value||'';
-  return source.filter(record=>(!sap||record.sapcode===sap)&&(!client||ccRecordClient(record)===client)&&(!agency||ccAgencyNames(record).includes(agency))&&(!brand||ccRecordBrands(record).includes(brand))&&(!cc_selectedSectors.size||ccRecordSectors(record).some(sector=>cc_selectedSectors.has(sector)))&&(!feedback||(feedback==='received'?!!record.global_feedback_received:!record.global_feedback_received)));
+  return source.filter(record=>(!reportType||ccRecordReportTypes(record).some(type=>String(type).trim().toLowerCase()===reportType))&&(!sap||record.sapcode===sap)&&(!client||ccRecordClient(record)===client)&&(!agency||ccAgencyNames(record).includes(agency))&&(!brand||ccRecordBrands(record).includes(brand))&&(!cc_selectedSectors.size||ccRecordSectors(record).some(sector=>cc_selectedSectors.has(sector)))&&(!feedback||(feedback==='received'?!!record.global_feedback_received:!record.global_feedback_received)));
 }
 function cc_resetFilters(){
   ['cc-filter-sap','cc-filter-client','cc-filter-agency','cc-filter-brand','cc-filter-feedback'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const reportType=document.getElementById('cc-filter-report-type');if(reportType)reportType.value='BI Insights';
   cc_selectedSectors.clear();
   const search=document.getElementById('cc-sector-search');if(search)search.value='';
   cc_populateFilters();cc_closeSectorPanel();cc_render();
