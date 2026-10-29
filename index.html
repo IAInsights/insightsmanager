@@ -6651,10 +6651,10 @@ async function cc_load(){
   const list=document.getElementById('cc-list');
   if(list)list.innerHTML='<div class="cc-empty">Loading pending final reports…</div>';
   try{
-    const from=ccToday(),to=ccPlusDays(5),historyFrom=ccPlusDays(-30);
-    // Once an animation enters the five-day closing window, keep it pending
-    // until final_delivered_report is set by the Sent action. No rolling lower date limit.
-    const pendingQuery=columns=>`InsightsTracking?select=${columns}&enddate=lte.${to}&final_delivered_report=is.null&order=enddate.desc`;
+    const from=ccToday(),closingFrom=ccPlusDays(-19),to=ccPlusDays(5),historyFrom=ccPlusDays(-30);
+    // Keep unsent animations through N+19. At N+20 they leave the pending list;
+    // marking one Sent removes it earlier, without deleting the record.
+    const pendingQuery=columns=>`InsightsTracking?select=${columns}&enddate=gte.${closingFrom}&enddate=lte.${to}&final_delivered_report=is.null&order=enddate.desc`;
     try{
       cc_rows=await sbGetAll(pendingQuery(ccSelect));
       cc_sentRows=await sbGet(`InsightsTracking?select=${ccSelect}&final_delivered_report=gte.${historyFrom}&final_delivered_report=lte.${from}&order=final_delivered_report.desc`);
@@ -6799,21 +6799,9 @@ function cc_exportExcel(){
   XLSX.utils.book_append_sheet(book,sheet,'Closing Check');
   XLSX.writeFile(book,'Closing_Check_'+ccToday()+'.xlsx');
 }
-function cc_select(id){
-  cc_selectedId=id;cc_render();
-  const record=cc_rows.find(item=>String(item.id)===String(id));
-  if(record?.startdate&&record?.enddate<ccPlusDays(-30)&&!record._ccComplianceLoaded){
-    record._ccComplianceLoaded=true;
-    // An older pending report is recalculated only when opened.
-    applyReportingCompliance([record]).then(()=>{
-      if(String(cc_selectedId)===String(id))cc_render();
-    });
-  }
-}
+function cc_select(id){cc_selectedId=id;cc_render();}
 async function cc_applyAutomaticCompliance(){
-  // Recomputing every historical pending report would download years of
-  // schedules and questionnaires. Older records are checked when selected.
-  await applyReportingCompliance(cc_rows.filter(record=>record.enddate>=ccPlusDays(-30)),{autoConfirm:true});
+  await applyReportingCompliance(cc_rows,{autoConfirm:true});
 }
 function cc_checkHtml(value,label,help,field,id){
   return `<div class="cc-check"><button type="button" class="cc-check-box${value?' checked':''}" onclick="cc_toggle(${id},'${field}',${value?'false':'true'})">${value?'✓':''}</button><div><div class="cc-check-label">${esc(label)}</div><div class="cc-check-help">${esc(help)}</div></div><span class="cc-check-tag${value?' ok':''}">${ccFlagLabel(value)}</span></div>`;
@@ -6828,7 +6816,7 @@ function cc_render(){
   }
   const list=document.getElementById('cc-list');
   const sub=document.getElementById('cc-subline');
-  if(sub)sub.textContent=`${rows.length} pending final report${rows.length===1?'':'s'} · remains until marked Sent${cc_schemaReady?'':' · database setup required'}`;
+  if(sub)sub.textContent=`${rows.length} pending final report${rows.length===1?'':'s'} · stays until Sent or N+20${cc_schemaReady?'':' · database setup required'}`;
   cc_renderHistory();
   if(!list)return;
   if(!rows.length){list.innerHTML='<div class="cc-empty">No pending final reports match these filters.</div>';document.getElementById('cc-detail').innerHTML='<div class="cc-empty">No animation selected.</div>';return;}
