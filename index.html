@@ -6832,6 +6832,7 @@ function cc_render(){
 function cc_renderDetail(record){
   const detail=document.getElementById('cc-detail');if(!detail||!record)return;
   const allReady=!!(record.reporting_compliant&&record.kpis_ok&&record.global_feedback_received);
+  const isBiInsights=ccRecordReportTypes(record).some(type=>String(type||'').trim().toLowerCase()==='bi insights');
   const emails=ccClientEmails(record),manager=ccManager(record);
   const missing=[!record.reporting_compliant?'reporting compliance':'',!record.kpis_ok?'KPI confirmation':'',!record.global_feedback_received?'global feedback':''].filter(Boolean);
   const absent=Number(record.reporting_compliance_absent)||0,backup=Number(record.reporting_compliance_backup)||0;
@@ -6839,6 +6840,8 @@ function cc_renderDetail(record){
   const sentDate=record.final_delivered_report;
   const emailActions=sentDate
     ?`<span class="cc-email disabled" style="color:var(--green);border-color:var(--green-light);background:var(--green-light)">Activation feedback sent · ${fd(sentDate)}</span>`
+    :!isBiInsights
+      ?`<button class="cc-email" type="button" onclick="cc_markAlreadySent(${record.id})">Mark as Already Sent</button>`
     :allReady&&emails.length
       ?`<button class="cc-email" type="button" onclick="cc_sendFinalReport(${record.id})">Open email &amp; mark feedback delivered</button>`
       :`<span class="cc-email disabled">${emails.length?'Open client email':'No client email linked'}</span>`;
@@ -6879,6 +6882,23 @@ async function cc_sendFinalReport(id){
     toast('Final activation feedback marked as delivered and moved to Last sent reports.','success');
     window.location.href=mailto;
   }catch(error){toast('Could not mark the final activation feedback as delivered: '+error.message,'error');}
+}
+async function cc_markAlreadySent(id){
+  const record=cc_rows.find(item=>String(item.id)===String(id));if(!record)return;
+  if(ccRecordReportTypes(record).some(type=>String(type||'').trim().toLowerCase()==='bi insights')){
+    toast('BI Insights reports must use the email delivery action.','error');return;
+  }
+  if(!window.confirm(`Confirm that "${record.Title||'this animation'}" has already been sent?\n\nNo email will be opened or sent. The report will move to Last sent reports.`))return;
+  try{
+    const today=ccToday();
+    await sbPatch('InsightsTracking',id,{final_delivered_report:today});
+    record.final_delivered_report=today;
+    cc_rows=cc_rows.filter(item=>String(item.id)!==String(id));
+    cc_sentRows=[record,...cc_sentRows.filter(item=>String(item.id)!==String(id))];
+    cc_selectedId=cc_rows[0]?.id??null;
+    cc_populateFilters();cc_render();
+    toast('Report marked as already sent. No email was opened.','success');
+  }catch(error){toast('Could not mark this report as already sent: '+error.message,'error');}
 }
 async function cc_openReporting(id){
   const record=cc_rows.find(item=>String(item.id)===String(id));if(!record)return;
