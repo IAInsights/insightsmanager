@@ -6649,28 +6649,31 @@ document.addEventListener('visibilitychange',cc_refreshOnFocus);
 window.addEventListener('focus',cc_refreshOnFocus);
 async function cc_load(){
   const list=document.getElementById('cc-list');
-  if(list)list.innerHTML='<div class="cc-empty">Loading animations ending soon…</div>';
+  if(list)list.innerHTML='<div class="cc-empty">Loading pending final reports…</div>';
   try{
-    const from=ccToday(),closingFrom=ccPlusDays(-1),to=ccPlusDays(5),historyFrom=ccPlusDays(-30);
+    const from=ccToday(),to=ccPlusDays(5),historyFrom=ccPlusDays(-30);
+    // Once an animation enters the five-day closing window, keep it pending
+    // until final_delivered_report is set by the Sent action. No rolling lower date limit.
+    const pendingQuery=columns=>`InsightsTracking?select=${columns}&enddate=lte.${to}&final_delivered_report=is.null&order=enddate.desc`;
     try{
-      cc_rows=await sbGet(`InsightsTracking?select=${ccSelect}&enddate=gte.${closingFrom}&enddate=lte.${to}&final_delivered_report=is.null&order=enddate.asc`);
+      cc_rows=await sbGetAll(pendingQuery(ccSelect));
       cc_sentRows=await sbGet(`InsightsTracking?select=${ccSelect}&final_delivered_report=gte.${historyFrom}&final_delivered_report=lte.${from}&order=final_delivered_report.desc`);
       cc_schemaReady=true;
     }catch(missionIdsError){
       try{
         // mission_ids is optional during rollout. Keep the existing closing
         // status columns independent so updates appear in both applications.
-        cc_rows=await sbGet(`InsightsTracking?select=${ccStatusSelect}&enddate=gte.${closingFrom}&enddate=lte.${to}&final_delivered_report=is.null&order=enddate.asc`);
+        cc_rows=await sbGetAll(pendingQuery(ccStatusSelect));
         cc_sentRows=await sbGet(`InsightsTracking?select=${ccStatusSelect}&final_delivered_report=gte.${historyFrom}&final_delivered_report=lte.${from}&order=final_delivered_report.desc`);
         cc_schemaReady=true;
       }catch(statusColumnsError){
-        cc_rows=await sbGet(`InsightsTracking?select=${ccFallbackSelect}&enddate=gte.${closingFrom}&enddate=lte.${to}&final_delivered_report=is.null&order=enddate.asc`);
+        cc_rows=await sbGetAll(pendingQuery(ccFallbackSelect));
         cc_sentRows=await sbGet(`InsightsTracking?select=${ccFallbackSelect}&final_delivered_report=gte.${historyFrom}&final_delivered_report=lte.${from}&order=final_delivered_report.desc`);
         cc_rows.forEach(record=>{record.reporting_compliant=false;record.kpis_ok=false;record.global_feedback_received=false;});
         cc_schemaReady=false;
       }
     }
-    cc_rows=cc_rows.filter(record=>!isNoReportingRecord(record)&&!record.cancelled_date&&!record.not_sent_date);
+    cc_rows=cc_rows.filter(record=>!isNoReportingRecord(record)&&!record.cancelled_date);
     cc_sentRows=cc_sentRows.filter(record=>!isNoReportingRecord(record)&&!record.cancelled_date&&!record.not_sent_date);
     await cc_applyAutomaticCompliance();
     if(!cc_rows.some(record=>String(record.id)===String(cc_selectedId)))cc_selectedId=cc_rows[0]?.id??null;
@@ -6796,9 +6799,21 @@ function cc_exportExcel(){
   XLSX.utils.book_append_sheet(book,sheet,'Closing Check');
   XLSX.writeFile(book,'Closing_Check_'+ccToday()+'.xlsx');
 }
-function cc_select(id){cc_selectedId=id;cc_render();}
+function cc_select(id){
+  cc_selectedId=id;cc_render();
+  const record=cc_rows.find(item=>String(item.id)===String(id));
+  if(record?.startdate&&record?.enddate<ccPlusDays(-30)&&!record._ccComplianceLoaded){
+    record._ccComplianceLoaded=true;
+    // An older pending report is recalculated only when opened.
+    applyReportingCompliance([record]).then(()=>{
+      if(String(cc_selectedId)===String(id))cc_render();
+    });
+  }
+}
 async function cc_applyAutomaticCompliance(){
-  await applyReportingCompliance(cc_rows,{autoConfirm:true});
+  // Recomputing every historical pending report would download years of
+  // schedules and questionnaires. Older records are checked when selected.
+  await applyReportingCompliance(cc_rows.filter(record=>record.enddate>=ccPlusDays(-30)),{autoConfirm:true});
 }
 function cc_checkHtml(value,label,help,field,id){
   return `<div class="cc-check"><button type="button" class="cc-check-box${value?' checked':''}" onclick="cc_toggle(${id},'${field}',${value?'false':'true'})">${value?'✓':''}</button><div><div class="cc-check-label">${esc(label)}</div><div class="cc-check-help">${esc(help)}</div></div><span class="cc-check-tag${value?' ok':''}">${ccFlagLabel(value)}</span></div>`;
@@ -6813,10 +6828,10 @@ function cc_render(){
   }
   const list=document.getElementById('cc-list');
   const sub=document.getElementById('cc-subline');
-  if(sub)sub.textContent=`${rows.length} unsent animation${rows.length===1?'':'s'} from N+1 to N-5 · final client-send requirements${cc_schemaReady?'':' · database setup required'}`;
+  if(sub)sub.textContent=`${rows.length} pending final report${rows.length===1?'':'s'} · remains until marked Sent${cc_schemaReady?'':' · database setup required'}`;
   cc_renderHistory();
   if(!list)return;
-  if(!rows.length){list.innerHTML='<div class="cc-empty">No unsent final reports from N+1 to N-5 match these filters.</div>';document.getElementById('cc-detail').innerHTML='<div class="cc-empty">No animation selected.</div>';return;}
+  if(!rows.length){list.innerHTML='<div class="cc-empty">No pending final reports match these filters.</div>';document.getElementById('cc-detail').innerHTML='<div class="cc-empty">No animation selected.</div>';return;}
   if(!rows.some(record=>String(record.id)===String(cc_selectedId)))cc_selectedId=rows[0].id;
   list.innerHTML=`<table class="cc-table"><colgroup><col style="width:65px"><col style="width:215px"><col style="width:115px"><col style="width:95px"><col style="width:95px"><col style="width:125px"><col style="width:140px"><col style="width:85px"><col style="width:115px"></colgroup><thead><tr><th>Alert</th><th>Animation / mission</th><th>Store</th><th>Reporting Check</th><th>SAP code</th><th>Operation dates</th><th>Compliance</th><th>KPIs</th><th>Global Feedback</th></tr></thead><tbody>${rows.map(record=>{
     const selected=String(record.id)===String(cc_selectedId);
