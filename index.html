@@ -5964,6 +5964,7 @@ async function led_deleteRecord(){
 let t_allTargets=[], t_targetTypes={}, t_selectedLevel=1, t_editingId=null;
 let t_sortCol='id', t_sortDir=-1;
 let t_multiMode=false, t_multiBy='shop', t_allShopsList=[], t_allItemsList=[];
+let t_storeIdsByName=new Map();
 let t_itemRows=[], t_itemIdByKey={};
 let t_initialized=false;
 
@@ -5974,13 +5975,14 @@ async function t_init(){
   const brands=await res1.json();
   const bs=document.getElementById('t_brand');
   [...new Map(brands.map(b=>[b.brand,b])).values()].sort((a,b)=>a.brand.localeCompare(b.brand))
-    .forEach(b=>bs.insertAdjacentHTML('beforeend',`<option value="${esc(b.brand)}">${esc(b.brand)}</option>`));
+    .forEach(b=>bs.insertAdjacentHTML('beforeend',`<option value="${esc(b.brand)}" data-id="${esc(b.id)}">${esc(b.brand)}</option>`));
 
-  const res2=await authenticatedFetch(`${SB_URL}/rest/v1/GI_stores?select=store&visible=eq.true&order=store`);
+  const res2=await authenticatedFetch(`${SB_URL}/rest/v1/GI_stores?select=id,store&visible=eq.true&order=store`);
   const shops=await res2.json();
-  t_allShopsList=[...new Set(shops.map(s=>s.store))].sort();
+  t_storeIdsByName=new Map(shops.filter(s=>s.store&&s.id!=null).map(s=>[s.store,Number(s.id)]));
+  t_allShopsList=[...t_storeIdsByName.keys()].sort();
   const ss=document.getElementById('t_shop');
-  t_allShopsList.forEach(s=>ss.insertAdjacentHTML('beforeend',`<option value="${esc(s)}">${esc(s)}</option>`));
+  t_allShopsList.forEach(s=>ss.insertAdjacentHTML('beforeend',`<option value="${esc(s)}" data-id="${esc(t_storeIdsByName.get(s))}">${esc(s)}</option>`));
 
   const res3=await authenticatedFetch(`${SB_URL}/rest/v1/target_type?select=id,name&order=id`);
   const types=await res3.json();
@@ -6089,14 +6091,14 @@ async function t_startEdit(id){
   document.getElementById('t_btnSubmitIcon').textContent='✓';
   document.getElementById('t_btnSubmitText').textContent='Save Changes';
   const brandSelect=document.getElementById('t_brand');
-  if(row.brand&&![...brandSelect.options].some(o=>o.value===row.brand))brandSelect.insertAdjacentHTML('beforeend',`<option value="${esc(row.brand)}">${esc(row.brand)} (existing)</option>`);
+  if(row.brand&&![...brandSelect.options].some(o=>o.value===row.brand))brandSelect.insertAdjacentHTML('beforeend',`<option value="${esc(row.brand)}" data-id="${esc(row.brand_id??'')}">${esc(row.brand)} (existing)</option>`);
   brandSelect.value=row.brand||'';
   await t_loadItems();
   const itemSelect=document.getElementById('t_item');
   if(row.item&&!t_allItemsList.includes(row.item))itemSelect.insertAdjacentHTML('beforeend',`<option value="${esc(row.item)}">${esc(row.item)}</option>`);
   itemSelect.value=row.item||'';
   const shopSelect=document.getElementById('t_shop');
-  if(row.shop&&![...shopSelect.options].some(o=>o.value===row.shop))shopSelect.insertAdjacentHTML('beforeend',`<option value="${esc(row.shop)}">${esc(row.shop)} (existing)</option>`);
+  if(row.shop&&![...shopSelect.options].some(o=>o.value===row.shop))shopSelect.insertAdjacentHTML('beforeend',`<option value="${esc(row.shop)}" data-id="${esc(row.store_id??'')}">${esc(row.shop)} (existing)</option>`);
   shopSelect.value=row.shop||'';
   document.getElementById('t_type').value=row.target_type_id??'';
   t_setLevel(row.target_level==null?null:Number(row.target_level));
@@ -6174,19 +6176,27 @@ function t_selectAllMulti(){
   cbs.forEach(c=>c.checked=!allChecked);
   t_updateMultiCount();
 }
+function t_selectedLookupId(elementId){
+  const raw=document.getElementById(elementId).selectedOptions[0]?.dataset.id;
+  const id=Number(raw);
+  return raw&&Number.isSafeInteger(id)&&id>0?id:null;
+}
 async function t_submitTarget(){
   const brand=document.getElementById('t_brand').value;
+  const brandId=t_selectedLookupId('t_brand');
   const item=document.getElementById('t_item').value||null;
   const shop=document.getElementById('t_shop').value;
+  const storeId=t_selectedLookupId('t_shop');
   const typeId=parseInt(document.getElementById('t_type').value);
   const value=parseInt(document.getElementById('t_value').value);
   const dateRaw=document.getElementById('t_date').value;
   const date=dateRaw?dateRaw+'-01':null;
   if(!brand||!shop||!typeId||isNaN(value)){t_showToast('Please fill in Brand, Shop, Type and Value.','error');return;}
+  if(brandId==null||storeId==null){t_showToast('Brand or Store ID missing. Please reselect them before saving.','error');return;}
   const btn=document.getElementById('t_btnSubmit');
   btn.disabled=true;
   try{
-    const baseRecord={brand,item,shop,target_type_id:typeId,target_level:t_selectedLevel,value,date};
+    const baseRecord={brand,brand_id:brandId,item,shop,store_id:storeId,target_type_id:typeId,target_level:t_selectedLevel,value,date};
     if(t_editingId!=null){
       const editId=t_editingId;
       const res=await authenticatedFetch(`${SB_URL}/rest/v1/legacy_targets_v2?id=eq.${encodeURIComponent(editId)}`,{
@@ -6203,7 +6213,11 @@ async function t_submitTarget(){
     const records=[baseRecord];
     if(t_multiMode){
       const selected=[...document.querySelectorAll('#t_multiList input:checked')].map(c=>c.value);
-      if(t_multiBy==='shop')selected.forEach(s=>records.push({...baseRecord,shop:s}));
+      if(t_multiBy==='shop')selected.forEach(s=>{
+        const id=t_storeIdsByName.get(s);
+        if(!Number.isSafeInteger(id)||id<=0)throw new Error('No Store ID found for '+s);
+        records.push({...baseRecord,shop:s,store_id:id});
+      });
       else selected.forEach(it=>records.push({...baseRecord,item:it||null}));
     }
     const res=await authenticatedFetch(`${SB_URL}/rest/v1/legacy_targets_v2`,{
