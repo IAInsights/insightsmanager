@@ -1756,6 +1756,21 @@ const authenticatedFetch=async(url,options={})=>{
   return fetch(url,{...options,headers:{...supabaseHeaders(null),...(options.headers||{})}});
 };
 
+// Keep historical references for display; only offer enabled records in lists.
+function referenceEnabled(row){
+  return !!row&&row.active!==false&&row.visible!==false&&row.hidden!==true;
+}
+function referenceRows(key){
+  return key==='client'?allCl:key==='brand'?allBr:key==='store'?allSt:null;
+}
+function referenceOptionAllowed(key,value){
+  const rows=referenceRows(key);
+  if(!rows)return true;
+  const name=String(value??'').trim().toLowerCase();
+  const matches=rows.filter(row=>String(row[key]??'').trim().toLowerCase()===name);
+  return matches.some(referenceEnabled);
+}
+
 // ── Global Filter — Smart Cascading ──────────────────────────────────────────
 const GF_KEYS=['company','sector','store','client','brand','sapcode','reporttype'];
 const GF_LABELS={company:'All Companies',sector:'All Sectors',store:'All Stores',client:'All Clients',brand:'All Brands',sapcode:'All SAP Codes',reporttype:'All Report Types'};
@@ -1783,9 +1798,9 @@ function initGFOpts(){
   const usedRT  = new Set(allRec.flatMap(r=>(r.report_type_ids||[]).map(String)));
   gFOpts.company   = allCo.filter(o=>usedCo.has(String(o.id))).map(o=>({v:String(o.id),l:o.name}));
   gFOpts.sector    = allSectors.filter(o=>usedSec.has(String(o.id))).map(o=>({v:String(o.id),l:o.Name,cid:String(o.companyid)}));
-  gFOpts.store     = allSt.filter(o=>usedSt.has(String(o.id))).map(o=>({v:String(o.id),l:o.store,sid:String(o.Sector_id)}));
-  gFOpts.client    = allCl.filter(o=>usedCl.has(String(o.id))).map(o=>({v:String(o.id),l:o.client}));
-  gFOpts.brand     = allBr.filter(o=>usedBr.has(String(o.id))).map(o=>({v:String(o.id),l:o.brand,cid:String(o.client_giid)}));
+  gFOpts.store     = allSt.filter(referenceEnabled).filter(o=>usedSt.has(String(o.id))).map(o=>({v:String(o.id),l:o.store,sid:String(o.Sector_id)}));
+  gFOpts.client    = allCl.filter(referenceEnabled).filter(o=>usedCl.has(String(o.id))).map(o=>({v:String(o.id),l:o.client}));
+  gFOpts.brand     = allBr.filter(referenceEnabled).filter(o=>usedBr.has(String(o.id))).map(o=>({v:String(o.id),l:o.brand,cid:String(o.client_giid)}));
   gFOpts.reporttype= allRT.filter(o=>usedRT.has(String(o.id))).map(o=>({v:String(o.id),l:o.type}));
   gFOpts.sapcode   = sapOptionsFromRecords(allRec);
   cascadeGF();
@@ -2085,7 +2100,7 @@ function clientOption(client){
 }
 function brandsForClient(clientId){
   return allBr
-    .filter(brand=>String(brand.client_giid)===String(clientId))
+    .filter(brand=>referenceEnabled(brand)&&String(brand.client_giid)===String(clientId))
     .sort((a,b)=>String(a.brand||'').localeCompare(String(b.brand||'')));
 }
 function preferredBrandForContact(contact){
@@ -2332,9 +2347,9 @@ async function init(){
     startupWarnings=[];
     const [co,cl,br,st,con,rt,sec,ops,retailers,contactRetailers,rec]=await Promise.all([
       startupGet('Companies',()=>sbGet('GI_company?select=id,name,country_id&active=eq.true&order=id.asc')),
-      startupGet('Clients',()=>sbGet('GI_clients?select=id,client&active=eq.true&order=client')),
-      startupGet('Brands',()=>sbGet('GI_brands?select=id,brand,client_giid,visible&order=brand')),
-      startupGet('Stores',()=>sbGet('GI_stores?select=id,store,country_id,Sector_id&visible=eq.true&order=store')),
+      startupGet('Clients',()=>sbGetAll('GI_clients?select=id,client,active&order=client')),
+      startupGet('Brands',()=>sbGetAll('GI_brands?select=id,brand,client_giid,visible&order=brand')),
+      startupGet('Stores',()=>sbGetAll('GI_stores?select=id,store,country_id,Sector_id,visible&order=store')),
       startupGet('Client contacts',()=>sbGet('C_contacts?select=id,Fname,Lname,Fullname,email,client_id,Retailer,brand_preference_id&active=eq.true&order=Fullname')),
       startupGet('Report types',()=>sbGet('report_types?select=id,type&visible=eq.true&order=type')),
       startupGet('Sectors',()=>sbGet('Sector?select=id,Name,companyid&order=Name')),
@@ -2351,9 +2366,9 @@ async function init(){
     missionIdsColumnReady=!allRec.length||Object.prototype.hasOwnProperty.call(allRec[0],'mission_ids');
     rc_populateTrackingPickers();
     ms.company.all   =co.map(c=>({id:c.id,label:c.name,sub:'',meta:c}));
-    ms.client.all    =cl.map(clientOption);
-    ms.brand.all     =br.map(brandOption);
-    ms.store.all     =st.map(s=>({id:s.id,label:s.store,sub:`ID ${s.id}`,meta:s}));
+    ms.client.all    =cl.filter(referenceEnabled).map(clientOption);
+    ms.brand.all     =br.filter(referenceEnabled).map(brandOption);
+    ms.store.all     =st.filter(referenceEnabled).map(s=>({id:s.id,label:s.store,sub:`ID ${s.id}`,meta:s}));
     ms.sector.all    =sec.map(s=>({id:s.id,label:s.Name,sub:`ID ${s.id}`,meta:s}));
     ms.contact.all   =con.map(contactOption);
     ms.accountmanager.all=accountManagerOptions();
@@ -2727,7 +2742,7 @@ function fillForm(r){
   setBadge(r.status||'EXISTING',(!r.status||r.status==='NEW')?'new':'exist');
 
   // client
-  const cOpt=r.client_fk?ms.client.all.find(o=>String(o.id)===String(r.client_fk)):null;
+  const cOpt=r.client_fk?allCl.filter(c=>String(c.id)===String(r.client_fk)).map(clientOption)[0]:null;
   ms.client.selected=cOpt?[cOpt]:[];
   renderTags('client'); applyClientFilter(false);
 
@@ -2741,7 +2756,13 @@ function fillForm(r){
   const cm={sector:'sector_ids',brand:'brand_ids',store:'store_ids',contact:'contact_ids',reporttype:'report_type_ids'};
   Object.entries(cm).forEach(([k,col])=>{
     const ids=r[col]||[];
-    ms[k].selected=ids.map(id=>ms[k].all.find(o=>String(o.id)===String(id))).filter(Boolean);
+    ms[k].selected=ids.map(id=>{
+      const existing=ms[k].all.find(o=>String(o.id)===String(id));
+      if(existing)return existing;
+      if(k==='brand'){const row=allBr.find(o=>String(o.id)===String(id));return row?brandOption(row):null;}
+      if(k==='store'){const row=allSt.find(o=>String(o.id)===String(id));return row?{id:row.id,label:row.store,sub:`ID ${row.id}`,meta:row}:null;}
+      return null;
+    }).filter(Boolean);
     renderTags(k);
   });
   const managerOpt=r.account_manager_id?ms.accountmanager.all.find(o=>String(o.id)===String(r.account_manager_id)):null;
@@ -3492,7 +3513,7 @@ async function saveRecord(asStandby=false){
 // ── Dependent filters ──────────────────────────────────────────────────────
 function applyClientFilter(reset=true){
   const cId=ms.client.selected[0]?.id||null;
-  ms.brand.all  =(cId?allBr.filter(b=>String(b.client_giid)===String(cId)):allBr).map(brandOption);
+  ms.brand.all  =(cId?allBr.filter(b=>String(b.client_giid)===String(cId)):allBr).filter(referenceEnabled).map(brandOption);
   ms.contact.all=(cId?allCon.filter(c=>String(c.client_id)===String(cId)):allCon).map(contactOption);
   if(reset){ms.brand.selected=[];ms.contact.selected=[];renderTags('brand');renderTags('contact');}
 }
@@ -3504,7 +3525,7 @@ function applySectorFilter(){
     return;
   }
   // Filter stores to only those belonging to the selected sectors
-  const filtered=allSt.filter(s=>s.Sector_id!=null&&sectorIds.includes(String(s.Sector_id)));
+  const filtered=allSt.filter(referenceEnabled).filter(s=>s.Sector_id!=null&&sectorIds.includes(String(s.Sector_id)));
   ms.store.all=filtered.map(s=>({id:s.id,label:s.store,sub:`ID ${s.id}`,meta:s}));
   // Remove selected stores that no longer exist in the filtered list
   ms.store.selected=ms.store.selected.filter(s=>ms.store.all.find(o=>o.id===s.id));
@@ -3514,11 +3535,11 @@ function applySectorFilter(){
 function applyCompanyFilter(){
   const ids=ms.company.selected.map(o=>String(o.id));
   if(!ids.length){
-    ms.store.all=allSt.map(s=>({id:s.id,label:s.store,sub:`ID ${s.id}`,meta:s}));
+    ms.store.all=allSt.filter(referenceEnabled).map(s=>({id:s.id,label:s.store,sub:`ID ${s.id}`,meta:s}));
     ms.sector.all=allSectors.map(s=>({id:s.id,label:s.Name,sub:`ID ${s.id}`,meta:s}));
   }else{
     const ctry=allCo.filter(c=>ids.includes(String(c.id))).map(c=>String(c.country_id)).filter(Boolean);
-    ms.store.all=(ctry.length?allSt.filter(s=>s.country_id!=null&&ctry.includes(String(s.country_id))):allSt).map(s=>({id:s.id,label:s.store,sub:`ID ${s.id}`,meta:s}));
+    ms.store.all=(ctry.length?allSt.filter(s=>s.country_id!=null&&ctry.includes(String(s.country_id))):allSt).filter(referenceEnabled).map(s=>({id:s.id,label:s.store,sub:`ID ${s.id}`,meta:s}));
     // Filter sectors strictly by companyid matching selected company IDs
     ms.sector.all=allSectors.filter(s=>s.companyid!=null&&ids.includes(String(s.companyid))).map(s=>({id:s.id,label:s.Name,sub:`ID ${s.id}`,meta:s}));
   }
@@ -4536,7 +4557,7 @@ function populateP4ClientSapFilters(){
   const sectorId=getCompanyFilter('p4-sector-filter');
   const isSent=record=>!!(record.email_sent_date||record.first_report_date);
   const source=p3All.filter(record=>(!!record.validated_date||isSent(record))&&matchesCompany(record,companyId)&&matchesSector(record,sectorId));
-  p4SetFilterOptions('p4-client-filter',source.map(record=>shortClient(record)||record.client),'clients');
+  p4SetFilterOptions('p4-client-filter',source.map(record=>shortClient(record)||record.client).filter(value=>referenceOptionAllowed('client',value)),'clients');
   p4SetFilterOptions('p4-sap-filter',source.map(record=>record.sapcode),'SAP codes');
 }
 
@@ -4993,9 +5014,9 @@ async function refreshEntryForm(){
     showLoad(true);
     const [co,cl,br,st,con,rt,sec,ops,retailers,contactRetailers,rec]=await Promise.all([
       sbGet('GI_company?select=id,name,country_id&active=eq.true&order=id.asc'),
-      sbGet('GI_clients?select=id,client&active=eq.true&order=client'),
-      sbGet('GI_brands?select=id,brand,client_giid,visible&order=brand'),
-      sbGet('GI_stores?select=id,store,country_id,Sector_id&visible=eq.true&order=store'),
+      sbGetAll('GI_clients?select=id,client,active&order=client'),
+      sbGetAll('GI_brands?select=id,brand,client_giid,visible&order=brand'),
+      sbGetAll('GI_stores?select=id,store,country_id,Sector_id,visible&order=store'),
       sbGet('C_contacts?select=id,Fname,Lname,Fullname,email,client_id,Retailer,brand_preference_id&active=eq.true&order=Fullname'),
       sbGet('report_types?select=id,type&visible=eq.true&order=type'),
       sbGet('Sector?select=id,Name,companyid&order=Name'),
@@ -5012,9 +5033,9 @@ async function refreshEntryForm(){
     missionIdsColumnReady=!allRec.length||Object.prototype.hasOwnProperty.call(allRec[0],'mission_ids');
     filtRec=applyGlobalFilter(allRec);
     ms.company.all   =co.map(c=>({id:c.id,label:c.name,sub:'',meta:c}));
-    ms.client.all    =cl.map(clientOption);
-    ms.brand.all     =br.map(brandOption);
-    ms.store.all     =st.map(s=>({id:s.id,label:s.store,sub:`ID ${s.id}`,meta:s}));
+    ms.client.all    =cl.filter(referenceEnabled).map(clientOption);
+    ms.brand.all     =br.filter(referenceEnabled).map(brandOption);
+    ms.store.all     =st.filter(referenceEnabled).map(s=>({id:s.id,label:s.store,sub:`ID ${s.id}`,meta:s}));
     ms.sector.all    =sec.map(s=>({id:s.id,label:s.Name,sub:`ID ${s.id}`,meta:s}));
     ms.contact.all   =con.map(contactOption);
     ms.accountmanager.all=accountManagerOptions();
@@ -5219,7 +5240,7 @@ function sc_loadData(){
 function sc_populateBrandFilter(){
   const sel=document.getElementById('sc_filterBrand');
   const cur=sel.value;
-  const brands=[...new Set(sc_allRows.map(r=>r.Brand).filter(Boolean))].sort();
+  const brands=[...new Set(sc_allRows.map(r=>r.Brand).filter(value=>referenceOptionAllowed('brand',value)))].sort();
   sel.innerHTML='<option value="">All brands</option>'+brands.map(b=>`<option value="${esc(b)}"${b===cur?' selected':''}>${esc(b)}</option>`).join('');
   sc_populateStoreFilter();
 }
@@ -5228,7 +5249,7 @@ function sc_populateStoreFilter(){
   const sel=document.getElementById('sc_filterStore');
   const cur=sel.value;
   const rows=brand?sc_allRows.filter(r=>r.Brand===brand):sc_allRows;
-  const stores=[...new Set(rows.map(r=>r.Store).filter(Boolean))].sort();
+  const stores=[...new Set(rows.map(r=>r.Store).filter(value=>referenceOptionAllowed('store',value)))].sort();
   sel.innerHTML='<option value="">All stores</option>'+stores.map(s=>`<option value="${esc(s)}"${s===cur?' selected':''}>${esc(s)}</option>`).join('');
 }
 function sc_renderTable(){
@@ -5539,7 +5560,7 @@ function led_populateEntityFilters(){
     const select=document.getElementById(id);
     if(!select)return;
     const current=select.value;
-    select.innerHTML=`<option value="">${allLabel}</option>`+(led_refs[key]||[]).map(row=>`<option value="${esc(row.id)}">${esc(row.label)} · ID ${esc(row.id)}</option>`).join('');
+    select.innerHTML=`<option value="">${allLabel}</option>`+(led_refs[key]||[]).filter(row=>!referenceRows(key)||referenceEnabled(row)).map(row=>`<option value="${esc(row.id)}">${esc(row.label)} · ID ${esc(row.id)}</option>`).join('');
     if(current&&[...select.options].some(option=>option.value===current))select.value=current;
   });
 }
@@ -6339,10 +6360,10 @@ function items_populateFilters(){
   const brandEl=document.getElementById('itemsBrandFilter');
   const clientEl=document.getElementById('itemsClientFilter');
   const oldBrand=brandEl.value, oldClient=clientEl.value;
-  const brands=[...new Set(items_all.map(r=>String(r.brand||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+  const brands=[...new Set(items_all.map(r=>String(r.brand||'').trim()).filter(value=>referenceOptionAllowed('brand',value)))].sort((a,b)=>a.localeCompare(b));
   brandEl.innerHTML='<option value="">All Brands</option>'+brands.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('');
   brandEl.value=oldBrand;
-  const clientIds=[...new Set(items_all.map(r=>r.client_id==null?'':String(r.client_id)).filter(Boolean))];
+  const clientIds=[...new Set(items_all.map(r=>r.client_id==null?'':String(r.client_id)).filter(id=>allCl.some(client=>String(client.id)===id&&referenceEnabled(client))))];
   clientIds.sort((a,b)=>items_clientLabel(a).localeCompare(items_clientLabel(b)));
   clientEl.innerHTML='<option value="">All Clients</option>'+clientIds.map(id=>`<option value="${esc(id)}">${esc(items_clientLabel(id))}</option>`).join('');
   clientEl.value=oldClient;
@@ -6447,7 +6468,7 @@ function items_resetFilters(){
 function items_fillBrandForm(){
   const el=document.getElementById('itemBrand');
   if(!el)return;
-  const brands=[...allBr].sort((a,b)=>String(a.brand||'').localeCompare(String(b.brand||'')));
+  const brands=allBr.filter(referenceEnabled).sort((a,b)=>String(a.brand||'').localeCompare(String(b.brand||'')));
   el.innerHTML='<option value="">Select brand…</option>'+brands.map(b=>`<option value="${esc(b.id)}">${esc(b.brand||'Unnamed')} · ID ${esc(b.id)} · ${b.visible===true?'Visible':'Hidden'}</option>`).join('');
 }
 
@@ -6495,6 +6516,16 @@ function items_openNew(){
   setTimeout(()=>document.getElementById('itemName').focus(),0);
 }
 
+function items_matchBrand(row){
+  // An explicit ID takes precedence over duplicate names owned by other clients.
+  if(row.brand_id!=null)return allBr.find(brand=>String(brand.id)===String(row.brand_id))||null;
+  const named=allBr.filter(brand=>String(brand.brand||'').trim().toLowerCase()===String(row.brand||'').trim().toLowerCase());
+  const owned=named.filter(brand=>String(brand.client_giid)===String(row.client_id));
+  const candidates=owned.length?owned:named;
+  const enabled=candidates.filter(referenceEnabled);
+  return enabled.length===1?enabled[0]:candidates.length===1?candidates[0]:null;
+}
+
 function items_openEdit(id){
   const row=items_all.find(r=>String(r.id)===String(id));
   if(!row)return;
@@ -6503,7 +6534,8 @@ function items_openEdit(id){
   items_fillBrandForm();
   const brandEl=document.getElementById('itemBrand');
   let brandValue='';
-  const matched=allBr.find(b=>String(b.id)===String(row.brand_id)||String(b.brand||'').trim().toLowerCase()===String(row.brand||'').trim().toLowerCase());
+  const matched=items_matchBrand(row);
+  if(matched&&!referenceEnabled(matched))brandEl.insertAdjacentHTML('beforeend',`<option value="${esc(matched.id)}" disabled>${esc(matched.brand)} · Current hidden brand</option>`);
   if(matched)brandValue=String(matched.id);
   else if(row.brand){brandValue='legacy:'+row.brand;brandEl.insertAdjacentHTML('beforeend',`<option value="${esc(brandValue)}">${esc(row.brand)} · Legacy brand</option>`);}
   const values={
@@ -6542,6 +6574,37 @@ function items_errorMessage(error){
   }catch(_){return raw;}
 }
 
+async function items_keepSelectedClient(row,brand){
+  const expectedClient=brand.client_giid==null?null:String(brand.client_giid);
+  const sameClient=value=>String(value??'')===String(expectedClient??'');
+  if(row?.id==null)throw new Error('The saved item was not returned; its client could not be verified.');
+  if(String(row.brand_id??'')!==String(brand.id??''))throw new Error('The saved brand does not match the selected brand.');
+  if(sameClient(row.client_id))return row;
+  // The legacy name-matching trigger runs for INSERT and UPDATE OF brand.
+  // A client-only update keeps the explicit selection without changing that rule.
+  const response=await authenticatedFetch(`${SB_URL}/rest/v1/legacy_items?id=eq.${encodeURIComponent(row.id)}`,{
+    method:'PATCH',
+    headers:{'Prefer':'return=representation'},
+    body:JSON.stringify({client_id:expectedClient})
+  });
+  if(!response.ok)throw new Error(await response.text());
+  const corrected=(await response.json())?.[0];
+  if(!corrected||String(corrected.id)!==String(row.id)||String(corrected.brand_id??'')!==String(brand.id??'')||!sameClient(corrected.client_id)){
+    throw new Error('The selected client could not be confirmed.');
+  }
+  return corrected;
+}
+
+function items_cacheSavedRow(row){
+  const existingIndex=items_all.findIndex(r=>String(r.id)===String(row.id));
+  if(existingIndex>=0)items_all[existingIndex]=row;
+  else items_all.push(row);
+  items_all.sort(items_compareNewest);
+  items_updateCounts();
+  items_populateFilters();
+  items_applyFilters(false);
+}
+
 async function items_save(addAnother=false){
   const name=document.getElementById('itemName').value.trim();
   const brand=items_selectedBrand();
@@ -6550,6 +6613,7 @@ async function items_save(addAnother=false){
     name,
     brand:brand.brand,
     brand_id:brand.id==null?null:Number(brand.id),
+    client_id:brand.client_giid==null?null:String(brand.client_giid),
     size:items_numberOrNull('itemSize'),
     unit:document.getElementById('itemUnit').value.trim()||null,
     visible:document.getElementById('itemVisible').checked,
@@ -6578,17 +6642,20 @@ async function items_save(addAnother=false){
     if(!res.ok)throw new Error(await res.text());
     const saved=await res.json();
     const savedId=saved?.[0]?.id??items_editingId;
-    const savedRow=saved?.[0];
+    let savedRow=saved?.[0];
     if(savedRow){
-      const existingIndex=items_all.findIndex(r=>String(r.id)===String(savedRow.id));
-      if(existingIndex>=0)items_all[existingIndex]=savedRow;
-      else items_all.push(savedRow);
-      items_all.sort(items_compareNewest);
-      items_updateCounts();
-      items_populateFilters();
-      items_applyFilters(false);
+      try{
+        savedRow=await items_keepSelectedClient(savedRow,brand);
+      }catch(error){
+        // The first save already succeeded. Retry this item instead of creating a duplicate.
+        items_cacheSavedRow(savedRow);
+        items_openEdit(savedRow.id);
+        throw new Error(`Item ${savedRow.id} was saved, but its selected client could not be kept. Retry Save Changes. ${items_errorMessage(error)}`);
+      }
+      items_cacheSavedRow(savedRow);
     }else{
       await items_loadData();
+      throw new Error('The save returned no item to verify. Refresh the list before trying again.');
     }
     if(addAnother){
       items_clearForm();
@@ -6698,7 +6765,8 @@ async function cc_load(){
 function ccSetOptions(id,values,label){
   const select=document.getElementById(id);if(!select)return;
   const current=select.value;
-  const unique=[...new Set(values.filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b),undefined,{numeric:true,sensitivity:'base'}));
+  const key=id==='cc-filter-client'?'client':id==='cc-filter-brand'?'brand':null;
+  const unique=[...new Set(values.filter(value=>value&&(!key||referenceOptionAllowed(key,value))))].sort((a,b)=>String(a).localeCompare(String(b),undefined,{numeric:true,sensitivity:'base'}));
   select.innerHTML=`<option value="">All ${label}</option>`+unique.map(value=>`<option value="${esc(value)}">${esc(value)}</option>`).join('');
   select.value=unique.includes(current)?current:'';
 }
@@ -7881,10 +7949,11 @@ function rc_populateFilters(forceAll=false){
   const nextOptions={};
   RC_FILTER_DEFS.forEach(def=>{
     const mode=rc_filterMode[def.key]||'all';
-    const selected=rc_filterState[def.key]||new Set();
+    const selected=new Set([...(rc_filterState[def.key]||[])].filter(value=>referenceOptionAllowed(def.key,value)));
+    rc_filterState[def.key]=selected;
     const counts=new Map();
     rc_data.filter(row=>rcRowMatchesFilters(row,def.key))
-      .forEach(row=>rcFilterValues(row,def).forEach(value=>counts.set(value,(counts.get(value)||0)+1)));
+      .forEach(row=>rcFilterValues(row,def).filter(value=>!referenceRows(def.key)||value===RC_EMPTY||referenceOptionAllowed(def.key,value)).forEach(value=>counts.set(value,(counts.get(value)||0)+1)));
     const keepSelected=value=>mode==='custom'&&selected.has(value);
     nextOptions[def.key]=def.staticOptions
       ? def.staticOptions.filter(option=>counts.has(option.value)||keepSelected(option.value))
@@ -8292,4 +8361,5 @@ Promise.resolve(window._authReady).then(authenticated=>{
 </script>
 </body>
 </html>
+
 
