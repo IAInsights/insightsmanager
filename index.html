@@ -51,8 +51,10 @@ body{font-family:'Inter',sans-serif;font-size:13px;color:var(--g900);background:
 .tab-btn:hover{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.65);color:#fff;}
 .tab-btn.active{background:#fff;border-color:#fff;color:var(--blue);font-weight:600;}
 .release-heading{margin-top:7px;font-size:13px;font-weight:800;color:var(--g900)}.release-list{display:block!important;visibility:visible!important;margin:8px 0 0;padding-left:19px;font-size:11px;line-height:1.45;color:var(--g700,#4b4f52)!important;list-style:disc}.release-list li{display:list-item!important;visibility:visible!important;color:var(--g700,#4b4f52)!important;list-style:disc}.release-list li+li{margin-top:6px}.release-list strong{color:var(--blue)}
-.workflow-tools-bar{display:none;align-items:center;flex-wrap:wrap;gap:8px;padding:8px 20px;background:#fff;border-bottom:1px solid var(--g200);flex-shrink:0;}
-.workflow-tool-btn{height:34px;padding:0 16px;border:1.5px solid var(--g300);border-radius:6px;background:#fff;color:var(--g600);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;}
+.workflow-tools-bar{display:none;align-items:center;flex-wrap:wrap;gap:8px 18px;padding:8px 20px;background:#fff;border-bottom:1px solid var(--g200);flex-shrink:0;}
+.workflow-tool-group{display:flex;align-items:center;flex-wrap:wrap;gap:8px;}
+.workflow-tool-btn{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 16px;border:1.5px solid var(--g300);border-radius:6px;background:#fff;color:var(--g600);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;}
+.workflow-tool-btn svg{width:15px;height:15px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
 .workflow-tool-btn:hover{border-color:var(--blue);color:var(--blue);}
 .workflow-tool-btn.active{background:var(--blue-light);border-color:var(--blue);color:var(--blue);}
 #gFilterBar{justify-content:flex-end}
@@ -916,14 +918,19 @@ window._authReady=restoreSupabaseSession();
 
 <!-- WORKFLOW TOOLS SUB-NAVIGATION -->
 <div id="workflowToolsBar" class="workflow-tools-bar">
-  <button class="workflow-tool-btn" id="workflowTool11btn" onclick="switchWorkflowTool(11)">Legacy Data</button>
-  <button class="workflow-tool-btn" id="workflowTool6btn" onclick="switchWorkflowTool(6)">Targets</button>
-  <button class="workflow-tool-btn" id="workflowTool7btn" onclick="switchWorkflowTool(7)">Items</button>
-  <button class="workflow-tool-btn" data-led-table="sales" onclick="led_switchTable('sales')">Sales</button>
-  <button class="workflow-tool-btn" data-led-table="questionnaire" onclick="led_switchTable('questionnaire')">Questionnaire</button>
-  <button class="workflow-tool-btn" data-led-table="installation" onclick="led_switchTable('installation')">Installation</button>
-  <button class="workflow-tool-btn" data-led-table="fdf" onclick="led_switchTable('fdf')">FDF</button>
-  <button class="workflow-tool-btn" data-led-table="global" onclick="led_switchTable('global')">Global</button>
+  <div class="workflow-tool-group">
+    <button class="workflow-tool-btn" data-led-table="sales" onclick="led_switchTable('sales')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18M8 16v-3m5 3V9m5 7V5"/></svg>Sales</button>
+    <button class="workflow-tool-btn" data-led-table="questionnaire" onclick="led_switchTable('questionnaire')"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8m-8 4h8m-8 4h5"/></svg>Questionnaire</button>
+  </div>
+  <div class="workflow-tool-group">
+    <button class="workflow-tool-btn" data-led-table="installation" onclick="led_switchTable('installation')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6 4 4m-7 3-6 6a1.4 1.4 0 0 1-2-2l6-6m0-2 6-6 6 6-6 6z"/></svg>Installation</button>
+    <button class="workflow-tool-btn" data-led-table="fdf" onclick="led_switchTable('fdf')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16l-2-6H6l-2 6Zm1 0v10h14V10M9 20v-6h6v6M4 10a2 2 0 0 0 4 0 2 2 0 0 0 4 0 2 2 0 0 0 4 0 2 2 0 0 0 4 0"/></svg>FDF</button>
+    <button class="workflow-tool-btn" data-led-table="global" onclick="led_switchTable('global')"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/></svg>Global</button>
+  </div>
+  <div class="workflow-tool-group">
+    <button class="workflow-tool-btn" id="workflowTool7btn" onclick="switchWorkflowTool(7)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Zm-8 4.5 8 4.5 8-4.5M12 12v9M8 5.25l8 4.5"/></svg>Items</button>
+    <button class="workflow-tool-btn" id="workflowTool6btn" onclick="switchWorkflowTool(6)"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>Targets</button>
+  </div>
 </div>
 
 <!-- PAGE 0 – DASHBOARD -->
@@ -1469,7 +1476,7 @@ window._authReady=restoreSupabaseSession();
 <!-- PAGE 11 – LEGACY DATA EDITOR -->
 <div class="page" id="page11" style="flex-direction:column;overflow:hidden;background:var(--g50);">
   <div class="led-toolbar">
-    <div class="led-title"><strong>Legacy Data Editor</strong><span>Edit existing Supabase records</span></div>
+    <div class="led-title"><strong id="ledTitle">Sales</strong><span>Edit existing Supabase records</span></div>
     <select class="led-control" id="ledBrandFilter" onchange="led_scheduleLoad(true)"><option value="">All brands</option></select>
     <select class="led-control" id="ledStoreFilter" onchange="led_scheduleLoad(true)"><option value="">All stores</option></select>
     <select class="led-control" id="ledPromoterFilter" onchange="led_scheduleLoad(true)"><option value="">All promoters</option></select>
@@ -2180,9 +2187,9 @@ function switchTab(n){
   const workflowBar=document.getElementById('workflowToolsBar');
   if(workflowMain)workflowMain.classList.toggle('active',workflowOpen);
   if(workflowBar)workflowBar.style.display=workflowOpen?'flex':'none';
-  [6,7,11].forEach(i=>{
+  [6,7].forEach(i=>{
     const button=document.getElementById('workflowTool'+i+'btn');
-    if(button)button.classList.toggle('active',n===i&&i!==11);
+    if(button)button.classList.toggle('active',n===i);
   });
   document.querySelectorAll('[data-led-table]').forEach(button=>button.classList.toggle('active',n===11&&button.dataset.ledTable===led_table));
   showGFilterBar(n===1||n===2);
@@ -5180,7 +5187,7 @@ const LED_CONFIG={
     ]
   },
   global:{
-    label:'Global Feedback',table:'legacy_global',pk:'ID',date:'Date',
+    label:'Global',table:'legacy_global',pk:'ID',date:'Date',
     columns:[['ID','ID'],['Created','Created Date'],['Date','Date'],['promotername','Promoter'],['Store','Shop'],['Brand','Brand']],
     lookups:[
       {key:'client',label:'Client',idColumn:'Client_id',idType:'text'},
@@ -5284,6 +5291,7 @@ function led_applyEntityFilter(url,key,selectedId){
 async function led_loadPage(){
   const requestId=++led_loadRequest;
   const config=led_config();
+  document.getElementById('ledTitle').textContent=config.label;
   const area=document.getElementById('ledTableArea');
   area.innerHTML='<div class="led-empty">Loading records…</div>';
   const url=new URL(`${SB}/rest/v1/${config.table}`);
