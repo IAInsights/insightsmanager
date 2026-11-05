@@ -51,7 +51,7 @@ body{font-family:'Inter',sans-serif;font-size:13px;color:var(--g900);background:
 .tab-btn:hover{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.65);color:#fff;}
 .tab-btn.active{background:#fff;border-color:#fff;color:var(--blue);font-weight:600;}
 .release-heading{margin-top:7px;font-size:13px;font-weight:800;color:var(--g900)}.release-list{display:block!important;visibility:visible!important;margin:8px 0 0;padding-left:19px;font-size:11px;line-height:1.45;color:var(--g700,#4b4f52)!important;list-style:disc}.release-list li{display:list-item!important;visibility:visible!important;color:var(--g700,#4b4f52)!important;list-style:disc}.release-list li+li{margin-top:6px}.release-list strong{color:var(--blue)}
-.workflow-tools-bar{display:none;align-items:center;gap:8px;padding:8px 20px;background:#fff;border-bottom:1px solid var(--g200);flex-shrink:0;}
+.workflow-tools-bar{display:none;align-items:center;flex-wrap:wrap;gap:8px;padding:8px 20px;background:#fff;border-bottom:1px solid var(--g200);flex-shrink:0;}
 .workflow-tool-btn{height:34px;padding:0 16px;border:1.5px solid var(--g300);border-radius:6px;background:#fff;color:var(--g600);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;}
 .workflow-tool-btn:hover{border-color:var(--blue);color:var(--blue);}
 .workflow-tool-btn.active{background:var(--blue-light);border-color:var(--blue);color:var(--blue);}
@@ -598,7 +598,7 @@ tr.cancelled-row .rec-title{text-decoration:line-through;}
 .items-empty{padding:52px 20px;text-align:center;color:var(--g400);font-size:12px;}
 .items-toast{position:fixed;right:24px;bottom:24px;z-index:10020;padding:10px 15px;border-radius:7px;color:#fff;font-size:12px;font-weight:650;box-shadow:var(--shadow);display:none;max-width:360px;}
 @media(max-width:1250px){.items-editor{position:absolute;right:20px;top:128px;bottom:16px;z-index:50;width:min(410px,calc(100% - 40px));}.items-main{position:relative;}.items-select{max-width:145px}.items-search{min-width:190px}}
-.led-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 20px;background:#fff;border-bottom:1px solid var(--g200);flex-shrink:0}.led-title{margin-right:10px}.led-title strong{display:block;font-size:15px}.led-title span{display:block;margin-top:2px;color:var(--g500);font-size:10.5px}.led-tabs{display:flex;gap:5px}.led-tab,.led-btn{height:32px;padding:0 12px;border:1.5px solid var(--g300);border-radius:6px;background:#fff;color:var(--g600);font:650 11.5px/1 inherit;cursor:pointer}.led-tab.active{border-color:var(--blue);background:var(--blue-light);color:var(--blue)}.led-btn.primary{border-color:var(--blue);background:var(--blue);color:#fff}.led-btn.danger{border-color:#f3b2ac;background:var(--red-light);color:var(--red)}.led-btn:disabled{opacity:.55;cursor:not-allowed}.led-control{height:32px;padding:0 9px;border:1.5px solid var(--g300);border-radius:6px;background:#fff;color:var(--g700);font:inherit;font-size:11.5px;outline:none}.led-control:focus{border-color:var(--blue)}.led-search{min-width:180px}.led-shell{position:relative;display:grid;grid-template-columns:1fr;gap:10px;flex:1;min-height:0;padding:12px 20px 16px;overflow:hidden}.led-shell.editor-open{grid-template-columns:minmax(680px,1fr) 390px}.led-card,.led-editor{min-height:0;border:1px solid var(--g200);border-radius:8px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.06);overflow:hidden}.led-card{display:flex;flex-direction:column}.led-table-wrap{flex:1;overflow:auto}.led-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:11px}.led-table th{position:sticky;top:0;z-index:2;padding:8px 9px;border-bottom:2px solid var(--g200);background:var(--g50);color:var(--g600);font-size:9.5px;letter-spacing:.04em;text-align:left;text-transform:uppercase;white-space:nowrap}.led-table td{padding:8px 9px;border-bottom:1px solid var(--g100);color:var(--g700);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.led-row{cursor:pointer}.led-row:hover,.led-row.selected{background:#f7faff}.led-row.selected{box-shadow:inset 3px 0 0 var(--blue)}.led-empty{padding:54px 20px;color:var(--g400);font-size:12px;text-align:center}.led-pager{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;border-top:1px solid var(--g200);background:var(--g50);color:var(--g500);font-size:10.5px}.led-editor{display:none;flex-direction:column}.led-editor.open{display:flex}.led-editor-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:13px 15px;border-bottom:1px solid var(--g200)}.led-editor-body{flex:1;overflow:auto;padding:13px 15px}.led-form{display:grid;grid-template-columns:1fr 1fr;gap:10px}.led-field{display:flex;flex-direction:column;gap:4px;min-width:0}.led-field.full{grid-column:1/-1}.led-field label{color:var(--g500);font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}.led-input{width:100%;min-height:34px;padding:7px 9px;border:1px solid var(--g300);border-radius:6px;background:#fff;color:var(--g800);font:inherit;font-size:11.5px;outline:none}.led-input:focus{border-color:var(--blue)}textarea.led-input{min-height:72px;line-height:1.45;resize:vertical}.led-editor-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 15px;border-top:1px solid var(--g200);background:var(--g50)}.led-save-state{color:var(--g500);font-size:10.5px}.led-save-state.dirty{color:var(--amber)}.led-save-state.saved{color:var(--green)}.led-save-state.error{color:var(--red)}
+.led-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 20px;background:#fff;border-bottom:1px solid var(--g200);flex-shrink:0}.led-title{margin-right:10px}.led-title strong{display:block;font-size:15px}.led-title span{display:block;margin-top:2px;color:var(--g500);font-size:10.5px}.led-btn{height:32px;padding:0 12px;border:1.5px solid var(--g300);border-radius:6px;background:#fff;color:var(--g600);font:650 11.5px/1 inherit;cursor:pointer}.led-btn.primary{border-color:var(--blue);background:var(--blue);color:#fff}.led-btn.danger{border-color:#f3b2ac;background:var(--red-light);color:var(--red)}.led-btn:disabled{opacity:.55;cursor:not-allowed}.led-control{height:32px;padding:0 9px;border:1.5px solid var(--g300);border-radius:6px;background:#fff;color:var(--g700);font:inherit;font-size:11.5px;outline:none}.led-control:focus{border-color:var(--blue)}.led-shell{position:relative;display:grid;grid-template-columns:1fr;gap:10px;flex:1;min-height:0;padding:12px 20px 16px;overflow:hidden}.led-shell.editor-open{grid-template-columns:minmax(680px,1fr) 390px}.led-card,.led-editor{min-height:0;border:1px solid var(--g200);border-radius:8px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.06);overflow:hidden}.led-card{display:flex;flex-direction:column}.led-table-wrap{flex:1;overflow:auto}.led-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:11px}.led-table th{position:sticky;top:0;z-index:2;padding:8px 9px;border-bottom:2px solid var(--g200);background:var(--g50);color:var(--g600);font-size:9.5px;letter-spacing:.04em;text-align:left;text-transform:uppercase;white-space:nowrap}.led-table td{padding:8px 9px;border-bottom:1px solid var(--g100);color:var(--g700);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.led-row{cursor:pointer}.led-row:hover,.led-row.selected{background:#f7faff}.led-row.selected{box-shadow:inset 3px 0 0 var(--blue)}.led-empty{padding:54px 20px;color:var(--g400);font-size:12px;text-align:center}.led-pager{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;border-top:1px solid var(--g200);background:var(--g50);color:var(--g500);font-size:10.5px}.led-editor{display:none;flex-direction:column}.led-editor.open{display:flex}.led-editor-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:13px 15px;border-bottom:1px solid var(--g200)}.led-editor-body{flex:1;overflow:auto;padding:13px 15px}.led-form{display:grid;grid-template-columns:1fr 1fr;gap:10px}.led-field{display:flex;flex-direction:column;gap:4px;min-width:0}.led-field.full{grid-column:1/-1}.led-field label{color:var(--g500);font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}.led-input{width:100%;min-height:34px;padding:7px 9px;border:1px solid var(--g300);border-radius:6px;background:#fff;color:var(--g800);font:inherit;font-size:11.5px;outline:none}.led-input:focus{border-color:var(--blue)}textarea.led-input{min-height:72px;line-height:1.45;resize:vertical}.led-editor-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 15px;border-top:1px solid var(--g200);background:var(--g50)}.led-save-state{color:var(--g500);font-size:10.5px}.led-save-state.dirty{color:var(--amber)}.led-save-state.saved{color:var(--green)}.led-save-state.error{color:var(--red)}
 .led-tab,.led-btn{font-family:inherit;font-size:11.5px;font-weight:650;line-height:1}
 .led-lookup-id{min-height:15px;color:var(--blue);font-size:9.5px;font-weight:650}.led-lookup-note{grid-column:1/-1;padding:7px 9px;border:1px solid #c9d8fb;border-radius:6px;background:var(--blue-light);color:var(--blue-dark);font-size:10.5px;line-height:1.4}.led-bulk-option{grid-column:1/-1;display:flex;align-items:flex-start;gap:8px;padding:9px 10px;border:1px solid #c9d8fb;border-radius:7px;background:#f7faff;color:var(--g700);font-size:10.5px;line-height:1.35;cursor:pointer}.led-bulk-option input{margin:2px 0 0;accent-color:var(--blue)}.led-bulk-option strong{display:block;color:var(--blue-dark);font-size:11px}.led-bulk-option span{display:block;margin-top:2px;color:var(--g500)}.led-shell.editor-open.questionnaire-editor{grid-template-columns:minmax(620px,1fr) 560px}.led-form.questionnaire{grid-template-columns:repeat(3,minmax(0,1fr))}.led-form-section{grid-column:1/-1;margin-top:3px;padding-top:9px;border-top:1px solid var(--g200);color:var(--g500);font-size:9.5px;font-weight:750;letter-spacing:.05em;text-transform:uppercase}
 @media(max-width:1100px){.led-shell,.led-shell.editor-open,.led-shell.editor-open.questionnaire-editor{grid-template-columns:1fr}.led-editor{position:absolute;right:20px;top:12px;bottom:16px;z-index:40;width:min(560px,calc(100% - 40px))}.led-form.questionnaire{grid-template-columns:1fr 1fr}}
@@ -916,10 +916,14 @@ window._authReady=restoreSupabaseSession();
 
 <!-- WORKFLOW TOOLS SUB-NAVIGATION -->
 <div id="workflowToolsBar" class="workflow-tools-bar">
-  <button class="workflow-tool-btn" id="workflowTool5btn" onclick="switchWorkflowTool(5)">Shift Comments</button>
+  <button class="workflow-tool-btn" id="workflowTool11btn" onclick="switchWorkflowTool(11)">Legacy Data</button>
   <button class="workflow-tool-btn" id="workflowTool6btn" onclick="switchWorkflowTool(6)">Targets</button>
   <button class="workflow-tool-btn" id="workflowTool7btn" onclick="switchWorkflowTool(7)">Items</button>
-  <button class="workflow-tool-btn" id="workflowTool11btn" onclick="switchWorkflowTool(11)">Legacy Data</button>
+  <button class="workflow-tool-btn" data-led-table="sales" onclick="led_switchTable('sales')">Sales</button>
+  <button class="workflow-tool-btn" data-led-table="questionnaire" onclick="led_switchTable('questionnaire')">Questionnaire</button>
+  <button class="workflow-tool-btn" data-led-table="installation" onclick="led_switchTable('installation')">Installation</button>
+  <button class="workflow-tool-btn" data-led-table="fdf" onclick="led_switchTable('fdf')">FDF</button>
+  <button class="workflow-tool-btn" data-led-table="global" onclick="led_switchTable('global')">Global</button>
 </div>
 
 <!-- PAGE 0 – DASHBOARD -->
@@ -1243,78 +1247,6 @@ window._authReady=restoreSupabaseSession();
   </div>
 </div>
 
-<!-- PAGE 5 – SHIFT COMMENTS -->
-<div class="page" id="page5" style="flex-direction:column;overflow:hidden;background:var(--g50);">
-  <div style="background:#fff;border-bottom:1px solid var(--g200);padding:10px 24px;display:flex;align-items:center;gap:12px;flex-shrink:0;flex-wrap:wrap;">
-    <div>
-      <div style="font-size:15px;font-weight:600;color:var(--g900);">Comments Editor</div>
-      <div id="sc_subline" style="font-size:12px;color:var(--g500);margin-top:1px;">Loading…</div>
-    </div>
-    <div style="display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap;">
-      <span style="font-size:12px;color:var(--g600);font-weight:500;">Date</span>
-      <input type="date" id="sc_filterDate" onchange="sc_loadData()" style="height:30px;padding:0 8px;border:1.5px solid var(--g300);border-radius:var(--r);font-family:inherit;font-size:12px;outline:none;">
-      <span style="font-size:12px;color:var(--g600);font-weight:500;">Brand</span>
-      <select id="sc_filterBrand" onchange="sc_populateStoreFilter();sc_renderTable()" style="height:30px;padding:0 8px;border:1.5px solid var(--g300);border-radius:var(--r);font-family:inherit;font-size:12px;outline:none;background:#fff;appearance:none;min-width:120px;">
-        <option value="">All brands</option>
-      </select>
-      <span style="font-size:12px;color:var(--g600);font-weight:500;">Store</span>
-      <select id="sc_filterStore" onchange="sc_renderTable()" style="height:30px;padding:0 8px;border:1.5px solid var(--g300);border-radius:var(--r);font-family:inherit;font-size:12px;outline:none;background:#fff;appearance:none;min-width:120px;">
-        <option value="">All stores</option>
-      </select>
-      <input type="text" id="sc_filterSearch" placeholder="Search promoter…" oninput="sc_renderTable()" style="height:30px;padding:0 8px;border:1.5px solid var(--g300);border-radius:var(--r);font-family:inherit;font-size:12px;outline:none;width:160px;">
-      <button onclick="sc_loadData()" style="display:flex;align-items:center;gap:5px;padding:5px 12px;border:1.5px solid var(--g300);border-radius:var(--r);background:#fff;font-family:inherit;font-size:12px;font-weight:600;color:var(--g600);cursor:pointer;">
-        <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M13.65 2.35A8 8 0 1 0 15 8h-2a6 6 0 1 1-1.76-4.24l-2.3 2.3H15V2l-1.35.35z"/></svg>Refresh
-      </button>
-    </div>
-  </div>
-  <div style="display:flex;gap:10px;padding:10px 24px;flex-shrink:0;flex-wrap:wrap;" id="sc_statsBar"></div>
-  <div style="flex:1;overflow:auto;padding:0 24px 16px;">
-    <div style="background:#fff;border:1px solid var(--g200);border-radius:8px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06);" id="sc_tableArea">
-      <div style="padding:40px;text-align:center;color:var(--g400);">Loading…</div>
-    </div>
-  </div>
-</div>
-
-<!-- Shift Comments Edit Panel -->
-<div id="sc_backdrop" onclick="if(event.target===this)sc_closePanel()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.25);z-index:3000;align-items:flex-start;justify-content:flex-end;">
-  <div style="width:520px;max-width:100vw;height:100vh;background:#fff;border-left:1px solid var(--g200);display:flex;flex-direction:column;box-shadow:-4px 0 20px rgba(0,0,0,.12);">
-    <div style="padding:18px 22px 14px;border-bottom:1px solid var(--g200);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
-      <div>
-        <div style="font-size:15px;font-weight:600;" id="sc_panelTitle">—</div>
-        <div style="font-size:12px;color:var(--g500);margin-top:2px;" id="sc_panelSub">—</div>
-      </div>
-      <button onclick="sc_closePanel()" style="background:none;border:none;cursor:pointer;color:var(--g500);font-size:20px;line-height:1;padding:2px;">×</button>
-    </div>
-    <div style="padding:12px 22px;border-bottom:1px solid var(--g200);display:grid;grid-template-columns:1fr 1fr;gap:10px;background:var(--g50);" id="sc_panelMeta"></div>
-    <div style="flex:1;overflow-y:auto;padding:18px 22px;display:flex;flex-direction:column;gap:16px;">
-      <div>
-        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g600);margin-bottom:6px;display:flex;align-items:center;gap:6px;">
-          Comments on today's shift <span id="sc_countComments" style="font-size:10px;color:var(--g400);font-weight:400;text-transform:none;letter-spacing:0;">0 chars</span>
-          <button type="button" onclick="sc_clearField('comments')" style="margin-left:auto;padding:3px 7px;border:1px solid #efb4ae;border-radius:5px;background:var(--red-light);color:var(--red);font-family:inherit;font-size:10px;font-weight:650;line-height:1.2;cursor:pointer;text-transform:none;letter-spacing:0;">Clear</button>
-        </div>
-        <textarea id="sc_editComments" rows="7" oninput="sc_onTextChange()" placeholder="No comments yet…" style="width:100%;padding:8px 10px;border:1px solid var(--g300);border-radius:var(--r);font-family:inherit;font-size:13px;line-height:1.6;resize:vertical;min-height:120px;outline:none;transition:border-color .15s;"></textarea>
-      </div>
-      <div>
-        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g600);margin-bottom:6px;display:flex;align-items:center;gap:6px;">
-          Stand comments <span id="sc_countStand" style="font-size:10px;color:var(--g400);font-weight:400;text-transform:none;letter-spacing:0;">0 chars</span>
-          <button type="button" onclick="sc_clearField('stand')" style="margin-left:auto;padding:3px 7px;border:1px solid #efb4ae;border-radius:5px;background:var(--red-light);color:var(--red);font-family:inherit;font-size:10px;font-weight:650;line-height:1.2;cursor:pointer;text-transform:none;letter-spacing:0;">Clear</button>
-        </div>
-        <textarea id="sc_editStand" rows="4" oninput="sc_onTextChange()" placeholder="No stand comments yet…" style="width:100%;padding:8px 10px;border:1px solid var(--g300);border-radius:var(--r);font-family:inherit;font-size:13px;line-height:1.6;resize:vertical;min-height:90px;outline:none;transition:border-color .15s;"></textarea>
-      </div>
-    </div>
-    <div style="padding:14px 22px;border-top:1px solid var(--g200);display:flex;align-items:center;justify-content:space-between;">
-      <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--g500);">
-        <div id="sc_statusDot" style="width:6px;height:6px;border-radius:50%;background:var(--g300);flex-shrink:0;"></div>
-        <span id="sc_statusText">No changes</span>
-      </div>
-      <div style="display:flex;gap:8px;">
-        <button onclick="sc_closePanel()" style="padding:6px 12px;border:1px solid var(--g300);border-radius:var(--r);background:#fff;font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;">Cancel</button>
-        <button id="sc_saveBtn" onclick="sc_saveRow()" disabled style="padding:6px 14px;border:none;border-radius:var(--r);background:var(--blue);color:#fff;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;opacity:.5;">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- PAGE 6 – TARGETS -->
 <div class="page" id="page6" style="flex-direction:column;overflow:hidden;background:var(--g50);">
   <!-- Targets: form + table split layout -->
@@ -1538,22 +1470,9 @@ window._authReady=restoreSupabaseSession();
 <div class="page" id="page11" style="flex-direction:column;overflow:hidden;background:var(--g50);">
   <div class="led-toolbar">
     <div class="led-title"><strong>Legacy Data Editor</strong><span>Edit existing Supabase records</span></div>
-    <div class="led-tabs">
-      <button class="led-tab active" data-led-table="sales" onclick="led_switchTable('sales')">Sales</button>
-      <button class="led-tab" data-led-table="questionnaire" onclick="led_switchTable('questionnaire')">Questionnaire</button>
-      <button class="led-tab" data-led-table="installation" onclick="led_switchTable('installation')">Installation</button>
-      <button class="led-tab" data-led-table="fdf" onclick="led_switchTable('fdf')">FDF</button>
-      <button class="led-tab" data-led-table="global" onclick="led_switchTable('global')">Global Feedback</button>
-    </div>
-    <select class="led-control" id="ledSearchField" onchange="led_scheduleLoad(true)"></select>
-    <input class="led-control led-search" id="ledSearch" type="search" placeholder="Search records…" oninput="led_scheduleLoad(true)">
     <select class="led-control" id="ledBrandFilter" onchange="led_scheduleLoad(true)"><option value="">All brands</option></select>
     <select class="led-control" id="ledStoreFilter" onchange="led_scheduleLoad(true)"><option value="">All stores</option></select>
     <select class="led-control" id="ledPromoterFilter" onchange="led_scheduleLoad(true)"><option value="">All promoters</option></select>
-    <span style="font-size:11px;color:var(--g500);font-weight:600;">From</span>
-    <input class="led-control" id="ledFrom" type="date" onchange="led_scheduleLoad(true)">
-    <span style="font-size:11px;color:var(--g500);font-weight:600;">To</span>
-    <input class="led-control" id="ledTo" type="date" onchange="led_scheduleLoad(true)">
     <button class="led-btn" onclick="led_resetFilters()">Reset</button>
     <button class="led-btn" onclick="led_loadPage()">Refresh</button>
     <span id="ledSummary" style="margin-left:auto;color:var(--g500);font-size:10.5px;">Not loaded</span>
@@ -2050,7 +1969,7 @@ let p2All=[],p2Filt=[],p2FutureRows=[];
 let curRec=null, isNew=false;
 let p2Filter='active', p2Search={brand:'',store:''}, p2SortDir='desc';
 let currentTab=0;
-let currentWorkflowTool=5;
+let currentWorkflowTool=11;
 const TODAY=new Date(); TODAY.setHours(0,0,0,0);
 
 const KEYS  =['company','client','brand','store','sector','contact','accountmanager','reporttype'];
@@ -2197,14 +2116,6 @@ function resetFiltersForPage(page){
     p4View='ready';
     ['ready','sent'].forEach(view=>document.getElementById('p4-tab-'+view)?.classList.toggle('active',view==='ready'));
   }
-  if(page===5){
-    document.getElementById('sc_filterDate').value='';
-    document.getElementById('sc_filterBrand').value='';
-    document.getElementById('sc_filterStore').innerHTML='<option value="">All stores</option>';
-    document.getElementById('sc_filterSearch').value='';
-    sc_sortCol='Brand';
-    sc_sortAsc=true;
-  }
   if(page===6){
     document.getElementById('t_filter').value='';
     t_sortCol='id';
@@ -2222,12 +2133,6 @@ function resetFiltersForPage(page){
     if(items_initialized)items_applyFilters(false);
   }
   if(page===11){
-    const search=document.getElementById('ledSearch');
-    const from=document.getElementById('ledFrom');
-    const to=document.getElementById('ledTo');
-    if(search)search.value='';
-    if(from)from.value='';
-    if(to)to.value='';
     led_page=1;
   }
   if(page===8){
@@ -2254,7 +2159,7 @@ function resetFiltersForPage(page){
 }
 
 function switchWorkflowTool(n=currentWorkflowTool){
-  const toolPage=[5,6,7,11].includes(Number(n))?Number(n):5;
+  const toolPage=[6,7,11].includes(Number(n))?Number(n):11;
   currentWorkflowTool=toolPage;
   switchTab(toolPage);
 }
@@ -2263,29 +2168,29 @@ function switchTab(n){
   const pageChanged=n!==currentTab;
   if(pageChanged)resetFiltersForPage(currentTab);
   currentTab=n;
-  if([5,6,7,11].includes(n))currentWorkflowTool=n;
-  [0,1,2,3,4,5,6,7,8,9,11].forEach(i=>{
+  if([6,7,11].includes(n))currentWorkflowTool=n;
+  [0,1,2,3,4,6,7,8,9,11].forEach(i=>{
     const p=document.getElementById('page'+i);
     const b=document.getElementById('tab'+i+'btn');
     if(p) p.classList.toggle('active',n===i);
     if(b) b.classList.toggle('active',n===i);
   });
-  const workflowOpen=[5,6,7,11].includes(n);
+  const workflowOpen=[6,7,11].includes(n);
   const workflowMain=document.getElementById('tab10btn');
   const workflowBar=document.getElementById('workflowToolsBar');
   if(workflowMain)workflowMain.classList.toggle('active',workflowOpen);
   if(workflowBar)workflowBar.style.display=workflowOpen?'flex':'none';
-  [5,6,7,11].forEach(i=>{
+  [6,7,11].forEach(i=>{
     const button=document.getElementById('workflowTool'+i+'btn');
-    if(button)button.classList.toggle('active',n===i);
+    if(button)button.classList.toggle('active',n===i&&i!==11);
   });
+  document.querySelectorAll('[data-led-table]').forEach(button=>button.classList.toggle('active',n===11&&button.dataset.ledTable===led_table));
   showGFilterBar(n===1||n===2);
   if(n===0) renderDashboard();
   if(n===1) renderEFLanding();
   if(n===2) loadP2();
   if(n===3) loadP3();
   if(n===4){ if(!p3All.length) loadP3().then(()=>renderP4()); else renderP4(); }
-  if(n===5) sc_loadData();
   if(n===6) t_initIfNeeded();
   if(n===7) items_initIfNeeded();
   if(n===11) led_initIfNeeded();
@@ -5211,213 +5116,12 @@ function showLoad(v){if(v&&!lEl){lEl=document.createElement('div');lEl.className
 
 
 // ═══════════════════════════════════════════════════════════
-// PAGE 5 – SHIFT COMMENTS
-// ═══════════════════════════════════════════════════════════
-let sc_allRows=[], sc_currentRow=null, sc_origComments='', sc_origStand='',sc_loadRequest=0;
-let sc_sortCol='Brand', sc_sortAsc=true;
-
-function sc_loadData(){
-  const requestId=++sc_loadRequest;
-  const today=new Date().toISOString().split('T')[0];
-  const dateEl=document.getElementById('sc_filterDate');
-  if(!dateEl.value) dateEl.value=today;
-  const date=dateEl.value;
-  const area=document.getElementById('sc_tableArea');
-  area.innerHTML='<div style="padding:40px;text-align:center;color:var(--g400);">Loading shifts…</div>';
-  authenticatedFetch(`${SB_URL}/rest/v1/legacy_questionnaire?select=*&order=Brand.asc,Store.asc&"Date"=eq.${date}`)
-    .then(async r=>{if(!r.ok)throw new Error(await r.text()||`HTTP ${r.status}`);return r.json();})
-    .then(data=>{
-      if(requestId!==sc_loadRequest)return;
-      sc_allRows=data;
-      sc_populateBrandFilter();
-      sc_renderTable();
-      sc_updateStats();
-      document.getElementById('sc_subline').textContent=`${sc_allRows.length} shift${sc_allRows.length!==1?'s':''} on ${new Date(date+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}`;
-    })
-    .catch(e=>{if(requestId===sc_loadRequest)area.innerHTML=`<div style="padding:40px;text-align:center;color:var(--red);">Error: ${esc(e.message)}</div>`;});
-}
-
-function sc_populateBrandFilter(){
-  const sel=document.getElementById('sc_filterBrand');
-  const cur=sel.value;
-  const brands=[...new Set(sc_allRows.map(r=>r.Brand).filter(value=>referenceOptionAllowed('brand',value)))].sort();
-  sel.innerHTML='<option value="">All brands</option>'+brands.map(b=>`<option value="${esc(b)}"${b===cur?' selected':''}>${esc(b)}</option>`).join('');
-  sc_populateStoreFilter();
-}
-function sc_populateStoreFilter(){
-  const brand=document.getElementById('sc_filterBrand').value;
-  const sel=document.getElementById('sc_filterStore');
-  const cur=sel.value;
-  const rows=brand?sc_allRows.filter(r=>r.Brand===brand):sc_allRows;
-  const stores=[...new Set(rows.map(r=>r.Store).filter(value=>referenceOptionAllowed('store',value)))].sort();
-  sel.innerHTML='<option value="">All stores</option>'+stores.map(s=>`<option value="${esc(s)}"${s===cur?' selected':''}>${esc(s)}</option>`).join('');
-}
-function sc_renderTable(){
-  const brand=document.getElementById('sc_filterBrand').value;
-  const store=document.getElementById('sc_filterStore').value;
-  const search=document.getElementById('sc_filterSearch').value.toLowerCase();
-  let rows=sc_allRows.filter(r=>{
-    if(brand&&r.Brand!==brand)return false;
-    if(store&&r.Store!==store)return false;
-    if(search&&!(r.Promoter||'').toLowerCase().includes(search))return false;
-    return true;
-  });
-  rows=rows.slice().sort((a,b)=>{
-    const va=(a[sc_sortCol]||'').toString().toLowerCase();
-    const vb=(b[sc_sortCol]||'').toString().toLowerCase();
-    return sc_sortAsc?va.localeCompare(vb):vb.localeCompare(va);
-  });
-  const area=document.getElementById('sc_tableArea');
-  if(!rows.length){area.innerHTML='<div style="padding:40px;text-align:center;color:var(--g400);">No shifts found</div>';return;}
-  const cols=[
-    {key:'Brand',label:'Brand'},{key:'Store',label:'Store'},{key:'Promoter',label:'Promoter'},
-    {key:'Date',label:'Shift date'},{key:"Comments on today's shift",label:'Shift comments'},{key:'stand_comments',label:'Stand'}
-  ];
-  const th=cols.map(c=>{
-    const sorted=sc_sortCol===c.key;
-    const arr=sorted?(sc_sortAsc?' ↑':' ↓'):'';
-    return `<th onclick="sc_setSort('${c.key}')" style="padding:8px 10px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:${sorted?'var(--blue)':'var(--g600)'};background:var(--g50);border-bottom:2px solid var(--g200);cursor:pointer;white-space:nowrap;">${c.label}${arr}</th>`;
-  }).join('');
-  const tbody=rows.map(r=>{
-    const comments=r["Comments on today's shift"]||'';
-    const stand=r.stand_comments||'';
-    const rowId=Number.parseInt(r.ID,10);
-    if(!Number.isSafeInteger(rowId))return'';
-    return `<tr onclick="sc_openPanel(${rowId})" style="cursor:pointer;border-bottom:1px solid var(--g100);" onmouseover="this.style.background='var(--g50)'" onmouseout="this.style.background=''">
-      <td style="padding:8px 10px;font-size:13px;font-weight:600;">${esc(r.Brand||'—')}</td>
-      <td style="padding:8px 10px;font-size:13px;">${esc(r.Store||'—')}</td>
-      <td style="padding:8px 10px;font-size:13px;">${esc(r.Promoter||'—')}</td>
-      <td style="padding:8px 10px;font-size:11.5px;color:var(--g600);">${esc(r.Date||'—')}</td>
-      <td style="padding:8px 10px;font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${comments?esc(comments):'<span style="color:var(--g400);font-style:italic;">—</span>'}</td>
-      <td style="padding:8px 10px;">${stand?'<span style="background:var(--green-light);color:var(--green);padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">Yes</span>':'<span style="color:var(--g400);">—</span>'}</td>
-    </tr>`;
-  }).join('');
-  area.innerHTML=`<table style="width:100%;border-collapse:collapse;"><thead><tr>${th}</tr></thead><tbody>${tbody}</tbody></table>`;
-}
-function sc_setSort(col){
-  if(sc_sortCol===col)sc_sortAsc=!sc_sortAsc;else{sc_sortCol=col;sc_sortAsc=true;}
-  sc_renderTable();
-}
-function sc_updateStats(){
-  const total=sc_allRows.length;
-  const withC=sc_allRows.filter(r=>r["Comments on today's shift"]).length;
-  const withS=sc_allRows.filter(r=>r.stand_comments).length;
-  const brands=new Set(sc_allRows.map(r=>r.Brand)).size;
-  document.getElementById('sc_statsBar').innerHTML=[
-    {val:total,label:'Shifts',col:'var(--blue)'},{val:brands,label:'Brands',col:'var(--g600)'},
-    {val:withC,label:'With comments',col:'var(--green)'},{val:withS,label:'With stand notes',col:'var(--amber)'}
-  ].map(s=>`<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:10px 16px;display:flex;flex-direction:column;gap:2px;min-width:110px;box-shadow:0 1px 3px rgba(0,0,0,.06);">
-    <span style="font-size:22px;font-weight:800;color:${s.col};font-family:monospace;">${s.val}</span>
-    <span style="font-size:10.5px;color:var(--g500);text-transform:uppercase;letter-spacing:.05em;font-weight:600;">${s.label}</span>
-  </div>`).join('');
-}
-function sc_openPanel(id){
-  const currentId=sc_currentRow?.ID;
-  const sameOpen=currentId!=null&&String(currentId)===String(id)&&document.getElementById('sc_backdrop').style.display==='flex';
-  const preservedDraft=sameOpen?{
-    comments:document.getElementById('sc_editComments').value,
-    stand:document.getElementById('sc_editStand').value
-  }:null;
-  if(currentId!=null&&String(currentId)!==String(id)&&sc_hasUnsavedChanges()&&!confirm('Discard the unsaved comment changes and open another record?'))return;
-  sc_currentRow=sc_allRows.find(r=>String(r.ID)===String(id));
-  if(!sc_currentRow)return;
-  document.getElementById('sc_panelTitle').textContent=sc_currentRow.Promoter||'—';
-  document.getElementById('sc_panelSub').textContent=`${sc_currentRow.Brand} · ${sc_currentRow.Store}`;
-  document.getElementById('sc_panelMeta').innerHTML=`
-    <div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);">Shift date</div><div style="font-size:13px;font-weight:500;margin-top:2px;">${esc(sc_currentRow.Date||'—')}</div></div>
-    <div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);">Brand</div><div style="font-size:13px;font-weight:500;margin-top:2px;">${esc(sc_currentRow.Brand||'—')}</div></div>
-    <div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);">Store</div><div style="font-size:13px;font-weight:500;margin-top:2px;">${esc(sc_currentRow.Store||'—')}</div></div>`;
-  sc_origComments=sc_currentRow["Comments on today's shift"]||'';
-  sc_origStand=sc_currentRow.stand_comments||'';
-  document.getElementById('sc_editComments').value=preservedDraft?.comments??sc_origComments;
-  document.getElementById('sc_editStand').value=preservedDraft?.stand??sc_origStand;
-  sc_onTextChange();
-  const bd=document.getElementById('sc_backdrop');
-  bd.style.display='flex';
-}
-function sc_hasUnsavedChanges(){
-  if(!sc_currentRow)return false;
-  return document.getElementById('sc_editComments').value!==sc_origComments||document.getElementById('sc_editStand').value!==sc_origStand;
-}
-function sc_closePanel(force=false){
-  if(!force&&sc_hasUnsavedChanges()&&!confirm('Discard the unsaved comment changes?'))return false;
-  document.getElementById('sc_backdrop').style.display='none';sc_currentRow=null;
-  return true;
-}
-function sc_onTextChange(){
-  const c=document.getElementById('sc_editComments').value;
-  const s=document.getElementById('sc_editStand').value;
-  document.getElementById('sc_countComments').textContent=c.length+' chars';
-  document.getElementById('sc_countStand').textContent=s.length+' chars';
-  const dirty=c!==sc_origComments||s!==sc_origStand;
-  sc_setStatus(dirty?'dirty':'idle');
-}
-function sc_setStatus(state){
-  const dot=document.getElementById('sc_statusDot');
-  const txt=document.getElementById('sc_statusText');
-  const btn=document.getElementById('sc_saveBtn');
-  const colors={idle:'var(--g300)',dirty:'var(--amber)',saving:'var(--amber)',saved:'var(--green)',error:'var(--red)'};
-  dot.style.background=colors[state]||colors.idle;
-  const labels={idle:'No changes',dirty:'Unsaved changes',saving:'Saving…',saved:'Saved',error:'Error saving'};
-  txt.textContent=labels[state]||'';
-  btn.disabled=state!=='dirty';
-  btn.style.opacity=state==='dirty'?'1':'0.5';
-  btn.style.cursor=state==='dirty'?'pointer':'not-allowed';
-}
-async function sc_saveRow(){
-  if(!sc_currentRow)return;
-  sc_setStatus('saving');
-  const comments=document.getElementById('sc_editComments').value;
-  const stand=document.getElementById('sc_editStand').value;
-  try{
-    const res=await authenticatedFetch(`${SB_URL}/rest/v1/legacy_questionnaire?"ID"=eq.${sc_currentRow.ID}`,{
-      method:'PATCH',headers:{'Prefer':'return=minimal'},
-      body:JSON.stringify({"Comments on today's shift":comments,stand_comments:stand})
-    });
-    if(!res.ok)throw new Error('HTTP '+res.status);
-    sc_currentRow["Comments on today's shift"]=comments;
-    sc_currentRow.stand_comments=stand;
-    const listRow=sc_allRows.find(row=>String(row.ID)===String(sc_currentRow.ID));
-    if(listRow){listRow["Comments on today's shift"]=comments;listRow.stand_comments=stand;}
-    sc_origComments=comments;sc_origStand=stand;
-    sc_setStatus('saved');
-    sc_renderTable();sc_updateStats();
-    toast('Comment saved','success');
-  }catch(e){sc_setStatus('error');toast('Save failed: '+e.message,'error');}
-}
-async function sc_clearField(field){
-  if(!sc_currentRow)return;
-  const isStand=field==='stand';
-  const column=isStand?'stand_comments':"Comments on today's shift";
-  const input=document.getElementById(isStand?'sc_editStand':'sc_editComments');
-  const current=String(input?.value||'');
-  if(!current.trim()){toast('This comment is already empty.');return;}
-  const label=isStand?'stand comment':'shift comment';
-  if(!confirm(`Clear this ${label}? This cannot be undone.`))return;
-  sc_setStatus('saving');
-  try{
-    const res=await authenticatedFetch(`${SB_URL}/rest/v1/legacy_questionnaire?"ID"=eq.${encodeURIComponent(sc_currentRow.ID)}`,{
-      method:'PATCH',headers:{'Prefer':'return=minimal'},body:JSON.stringify({[column]:null})
-    });
-    if(!res.ok)throw new Error(await res.text()||`HTTP ${res.status}`);
-    sc_currentRow[column]=null;
-    const listRow=sc_allRows.find(row=>String(row.ID)===String(sc_currentRow.ID));
-    if(listRow)listRow[column]=null;
-    input.value='';
-    if(isStand)sc_origStand='';else sc_origComments='';
-    sc_onTextChange();sc_renderTable();sc_updateStats();
-    toast(`${isStand?'Stand':'Shift'} comment cleared.`,'success');
-  }catch(error){sc_setStatus('error');toast('Clear failed: '+error.message,'error');}
-}
-
-// ═══════════════════════════════════════════════════════════
 // PAGE 11 – LEGACY DATA EDITOR
 // ═══════════════════════════════════════════════════════════
 const LED_CONFIG={
   sales:{
     label:'Sales',table:'legacy_sales',pk:'id',date:'Date',
-    columns:[['id','ID'],['Date','Date'],['Brand','Brand'],['Item','Item'],['Store','Store'],['Promoter Name','Promoter'],['Qty sold','Qty sold'],['Stock level','Stock']],
-    search:[['id','ID','number'],['Brand','Brand','text'],['Store','Store','text'],['Promoter Name','Promoter','text'],['Item','Item','text']],
+    columns:[['id','ID'],['created_at','Created Date'],['Date','Date'],['Promoter Name','Promoter'],['Store','Shop'],['Brand','Brand'],['Item','Item'],['Qty sold','Qty Sold']],
     lookups:[
       {key:'client',label:'Client',idColumn:'Clientid'},
       {key:'brand',label:'Brand',idColumn:'Brandid',textColumn:'Brand'},
@@ -5431,8 +5135,7 @@ const LED_CONFIG={
   },
   questionnaire:{
     label:'Questionnaire',table:'legacy_questionnaire',pk:'ID',date:'Date',
-    columns:[['ID','ID'],['Date','Date'],['Brand','Brand'],['Store','Store'],['Promoter','Promoter'],['Pieces Sold','Pieces sold'],['Turnover of the day','Turnover'],["Comments on today's shift",'Shift comment']],
-    search:[['ID','ID','number'],['Brand','Brand','text'],['Store','Store','text'],['Promoter','Promoter','text'],["Comments on today's shift",'Shift comment','text']],
+    columns:[['ID','ID'],['created_at','Created Date'],['Date','Date'],['Promoter','Promoter'],['Store','Shop'],['Brand','Brand'],['Turnover of the day','Turnover'],['Pieces Sold','Pieces'],["Comments on today's shift",'Comments']],
     lookups:[
       {key:'client',label:'Client',idColumn:'Clientid'},
       {key:'brand',label:'Brand',idColumn:'Brandid',textColumn:'Brand'},
@@ -5450,8 +5153,7 @@ const LED_CONFIG={
   },
   installation:{
     label:'Installation',table:'legacy_installation',pk:'ID',date:'Date',
-    columns:[['ID','ID'],['Date','Date'],['Brand','Brand'],['Store','Store'],['promotername','Promoter'],['Materials','Materials'],['Issues','Issues']],
-    search:[['ID','ID','number'],['Brand','Brand','text'],['Store','Store','text'],['promotername','Promoter','text'],['Materials','Materials','text'],['Issues','Issues','text']],
+    columns:[['ID','ID'],['Created','Created Date'],['Date','Date'],['promotername','Promoter'],['Store','Shop'],['Brand','Brand']],
     lookups:[
       {key:'client',label:'Client',idColumn:'clientid',idType:'text'},
       {key:'brand',label:'Brand',idColumn:'Brandid',textColumn:'Brand'},
@@ -5465,8 +5167,7 @@ const LED_CONFIG={
   },
   fdf:{
     label:'FDF',table:'legacy_fdf',pk:'ID',date:'Date',
-    columns:[['ID','ID'],['Date','Date'],['Brand','Brand'],['Store','Store'],['promotername','Promoter'],['Materials','Materials'],['Uniform','Uniform'],['Tasting','Tasting']],
-    search:[['ID','ID','number'],['Brand','Brand','text'],['Store','Store','text'],['promotername','Promoter','text'],['Materials','Materials','text'],['Visibility','Visibility','text']],
+    columns:[['ID','ID'],['Created','Created Date'],['Date','Date'],['promotername','Promoter'],['Store','Shop'],['Brand','Brand']],
     lookups:[
       {key:'client',label:'Client',idColumn:'clientid',idType:'text'},
       {key:'brand',label:'Brand',idColumn:'Brandid',textColumn:'Brand'},
@@ -5480,8 +5181,7 @@ const LED_CONFIG={
   },
   global:{
     label:'Global Feedback',table:'legacy_global',pk:'ID',date:'Date',
-    columns:[['ID','ID'],['Date','Date'],['Brand','Brand'],['Store','Store'],['promotername','Promoter'],['Product','Product'],['Thoughts','Thoughts']],
-    search:[['ID','ID','number'],['Brand','Brand','text'],['Store','Store','text'],['promotername','Promoter','text'],['Product','Product','text'],['Thoughts','Thoughts','text']],
+    columns:[['ID','ID'],['Created','Created Date'],['Date','Date'],['promotername','Promoter'],['Store','Shop'],['Brand','Brand']],
     lookups:[
       {key:'client',label:'Client',idColumn:'Client_id',idType:'text'},
       {key:'brand',label:'Brand',idColumn:'Brandid',textColumn:'Brand'},
@@ -5528,27 +5228,18 @@ async function led_loadReferences(){
 function led_initIfNeeded(){
   if(!led_initialized){
     led_initialized=true;
-    led_populateSearchFields();
     led_loadReferences().then(led_populateEntityFilters).catch(error=>toast('Legacy filters could not be loaded: '+error.message,'error'));
   }
   led_loadPage();
 }
 function led_switchTable(table){
-  if(!LED_CONFIG[table]||table===led_table)return;
-  if(!led_closeEditor())return;
-  led_table=table;led_page=1;
-  document.querySelectorAll('[data-led-table]').forEach(button=>button.classList.toggle('active',button.dataset.ledTable===table));
-  document.getElementById('ledSearch').value='';
-  document.getElementById('ledFrom').value='';
-  document.getElementById('ledTo').value='';
-  led_clearEntityFilters();
-  led_populateSearchFields();
-  led_loadPage();
-}
-function led_populateSearchFields(){
-  const select=document.getElementById('ledSearchField');
-  if(!select)return;
-  select.innerHTML=led_config().search.map(([name,label])=>`<option value="${esc(name)}">Search: ${esc(label)}</option>`).join('');
+  if(!LED_CONFIG[table])return;
+  if(table!==led_table){
+    if(!led_closeEditor())return;
+    led_table=table;led_page=1;
+    led_clearEntityFilters();
+  }else if(currentTab===11)return;
+  switchWorkflowTool(11);
 }
 function led_populateEntityFilters(){
   const definitions=[
@@ -5573,16 +5264,10 @@ function led_scheduleLoad(resetPage=false){
   led_loadTimer=setTimeout(led_loadPage,300);
 }
 function led_resetFilters(){
-  document.getElementById('ledSearch').value='';
-  document.getElementById('ledFrom').value='';
-  document.getElementById('ledTo').value='';
   led_clearEntityFilters();
-  led_populateSearchFields();
   led_page=1;
   led_loadPage();
 }
-function led_searchType(name){return led_config().search.find(field=>field[0]===name)?.[2]||'text';}
-function led_safeSearch(value){return String(value||'').trim().replace(/[*,()]/g,' ');}
 function led_applyEntityFilter(url,key,selectedId){
   if(!selectedId)return;
   const config=led_config();
@@ -5604,22 +5289,12 @@ async function led_loadPage(){
   const url=new URL(`${SB}/rest/v1/${config.table}`);
   url.searchParams.set('select','*');
   url.searchParams.set('order',`${led_quoteColumn(config.date)}.desc.nullslast,${led_quoteColumn(config.pk)}.desc`);
-  const search=led_safeSearch(document.getElementById('ledSearch').value);
-  const searchField=document.getElementById('ledSearchField').value||config.search[0][0];
-  if(search){
-    const operator=led_searchType(searchField)==='number'&&/^-?\d+(?:\.\d+)?$/.test(search)?`eq.${search}`:`ilike.*${search}*`;
-    url.searchParams.set(led_quoteColumn(searchField),operator);
-  }
   const brandId=document.getElementById('ledBrandFilter')?.value;
   const storeId=document.getElementById('ledStoreFilter')?.value;
   const promoterId=document.getElementById('ledPromoterFilter')?.value;
   led_applyEntityFilter(url,'brand',brandId);
   led_applyEntityFilter(url,'store',storeId);
   led_applyEntityFilter(url,'promoter',promoterId);
-  const from=document.getElementById('ledFrom').value;
-  const to=document.getElementById('ledTo').value;
-  if(from)url.searchParams.set(led_quoteColumn(config.date),`gte.${from}`);
-  if(to)url.searchParams.append(led_quoteColumn(config.date),`lte.${to}`);
   const first=(led_page-1)*led_pageSize;
   try{
     const response=await authenticatedFetch(url.toString(),{headers:{'Range-Unit':'items','Range':`${first}-${first+led_pageSize-1}`,'Prefer':'count=planned'}});
@@ -5653,7 +5328,7 @@ function led_renderTable(){
     const body=led_rows.map(row=>{
       const id=row[config.pk];
       const selected=selectedId!=null&&String(selectedId)===String(id);
-      const cells=config.columns.map(([name])=>{const value=led_displayValue(row[name]);return `<td title="${esc(value)}">${esc(value)}</td>`;}).join('');
+      const cells=config.columns.map(([name,label])=>{const value=led_displayValue(label==='Created Date'?fd(row[name]):row[name]);return `<td title="${esc(value)}">${esc(value)}</td>`;}).join('');
       return `<tr class="led-row${selected?' selected':''}" onclick="led_openEditor(${Number(id)})">${cells}</tr>`;
     }).join('');
     area.innerHTML=`<table class="led-table"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>`;
@@ -5755,7 +5430,7 @@ function led_renderEditorForm(){
   const note=`<div class="led-lookup-note">Select linked values from the lists. Their database IDs are updated automatically${linkedLabels?`; linked fields: ${esc(linkedLabels)}`:''}.</div>`;
   if(led_table==='questionnaire'){
     const lookup=key=>led_lookupFieldHtml(config.lookups.find(def=>def.key===key));
-    const priorityNames=['Date','Turnover of the day','Pieces Sold','Interactions','Stopping rate','Conversion rate','customa','customb'];
+    const priorityNames=['Date','Turnover of the day','Pieces Sold',"Comments on today's shift",'stand_comments','Interactions','Stopping rate','Conversion rate','customa','customb'];
     const priorityFields=priorityNames.map(name=>config.fields.findIndex(field=>field[0]===name)).filter(index=>index>=0);
     const prioritySet=new Set(priorityFields);
     const remainingFields=config.fields.map((field,index)=>({field,index})).filter(item=>!prioritySet.has(item.index));
