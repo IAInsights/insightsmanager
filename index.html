@@ -5321,6 +5321,14 @@ async function led_loadPage(){
     document.getElementById('ledPager').style.display='none';
   }
 }
+const led_createdDateFormat=new Intl.DateTimeFormat('en-GB',{
+  timeZone:'Europe/Paris',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'
+});
+function led_formatCreatedDate(value){
+  if(!value)return '';
+  const date=new Date(value);
+  return Number.isNaN(date.getTime())?'':led_createdDateFormat.format(date);
+}
 function led_displayValue(value){
   if(value===null||value===undefined||value==='')return '—';
   if(typeof value==='boolean')return value?'Yes':'No';
@@ -5336,7 +5344,7 @@ function led_renderTable(){
     const body=led_rows.map(row=>{
       const id=row[config.pk];
       const selected=selectedId!=null&&String(selectedId)===String(id);
-      const cells=config.columns.map(([name,label])=>{const value=led_displayValue(label==='Created Date'?fd(row[name]):row[name]);return `<td title="${esc(value)}">${esc(value)}</td>`;}).join('');
+      const cells=config.columns.map(([name,label])=>{const value=led_displayValue(label==='Created Date'?led_formatCreatedDate(row[name]):row[name]);return `<td title="${esc(value)}">${esc(value)}</td>`;}).join('');
       return `<tr class="led-row${selected?' selected':''}" onclick="led_openEditor(${Number(id)})">${cells}</tr>`;
     }).join('');
     area.innerHTML=`<table class="led-table"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>`;
